@@ -1,0 +1,297 @@
+<?php
+/**
+ * @category   Entrepids
+ * @package    Entrepids_CoffeeSolutions
+ * @author     miguel.perez@entrepids.com
+ * @website    http://www.entrepids.com
+ */
+
+$subplacesUrl = Mage::getUrl('coffeesolutions/solutions/sublocations'); 
+$solutionsUrl = Mage::getUrl('coffeesolutions/solutions/solutions'); 
+$solutionDetalUrl = Mage::getUrl('coffeesolutions/solutions/detail');
+
+//$n = count( $subplacesUrl ); if( $subplacesUrl[ $n ]!='/' ){  $subplacesUrl .= '/'; }
+//$n = count( $solutionsUrl ); if( $solutionsUrl[ $n ]!='/' ){  $solutionsUrl .= '/'; }
+//$n = count( $solutionDetalUrl ); if( $solutionDetalUrl[ $n ]!='/' ){  $solutionDetalUrl .= '/'; }
+
+$paso1 = "&iquest;Qu&eacute; tipo de negocio tienes?";
+$paso2 = "&iquest;En qu&eacute; ubicaci&oacute;n necesitas la soluci&oacute;n?";
+$paso3 = "&iquest;Cu&aacute;ntas Tazas al d&iacute;a consume tu negocio?";
+$paso4 = "ELIGE ALGUNA DE LAS SOLUCIONES QUE TE RECOMENDAMOS";
+
+?>
+<div class="preloader" id="nescafe-preloader">
+    <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>
+<form class="hidden-form">
+    <input type="text" name="hplace" id="hplace">
+    <input type="text" name="hinternalplace" id="hinternalplace">
+    <input type="text" name="hcoups" id="hcoups">
+    <input type="text" name="hplace-title" id="hplace-title">
+    <input type="text" name="hinternalplace-title" id="hinternalplace-title">
+</form>
+
+<!-- soluciones paso 1 -->
+<div class="container" id="coffee-solution-places">
+    <a class="ancla" id="ancla-top"></a>
+    <div class="center_object">
+        <div class="container-title" id="coffe-solution-places-title">
+            <h3 class="page-title"><span><?php echo $paso1; ?></span></h3>
+        </div>
+        <div class="container-places" id="coffe-solution-places-container">
+            <?php
+            $places = $this->getPlaces();
+            if (!empty($places)):
+                foreach ($places as $p):
+                    ?>
+                    <div 
+                        class="col-md-3 solution-place solution-places" 
+                        id="<?php echo $p['code'] ?>" 
+                    	data-place="<?php echo $p['code']; ?>" 
+                        data-sublocation="" data-cups="" 
+                    	onclick="getSubPlaces(<?php echo $p['id']; ?>,'<?php echo $p['name']; ?>');">
+                        <img 
+                            class="ico_solutions solution-places" 
+                        	data-place="<?php echo $p['code']; ?>" 
+                            data-sublocation="" 
+                            data-cups="" 
+                        	src="<?php echo $p['image']; ?>" 
+                            title="<?php echo $p['name']; ?>">
+                        <label 
+                            for="checkbox-<?php echo $p['id']; ?>" 
+                            class="checkbox-label solution-places" 
+                        	data-place="<?php echo $p['code']; ?>" 
+                            data-sublocation="" 
+                            data-cups="" > 
+                        	<span 
+                                class="solution-places" 
+                                data-place="<?php echo $p['code']; ?>" 
+                                data-sublocation="" 
+                                data-cups="" >
+                        		<span 
+                                    class="solution-places" 
+                                    data-place="<?php echo $p['code']; ?>" 
+                                    data-sublocation="" 
+                                    data-cups="" ><?php echo $p['name']; ?></span>
+                        	</span>
+                        </label>
+                    </div>
+                    <?php
+                endforeach;
+            else:
+                echo 'No se encontraron lugares.';
+            endif;
+            ?>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<!-- soluciones paso 2 -->
+<div class="container" id="coffee-solution-internal-places">
+    <a class="ancla" name="ubicationclick" id="ubicationstep"></a>
+    <div class="center_object">
+        <div class="return">
+            <a onclick="gotop()" class="returnstep">Modificar Negocio</a>
+        </div>
+        <div class="container-title" id="coffe-solution-places-title">
+            <h3 class="page-title"><span><?php echo $paso2; ?></span></h3>
+        </div>
+        <div class="container-places" id="coffe-solution-sublocations">
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<!-- soluciones paso 3 -->
+<div class="container" id="coffee-solution-coups">
+    <div class="center_object">
+        <div class="return taz">
+            <a onclick="gotopquick()" class="returnstep wh first">Modificar Negocio</a>
+            <a onclick="goprev()" class="returnstep wh">Modificar Ubicación</a>
+        </div>
+        <div class="container-title" id="coffe-solution-coups-container">
+            <h3 class="page-title"><span><?php echo $paso3; ?></span></h3>
+        </div>
+        <div class="container-places" id="coffe-solution-places-container">
+            <div class="contenidotazas">
+                <h4 class="title-info">Solución para <span id="title-bussines">Bares y Cafés</span> en <span id="title-location">Terraza</span></h4>
+                <p>Ingresa el n&uacute;mero de tazas que consume tu negocio al d&iacute;a</p>
+                <input type="number" name="numtazas" id="numtazas" placeholder="# de tazas" min="1" max="99999" data-place="" data-sublocation="" data-cups="">
+                <div class="botton" onclick="getSolutions();">
+                    Enviar
+                </div>
+                <div class="validation-advice" id="advice-required-numtazas" style="display:none; color:#f0c54a;">* Debes especificar un n&uacute;mero de tazas v&aacute;lido [0 - 99999]</div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<!-- soluciones paso 4 -->
+<div class="container" id="coffee-solution-detail">
+    <div class="center_object">
+        <div class="container-title" id="coffe-solution-places-title">
+            <h3 class="page-title"><span><?php echo $paso4; ?></span></h3>
+            <h4>Tu elección: <span id="solution-breadcrumb">Bares y Cafés / Terraza / 50 tazas diarias</span></h4>
+            <div class="return"><a class="returnstep first" onclick="gotopquick()" >Modificar datos de elección</a></div>
+        </div>
+        <div class="container-places" id="coffe-solution-solutions-container">
+            <div class="clearfix"></div>
+        </div>
+        <a href="/nuestros-productos.html" class="page-title-info">Conoce todos los productos</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var locationId = 0;
+    var sublocationId = 0;
+    var placeTitle = '';
+    var subPlaceTitle = '';
+    var tazas = 0;
+
+    //  envia tipo de negocio
+    function getSubPlaces(idCategoria,placename){
+        locationId = idCategoria;
+
+        $('coffee-solution-internal-places').setStyle({display: 'none'});
+        $('coffee-solution-coups').setStyle({display: 'none'});
+        $('coffee-solution-detail').setStyle({display: 'none'});
+        showPreloader();
+        var ajaxurl = '<?php echo $subplacesUrl; ?>place/' + locationId;
+	console.log( 'SubPlaces ==> '+ajaxurl );
+        $('hplace').value = locationId;
+        $('hplace-title').value = placename;
+        placeTitle = placename;
+        //$('subtitle-innerplace').update(placeTitle);
+        new Ajax.Updater('coffe-solution-sublocations', ajaxurl, {method:'get',onComplete:showSublocations});
+    }
+    
+    function setCoups(sublocation,subplacename, placename){
+        $('coffee-solution-coups').setStyle({display: 'none'});
+        $('coffee-solution-detail').setStyle({display: 'none'});
+        showPreloader();
+        subPlaceTitle = subplacename;
+        sublocationId = sublocation;
+        $('hinternalplace').value = sublocationId;
+        $('hinternalplace-title').value = subplacename;
+        $j('#numtazas').attr('data-place',placename);
+        $j('#numtazas').attr('data-sublocation',subplacename);
+        showCoups();
+    }
+    
+	// seccion del tipo de negocio y numero de tazas
+    function getSolutions(){
+        $('coffee-solution-detail').setStyle({display: 'none'});
+        $j('#numtazas').attr('data-cups',$('numtazas').value);
+        var numTazas = parseInt($('numtazas').value);
+        if( numTazas > 0  && numTazas < 99999 ){
+            $('advice-required-numtazas').setStyle({display: 'none'});
+            showPreloader();
+            if(sublocationId){
+                tazas = numTazas;
+                $('hcoups').value = tazas;
+                var ajaxurl2 = '<?php echo $solutionsUrl; ?>sublocation/' + sublocationId + '/coups/' + numTazas;
+		console.log( ajaxurl2 );
+                new Ajax.Updater('coffe-solution-solutions-container', ajaxurl2, {method:'get', onComplete:showSolutionDetails});
+            }else{
+                hidePreloader();
+            }
+        }else{
+            hidePreloader();
+            $('advice-required-numtazas').setStyle({display: 'block'});
+        }
+    }
+    
+    function goToSolution(idSolution){
+        var l = "<?php echo $solutionDetalUrl; ?>id/"+ idSolution + '/lugar/' + locationId + '/ubicacion/' + sublocationId + '/tazas/' + tazas ;
+        console.log('data url ==> '+'<?php echo $solutionDetalUrl; ?>');
+        console.log('new location ==> '+l);
+        window.location.href = l;
+    }
+    
+    function showPreloader(){
+        $('nescafe-preloader').setStyle({display: 'block'});
+    }
+    
+    function hidePreloader(){
+        $('nescafe-preloader').setStyle({display: 'none'});
+    }
+    
+    function showSublocations(){
+        $('coffee-solution-internal-places').setStyle({display: 'block'});
+        $('nescafe-preloader').setStyle({display: 'none'});
+        $j('html, body').animate({
+            scrollTop: $j("#coffee-solution-internal-places").offset().top
+        }, 500);
+    }
+    
+    function showCoups(){
+        $('title-bussines').update(placeTitle);
+        $('title-location').update(subPlaceTitle);
+        $('coffee-solution-coups').setStyle({display: 'block'});
+        $('nescafe-preloader').setStyle({display: 'none'});
+        $j('html, body').animate({
+            scrollTop: $j("#coffee-solution-coups").offset().top
+        }, 500);
+    }
+    
+    function showSolutionDetails(){
+        $('solution-breadcrumb').update(placeTitle + ' / ' + subPlaceTitle + ' / ' + String(tazas) + ' tazas diarias');
+        $('coffee-solution-detail').setStyle({display: 'block'});
+        $('nescafe-preloader').setStyle({display: 'none'});
+        $j('html, body').animate({
+            scrollTop: $j("#coffee-solution-detail").offset().top
+        }, 500);
+    }
+
+    function goprev(){
+        $j('html, body').animate({
+            scrollTop: $j("#ubicationstep").offset().top
+        }, 1000);
+    }
+
+    function gotop(){
+        $j('html, body').animate({
+            scrollTop: $j("#ancla-top").offset().top
+        }, 1000);
+    }
+
+    function gotopquick(){
+        $j('html, body').animate({
+            scrollTop: $j("#ancla-top").offset().top
+        }, 500);
+    }
+    
+    function loadbackSolutions(){
+        //console.log('cargando soluciones');
+        $('coffee-solution-internal-places').setStyle({display: 'block'});
+        $('coffee-solution-coups').setStyle({display: 'block'});
+        $('title-bussines').update(placeTitle);
+        $('title-location').update(subPlaceTitle);
+        var ajaxurl2 = '<?php echo $solutionsUrl; ?>sublocation/' + sublocationId + '/coups/' + tazas;
+        new Ajax.Updater('coffe-solution-solutions-container', ajaxurl2, {method:'get', onComplete:showSolutionDetails, onFailure:hidePreloader});
+    }
+    
+    document.observe("dom:loaded",function(){
+        locationId = parseInt($('hplace').value);
+        sublocationId = parseInt($('hinternalplace').value);
+        tazas = parseInt($('hcoups').value);
+        placeTitle = $('hplace-title').value;
+        subPlaceTitle = $('hinternalplace-title').value;
+        if(sublocationId > 0 && locationId > 0 && tazas > 0){
+            //console.log('cargando locaciones');
+            showPreloader();
+            var ajaxurl = '<?php echo $subplacesUrl; ?>place/' + locationId;
+            new Ajax.Updater('coffe-solution-sublocations', ajaxurl, {method:'get',onComplete:loadbackSolutions, onFailure:hidePreloader});
+        }
+    });
+</script>
+<style>
+    .main-container{
+        display:none;
+    }
+</style>

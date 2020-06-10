@@ -1,0 +1,142 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?><?php
+/**
+ * Template for Valid Restricted
+ */
+
+$page_restricted = false;
+    $current_url = Mage::getUrl('',array( '_current' => true, '_use_rewrite' => true ));
+
+    if( $_SESSION['page_restricted']!=null ){
+        foreach ($_SESSION['page_restricted'] as $et => $r) {
+            if( $r == $current_url ){ $page_restricted = true; }
+        }
+    }
+
+    $url_form = Mage::getUrl();	// obtiene url base del sistema
+    $redirect = false;
+    $customer = Mage::getSingleton('customer/session');
+    $url_contacto = Mage::getUrl().'contacto/';
+
+
+    // si no hay usuario logueado
+    if( !$customer->isLoggedIn() ) {
+        $_SESSION['distributor_ini'] = 1;
+        $url_form .= 'customer/account/login/';
+        $redirect = true;
+    }else{
+        // si hay usuario logueado
+        if( Mage::getSingleton('core/session')->getUserAAA() ){
+            $customer = $customer->getCustomer();
+            $customerGroupId = $customer->getCustomerGroupId();
+            $page = $customer->getResource()
+                ->getAttribute('usr_url')
+                ->getFrontend()
+                ->getValue($customer);
+
+            $url_form .= $page;
+            $redirect = true;
+        }else{
+            $redirect = false;
+        }
+    }
+
+    if( $redirect ){
+        $redirect = '<meta http-equiv="refresh" content="0; url='.$url_form.'">';
+    }
+?><!DOCTYPE html>
+
+<!--[if lt IE 7 ]> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head><?php 
+
+echo $redirect."\n";
+echo $this->getChildHtml('head') ?><?php
+
+?></head>
+<body class="customer-account-login nologgued"><?php 
+
+echo $this->getChildHtml('after_body_start');
+
+?><div class="wrapper">
+    <?php echo $this->getChildHtml('global_notices') ?>
+    <div class="page">
+        <?php echo $this->getChildHtml('header') ?>
+        <?php echo $this->getChildHtml('category_banner') ?>
+
+        <!-- page_restricted_login -->
+        <div class="main-container page_restricted col2-left-layout page_restricted_login">
+            <div class="main"><?php
+
+                if( $redirect ){
+                    ?><div style="text-align: center;display: block;">Leyendo datos de usuario ...</div><?php
+                }else{
+                    if( $page_restricted ){
+                        ?><div style="text-align: center;display: block;">P&aacute;gina restringida</div><?php
+                    }else{
+                        if( Mage::getSingleton('core/session')->getUserAAA() ){
+                            echo $redirect."\n";
+                        }else{
+                            ?><div class="col-2 new-users"><?php
+                                ?><div class="cont_red"><?php
+                                    ?><div class="content"><?php
+                                        ?><h2>Para adquirir un usuario de distribuidor.</h2><?php
+                                    ?></div><?php
+                                    ?><div class="buttons-set"><?php
+                                        ?><a <?php
+                                            ?> title="Contáctanos" <?php
+                                            ?> class="button btn-white" <?php
+                                            ?> href="<?php echo $url_contacto; ?>"><span><span><?php 
+                                            echo $this->__('Contáctanos') ?></span></span></a><?php
+                                    ?></div><?php
+                                ?></div><?php
+                            ?></div><?php
+                        }
+                    }
+                }
+
+                /* END PAGE RESTRICTED */ ?>
+            </div>
+        </div>
+        <?php echo $this->getChildHtml('footer_before') ?>
+        <?php echo $this->getChildHtml('footer') ?>
+        <?php echo $this->getChildHtml('global_cookie_notice') ?>
+        <?php echo $this->getChildHtml('before_body_end') ?>
+    </div>
+</div>
+<?php echo $this->getAbsoluteFooter() ?>
+</body>
+</html>

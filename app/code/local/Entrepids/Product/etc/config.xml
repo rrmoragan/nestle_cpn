@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Product
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Product>
+            <version>1.0.0</version>
+        </Entrepids_Product>
+    </modules>
+    <global>
+        <models>
+            <entrepids_product>
+                <class>Entrepids_Product_Model</class>
+            </entrepids_product>
+        </models>
+        <helpers>
+            <entrepids_product>
+                <class>Entrepids_Product_Helper</class>
+            </entrepids_product>
+        </helpers>
+    </global>
+    <adminhtml>
+        <events>
+            <catalog_product_save_before>
+                <observers>
+                    <entrepids_product>
+                        <class>entrepids_product/observer</class>
+                        <method>addProductValidate</method>
+                    </entrepids_product>
+                </observers>
+            </catalog_product_save_before>
+            <catalog_product_import_finish_before>
+                <observers>
+                    <entrepids_product_import>
+                        <class>entrepids_product/observer</class>
+                        <method>addProductValidateFromImport</method>
+                    </entrepids_product_import>
+                </observers>
+            </catalog_product_import_finish_before>
+        </events>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <isprofessionaltext>
+                                            <title>Professional</title>
+                                        </isprofessionaltext>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+
+    <frontend>
+		<routers>
+			<checkout>
+				<args>
+					<modules>
+						<entrepids_product before="Mage_Checkout">Entrepids_Product</entrepids_product>
+					</modules>
+				</args>
+			</checkout>
+		</routers>
+	</frontend>
+</config>

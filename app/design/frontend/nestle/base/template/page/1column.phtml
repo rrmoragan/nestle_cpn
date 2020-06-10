@@ -1,0 +1,129 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?>
+<?php
+/**
+ * modif rmorales@mlg.com.mx
+ * detect is home page
+ * accessPaymentMethod
+ * 
+ */
+
+    $customer = Mage::getSingleton('customer/session');
+    $customerId = $customer->getId();
+    $customerGroupId = 0;
+    $customerGroupName = '';
+    $redirect = false;
+    $redirectUrl = Mage::getUrl();
+    $_SESSION['user_index'] = $redirectUrl;
+    $pageHome = false;
+    $user = null;
+    $userPage = '';
+
+    /* obteniendo tipo de pagina actual */
+        $page = Mage::app()->getFrontController()->getAction()->getFullActionName();
+
+    /* determinando si es home */
+        if( $page == 'cms_index_index' ){
+            $pageHome = true;
+        }
+
+    /* determinando si hay un usuario logueado y obteniendo datos del usuario */
+        if( $customer->isLoggedIn() ){
+            $customerGroupId = $customer->getCustomerGroupId();
+            $customerGroupName = Mage::getModel('customer/group')->load($customerGroupId)->getCustomerGroupCode();
+            $user     = $customer->getCustomer();
+            $userPage = $user->getResource()
+                    ->getAttribute('usr_url')
+                    ->getFrontend()
+                    ->getValue($user);
+        }
+
+    /* determinando si se redirigirá la pagina hom o no */
+        if( $pageHome && $userPage != '' ){
+            $redirectUrl .= $userPage;
+            $redirect = true;
+            $_SESSION['user_index'] = $redirectUrl;
+        }
+
+?>
+
+<!DOCTYPE html>
+
+<!--[if lt IE 7 ]> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head>
+<?php echo $this->getChildHtml('head') ?><?php
+    if( $redirect ){
+        echo '<meta http-equiv="refresh" content="0; url='.$redirectUrl.'">';
+    }
+?>
+</head>
+<body <?php echo ($this->getBodyClass()?'class="'.$this->getBodyClass().'"':''); ?> ><?php
+    
+    if( !$redirect ):
+
+    ?>
+    <?php echo $this->getChildHtml('after_body_start') ?>
+    <div class="wrapper">
+        <?php echo $this->getChildHtml('global_notices') ?>
+        <div class="page">
+            <?php echo $this->getChildHtml('header') ?>
+            <?php echo $this->getChildHtml('category_banner') ?>
+            <!-- main-container_col1-layout -->
+            <div class="main-container col1-layout">
+                <div class="main">
+                    <?php echo $this->getChildHtml('breadcrumbs') ?>
+                    <div class="col-main">
+                        <?php echo $this->getChildHtml('global_messages') ?>
+                        <?php echo $this->getChildHtml('content') ?>
+    					<pre style="display:none;">
+    					<?php //print_r( $this->getChild() ); ?>
+    					<?php //print_r( $this->getChild() ); ?>
+    					</pre>
+    				</div>
+                </div>
+            </div>
+            <?php echo $this->getChildHtml('footer_before') ?>
+            <?php echo $this->getChildHtml('footer') ?>
+            <?php echo $this->getChildHtml('global_cookie_notice') ?>
+            <?php echo $this->getChildHtml('before_body_end') ?>
+        </div>
+    </div>
+    <?php echo $this->getAbsoluteFooter() ?><?php
+        endif; // end valid $redirect
+    ?>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+@category    Entrepids
+@package     Entrepids_Return
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <modules>
+        <Entrepids_Return>
+            <version>0.0.1</version>
+        </Entrepids_Return>
+    </modules>
+
+    <global>
+         <helpers>
+            <return>
+                <class>Entrepids_Return_Helper</class>
+            </return>
+        </helpers>
+
+        <models>
+            <return>
+                <class>Entrepids_Return_Model</class>
+            </return>
+        </models>
+
+        <!-- <resources>
+            <entrepids_credit_setup>
+                <setup>
+                    <module>Entrepids_Credit</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </entrepids_credit_setup>
+        </resources> -->
+
+        <template>
+            <email>
+                <entrepids_return_template module="return">
+                    <label>Entrepids Return Template</label>
+                    <file>entrepids/entrepids_return.html</file>
+                    <type>html</type>
+                </entrepids_return_template>
+            </email>
+        </template> 
+
+<!--         <events>
+            <admin_system_config_changed_section_entrepids_return>
+                <observers>
+                    <upload>
+                        <type>singleton</type>
+                        <class>return/observer</class>
+                        <method>uploadImages</method>
+                    </upload>
+                </observers>
+            </admin_system_config_changed_section_entrepids_return>
+        </events> -->
+    </global>
+
+    <frontend>
+        <routers>
+            <return>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_Return</module>
+                    <frontName>return</frontName>
+                </args>
+            </return>
+        </routers>
+
+        <layout>
+            <updates>
+                <return>
+                    <file>return.xml</file>
+                </return>
+            </updates>
+        </layout>
+    </frontend>
+</config>

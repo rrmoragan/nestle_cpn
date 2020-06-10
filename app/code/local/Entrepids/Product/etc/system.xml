@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Product
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <sections>
+        <catalog>
+            <groups>
+                <publicationrules translate="label">
+                    <label>Reglas de publicación</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <min_price_required translate="label">
+                            <label>Precio mínimo requerido</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <validate>validate-digits</validate>
+                        </min_price_required>
+                    </fields>
+                </publicationrules>
+            </groups>
+        </catalog>       
+        <isprofessionaltext module="entrepids_product">
+            <label>Professional</label>
+            <tab>nestle</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1520</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                <isprofessional translate="label">
+                    <label>Productos Professional</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <professionaltext translate="label">
+                            <label>Leyenda para productos Professional en vista detalle</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </professionaltext>
+                    </fields>
+                </isprofessional>
+            </groups>
+        </isprofessionaltext>
+    </sections>
+</config>

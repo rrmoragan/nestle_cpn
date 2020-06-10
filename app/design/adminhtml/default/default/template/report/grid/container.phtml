@@ -1,0 +1,265 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * report custom
+ *
+ */
+
+$report_custom = false;
+    $report = $this->_data['type'];
+    $report_modif = 'adminhtml/report_sales_sales';
+    if( $report == $report_modif ){
+        $report_custom = true;
+    }
+
+?><!-- report_type [<?php echo $report; ?>] --><?php
+/**
+ * rmorales@mlg.com.mx
+ * rol del usuario
+ *
+ */
+
+$role = '';
+    $customer = Mage::getSingleton('Admin/session')->getUser();
+    $role = $customer->getRole()->getData();
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * reporte ventas
+ */
+
+$custom_rsales = true;
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * reporte ventas
+ */
+
+$custom_rshipping = false;
+    if( $role['role_name'] == 'Administrators' ){
+        $custom_rshipping = true;
+    }
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * reporte ventas
+ */
+
+$custom_rsearch = false;
+    if( $role['role_name'] == 'Administrators' ){
+        $custom_rsearch = true;
+    }
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * reporte ventas
+ */
+
+$button_report_normal = false;
+    if( $role['role_name'] == 'Administrators' ){
+        $button_report_normal = true;
+    }
+
+?><?php
+
+if( $report_custom ){
+    ?><div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td width="50%">
+                <h3 class="icon-head head-report">Reportes customizados MLG</h3></td>
+            <td style="text-align: right;"><h3 class="icon-head head-report" style="float: right;"><?php echo $role['role_name']; ?></h3>
+            </td>
+        </tr>
+    </table>
+    </div><div class="content-body"><?php
+
+    if( $custom_rsales ){    ?><div id="report_sales" class="seccion">
+            <button id="report_sales_order" type="button">Reporte de Ventas</button>
+            <iframe id="download_file_sales" style="display:none;"></iframe>
+        </div><?php }
+
+    if( $custom_rshipping ){ ?><div id="report_sales" class="seccion">
+            <button id="report_shipping" type="button">Reporte de Env&iacute;os</button>
+            <iframe id="download_file_shipping" style="display:none;"></iframe>
+        </div><?php }
+
+    if( $custom_rsearch ){   ?><div id="report_sales" class="seccion">
+            <button id="report_search" type="button">Reporte de B&uacute;squedas</button>
+            <iframe id="download_file_search" style="display:none;"></iframe>
+        </div><?php }
+
+    if( $button_report_normal ){   ?><div class="seccion">
+            <button id="view_report_sales_normal" type="button">Ver flujo nativo</button>
+            <button id="hide_report_sales_normal" type="button" style="display: none;">Ocultar flujo nativo</button>
+        </div><?php }
+
+    ?><pre><?php
+
+        //print_r( $role );
+
+    ?></pre>
+    </div><div class="content-error" id="file_error"></div>
+    <style type="text/css">
+        .seccion{display: inline-block;padding: 5px 20px;}
+        #html-body .seccion button{padding: 8px 20px;}
+        #html-body .seccion button:hover{background-color: #aa1616;}
+        .content-error{
+            display: block;
+            padding: 10px 0;
+            text-align: center;
+            background-color: #e1261c;
+            color: white;
+            border-radius: 5px;
+            margin: 20px auto;
+            display: none;
+        }
+    </style><script type="text/javascript">
+        //<![CDATA[
+        var rsales    = document.getElementById('report_sales_order');
+        <?php if( $custom_rshipping ){ 
+        ?>var rshipping = document.getElementById('report_shipping');<?php } ?>
+        <?php if( $custom_rsearch ){ 
+        ?>var rsearch   = document.getElementById('report_search');<?php } ?>
+        <?php if( $button_report_normal ){ 
+        ?>var rnormal   = document.getElementById('view_report_sales_normal');
+        var rnormalh  = document.getElementById('hide_report_sales_normal');<?php } ?>
+        var file_ca = null;
+        var file_cb = null;
+        var file_cc = null;
+
+        rsales.addEventListener(   'click', function () { file_download( file_ca,'download_file_sales' ); });
+        <?php if( $custom_rshipping ){ 
+        ?>rshipping.addEventListener('click', function () { file_download( file_cb,'download_file_shipping' ); });<?php } ?>
+        <?php if( $custom_rsearch ){ 
+        ?>rsearch.addEventListener(  'click', function () { file_download( file_cc,'download_file_search' ); });<?php } ?>
+        <?php if( $button_report_normal ){ 
+        ?>rnormal.addEventListener(  'click', function () {
+            rnormal.hide();
+            rnormalh.show();
+            $('normal').show();
+        });
+        rnormalh.addEventListener(  'click', function () {
+            rnormal.show();
+            rnormalh.hide();
+            $('normal').hide();
+        });<?php } ?>
+
+        var lnk_ca = 'ajx.report_rsales.php';
+        <?php if( $custom_rsearch ){ 
+        ?>var lnk_cc = 'ajx.report_search.php';<?php } ?>
+
+        document.observe("dom:loaded", function() { last_report( 'ca',lnk_ca ); } );
+
+        function last_report( type,lnk ){
+            var url = "<?php echo $_portal ?>/NESCA/"+lnk;
+            //console.log( "url reports ==> "+url );
+            new Ajax.Request( url,
+                {
+                    method: 'POST'
+                    , parameters: { "mkd":"s820b7sjhjsfejkloo9399qqr7" }
+                    , onFailure: function(transport) {
+                        console.log('error conexion');
+                    }
+                    , onSuccess: function(transport) {
+                        var res = transport.responseText.evalJSON();
+                        switch( type ){
+                            case 'ca':
+                                file_ca = res['f'];
+                                console.log( file_ca );
+
+                                <?php if( $custom_rshipping ){ 
+                                ?>file_cb = res['sh'];
+                                console.log( file_cb );<?php } ?>
+
+                                <?php if( $custom_rsearch ){ 
+                                ?>last_report( 'cc',lnk_cc );<?php } ?>
+                                break
+                            case 'cc':
+                                file_cc = res['f'];
+                                console.log( file_cc );
+                                break
+                        }
+                    }
+                } );
+        }
+
+        function file_download( file,id ){
+            $('file_error').hide();
+
+            if( file==null ){
+                $('file_error').innerHTML = 'archivo no encontrado, contacte a su administrador';
+                $('file_error').show();
+            }
+
+            var iframe = document.getElementById( id );
+            var fl = "<?php echo $_portal; ?>/NESCA/mlg_reports/"+file;
+            iframe.src = fl;
+
+            return true;
+        }
+
+        //]]>
+    </script><?php
+}
+
+if( $report_custom ){ ?><div id="normal"  style="display: none">
+    <div class="content-header" id="content-header_gral">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+    </div>
+    <div><?php echo $this->getChildHtml('store.switcher') ?></div>
+    <div><?php echo $this->getChildHtml('grid.filter.form') ?></div>
+    <div><?php echo $this->getGridHtml() ?></div>
+
+    <script type="text/javascript">
+    //<![CDATA[
+        function filterFormSubmit() {
+            var filters = $$('#filter_form input', '#filter_form select');
+            var elements = [];
+            for(var i in filters){
+                if(filters[i].value && filters[i].value.length && !filters[i].disabled) elements.push(filters[i]);
+            }
+            var validator  = new Validation('filter_form');
+            if (validator.validate()) {
+                setLocation('<?php echo $this->getFilterUrl(); ?>filter/'+encode_base64(Form.serializeElements(elements))+'/');
+            }
+        }
+    //]]>
+    </script></div><?php
+}
+
+?>

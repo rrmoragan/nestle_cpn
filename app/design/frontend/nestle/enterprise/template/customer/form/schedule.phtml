@@ -1,0 +1,115 @@
+<?php
+/**
+* @category   Entrepids
+* @package    Entrepids_Nestle
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+?>
+<?php if(!Mage::registry('current_product')->getIsProfessional()) return;?>
+<?php $buttonTitle = Mage::helper('core')->quoteEscape($this->__('Agendar cita')); ?>
+<div class="schedule-appointment">
+    <div class="schedule-appointment-button">
+        <button type="button" title="<?php echo $buttonTitle ?>" class="button btn-schedule" onclick="scheduleAppointmentFormShow()"><span><span><?php echo $buttonTitle ?></span></span></button>
+    </div>
+
+    <div id="schedule-appointment-content" style="position:absolute;z-index: 9; display:none">
+        <div id="clen-schedule-appointment"></div>
+        <div class="pickadate open margin" style="overflow: hidden;">
+            <h3>Ingresa tus datos y nos pondremos en contacto contigo para agendar una cita</h3>
+            <form id="schedule-appointment-form" action="<?php echo $this->getUrl('scheduleappointment/booking')?>" method="post">
+            <input type="hidden" name="product" value="<?php echo Mage::registry('current_product')->getId() ?>" />
+                <div class="fields col col1">
+                    <label for="firstname" class="required"><em>*</em><?php echo $this->__('Nombre (s)') ?></label>
+                    <div class="input-box">
+                        <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" name="firstname" id="firstname" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Name')) ?>" class="input-text required-entry" />
+                    </div>
+                </div>
+                <div class="fields col col2">
+                    <label for="lastname" class="required"><em>*</em><?php echo $this->__('Apellido (s)') ?></label>
+                    <div class="input-box">
+                        <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" name="lastname" id="lastname" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Lastname')) ?>" class="input-text required-entry" />
+                    </div>
+                </div>
+
+                <div class="fields col col1">
+                    <label for="email" class="required"><em style="color:white">*</em><?php echo $this->__('Correo Electrónico') ?></label>
+                    <div class="input-box">
+                            <input type="email" autocapitalize="off" autocorrect="off" spellcheck="false" name="email" id="email" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Email Address')) ?>" class="input-text required-entry validate-email" />
+                    </div>
+                </div>
+                <div class="fields col col2">
+                    <label for="telephone" class="required"><em>*</em><?php echo $this->__('Teléfono') ?></label>
+                    <div class="input-box">
+                        <input type="tel" autocapitalize="off" autocorrect="off" spellcheck="false" name="telephone" id="telephone" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Telephone')) ?>" class="input-text required-entry validate-digits validate-length maximum-length-10 minimum-length-7" />
+                    </div>
+                </div>
+
+                <div class="fields col col1">
+                    <label for="postal_code" class="required"><em>*</em><?php echo $this->__('Código Postal') ?></label>
+                    <div class="input-box">
+                            <input type="text" maxlength="5" autocapitalize="off" autocorrect="off" spellcheck="false" name="postal_code" id="postal_code" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Postal Code')) ?>" class="input-text required-entry validate-length maximum-length-5 minimum-length-5 validate-digits" />
+                    </div>
+                    <span class="span_mobile">Ingresa el código postal donde se localiza el negocio que visitaremos</span>
+                </div>
+                <span class="span col col2">Ingresa el código postal donde se localiza el negocio que visitaremos</span>
+                <span class="must col col1">*Campos obligatorios</span>
+                <button type="submit" class="button btn-black" id="btn-booking" >Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="schedule-appointment-response" style="display:none;left: 0;right: 0;top: 0;position: fixed;bottom: 0;z-index: 10;background-color: rgba(0,0,0,0.7);">
+    <div id="schedule-appointment-response-content">
+        <span id="schedule-appointment-response-close">x</span>
+        <label id="schedule-appointment-response-message"></label>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //< ![CDATA[
+        var scheduleAppointmentForm = new VarienForm('schedule-appointment-form');
+
+        function scheduleAppointmentFormShow(){
+            $('schedule-appointment-content').toggle();
+        }
+        
+        $('clen-schedule-appointment').observe('click',function(e){
+            $('schedule-appointment-content').hide();
+        });
+
+        $('schedule-appointment-response').observe('click',function(e){
+            $('schedule-appointment-response').toggle();
+        });
+        
+        $('schedule-appointment-response-close').observe('click',function(e){
+            window.location.replace("https://cafeparaminegocio.com.mx/");
+        });
+
+        $('schedule-appointment-form').observe('submit', function(e){
+		    e.stop();
+            if(scheduleAppointmentForm.validator.validate()){
+                $('btn-booking').setAttribute('disabled','disabled');
+                new Ajax.Request('/scheduleappointment/booking', {
+                    parameters: $('schedule-appointment-form').serialize(true),
+                    onSuccess: function(transport) {
+                        var response = transport.responseJSON;
+                        if(response.done == true){
+                            $('schedule-appointment-form').reset();
+                            $('schedule-appointment-content').toggle();
+                        }
+
+                        $('schedule-appointment-response').toggle();
+                        $('schedule-appointment-response-message').update(response.message);
+
+                        $('btn-booking').removeAttribute('disabled');
+                    },
+                    onFailure: function() { 
+                        $('btn-booking').removeAttribute('disabled');
+                        alert('Something went wrong...'); 
+                    }
+                });
+            }
+	    });
+    //]]>
+</script>

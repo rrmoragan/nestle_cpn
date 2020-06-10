@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Nestle
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>  
+        <Entrepids_Nestle>
+            <version>1.0.0</version>
+        </Entrepids_Nestle>
+    </modules>
+
+    <global>
+        <blocks>
+            <nestle>
+                <class>Entrepids_Nestle_Block</class>
+            </nestle>
+        </blocks>
+        <helpers>
+            <nestle>
+                <class>Entrepids_Nestle_Helper</class>
+            </nestle>
+        </helpers>
+        <models>
+             <nestle>
+                <class>Entrepids_Nestle_Model</class>
+                <resourceModel>nestle_mysql4</resourceModel>
+            </nestle>
+            <nestle_mysql4>
+                <class>Entrepids_Nestle_Model_Mysql4</class>
+                <entities>
+                    <prospectcustomers>
+                        <table>nestle_prospect_customers</table>
+                    </prospectcustomers>
+                </entities>
+            </nestle_mysql4>
+        </models>
+        <resources>
+            <nestle_setup>
+                <setup>
+                    <module>Entrepids_Nestle</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </nestle_setup>
+            <nestle_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </nestle_write>
+            <nestle_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </nestle_read>
+        </resources>
+    </global>
+
+    <frontend>
+        <routers>
+            <nestle>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_Nestle</module>
+                    <frontName>nestle</frontName>
+                </args>
+            </nestle>
+        </routers>
+    </frontend>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <nestle before="Mage_Adminhtml">Entrepids_Nestle_Adminhtml</nestle>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>

@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!--
+@category    Entrepids
+@package     Entrepids_RelatedProducts
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <modules>
+        <Entrepids_RelatedProducts>
+            <version>0.0.1</version>
+        </Entrepids_RelatedProducts>
+    </modules>
+
+     <global>
+
+    <!--
+         <helpers>
+            <relatedproducts>
+                <class>Entrepids_RelatedProducts_Helper</class>
+            </relatedproducts>
+        </helpers>
+
+-->
+
+        <models>
+            <relatedproducts>
+                <class>Entrepids_RelatedProducts_Model</class>
+                <resourceModel>relatedproducts_resource</resourceModel>
+            </relatedproducts>
+
+            <relatedproducts_resource>
+                <class>Entrepids_RelatedProducts_Model_Resource</class>
+                <entities>
+                    <discarded>
+                        <table>relatedproducts_discarded</table>
+                    </discarded>
+                </entities>
+            </relatedproducts_resource>
+        </models>
+
+        <resources>
+            <relatedproducts_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </relatedproducts_write>
+
+            <relatedproducts_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </relatedproducts_read>
+
+            <entrepids_relatedproducts_setup>
+                <setup>
+                    <module>Entrepids_RelatedProducts</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </entrepids_relatedproducts_setup>
+        </resources>
+    </global> 
+
+    <frontend>
+        <routers>
+            <relatedproducts>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_RelatedProducts</module>
+                    <frontName>relatedproducts</frontName>
+                </args>
+            </relatedproducts>
+        </routers>
+
+        <layout>
+            <updates>
+                <relatedproducts>
+                    <file>relatedproducts.xml</file>
+                </relatedproducts>
+            </updates>
+        </layout>
+    </frontend>
+</config>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_ScheduleAppointment
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <menu>
+        <customer>
+            <children>
+                <schedule translate="title" module="scheduleappointment">
+                    <sort_order>210</sort_order>
+                    <title>Citas</title>
+                    <children>
+                        <appointment>
+                            <sort_order>200</sort_order>
+                            <title>Citas agendadas</title>
+                            <action>adminhtml/schedule/</action>
+                        </appointment>
+                    </children>
+                    <children>
+                        <failed>
+                            <sort_order>210</sort_order>
+                            <title>Citas no agendadas</title>
+                            <action>adminhtml/failed/</action>
+                        </failed>
+                    </children>
+                    <children>
+                        <postalcode>
+                            <sort_order>220</sort_order>
+                            <title>Codigos postales</title>
+                            <action>adminhtml/postalcode/</action>
+                        </postalcode>
+                    </children>
+                </schedule>
+            </children>
+        </customer>
+    </menu>
+</config>

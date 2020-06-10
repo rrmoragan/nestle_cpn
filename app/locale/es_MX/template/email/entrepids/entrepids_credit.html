@@ -1,0 +1,32 @@
+<!--@subject Bienvenido, {{var customer.name}}! @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url"}
+@-->
+
+<!--@styles
+@-->
+
+
+{{template config_path="design/email/header"}}
+{{inlinecss file="email-inline.css"}}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="action-content">
+            <h1>{{block type="cms/block" block_id="email_template_say_hello"}} {{htmlescape var=$customer.name}}</h1>
+            <h2>Tiene usted una nueva solicitud de crédito.</h2>
+            <p class="strong">Nombre: <span>{{var customer_name}}</span></p>
+			<p class="strong">Correo electrónico: <span>{{var customer_email}}</span></p>
+			<p class="strong">Id de cliente: <span>{{var customer_id}}</span></p>
+            <p>
+                En este mail se encuentran adjuntos los documentos de dicha solicitud.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer"}}

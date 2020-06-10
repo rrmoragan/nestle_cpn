@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_CoffeeSolutions
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_CoffeeSolutions>
+            <version>0.1.7</version>
+        </Entrepids_CoffeeSolutions>
+    </modules>
+    <global>
+        <models>
+            <coffeesolutions>
+                <class>Entrepids_CoffeeSolutions_Model</class>
+                <resourceModel>coffesolutions_mysql4</resourceModel>
+            </coffeesolutions>
+            <coffesolutions_mysql4>
+                <class>Entrepids_CoffeeSolutions_Model_Mysql4</class>
+                <entities>
+                    <solutions>
+                        <table>entrepids_coffee_solutions</table>
+                    </solutions>
+                    <solutionPlaces>
+                        <table>entrepids_coffee_solutions_places</table>
+                    </solutionPlaces>
+                </entities>
+            </coffesolutions_mysql4>
+        </models>
+        <blocks>
+            <coffeesolutions>
+                <class>Entrepids_CoffeeSolutions_Block</class>
+            </coffeesolutions>
+            <adminhtml>
+                <rewrite>
+                    <catalog_category_tabs>Entrepids_CoffeeSolutions_Block_Adminhtml_Catalog_Category_Tabs</catalog_category_tabs>
+                </rewrite>
+            </adminhtml>
+            
+        </blocks>
+        <helpers>
+            <coffeesolutions>
+                <class>Entrepids_CoffeeSolutions_Helper</class>
+            </coffeesolutions>
+        </helpers>
+        <fieldsets>
+            <sales_convert_quote_item>
+                <id_solution>
+                    <to_order_item>*</to_order_item>
+                </id_solution>
+            </sales_convert_quote_item>
+        </fieldsets>
+        <resources>
+            <coffeesolutions_setup>
+                <setup>
+                    <module>Entrepids_CoffeeSolutions</module>
+                    <class>Mage_Catalog_Model_Resource_Setup</class><!-- Required for addAttribute work -->
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </coffeesolutions_setup>
+            <coffeesolutions_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </coffeesolutions_write>
+            <coffeesolutions_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </coffeesolutions_read>
+        </resources>
+        <events>
+            <catalog_category_prepare_save>
+                <observers>
+                    <coffeesolutions_category_observer>
+                        <type>singleton</type>
+                        <class>Entrepids_CoffeeSolutions_Model_Observer</class>
+                        <method>saveCategoryCoffeeSolution</method>
+                    </coffeesolutions_category_observer>
+                </observers>
+            </catalog_category_prepare_save>
+            <sales_quote_item_set_product>
+                <observers>
+                    <coffeesolutions_solution_observer>
+                        <type>singleton</type>
+                        <class>Entrepids_CoffeeSolutions_Model_Observer</class>
+                        <method>setSolutionQuoteItem</method>
+                    </coffeesolutions_solution_observer>
+                </observers>
+              </sales_quote_item_set_product>
+        </events>
+        
+    </global>
+    <admin>
+        <routers>
+            <coffeesolutions>
+                <use>admin</use>
+                <args>
+                    <module>Entrepids_CoffeeSolutions</module>
+                    <frontName>coffeesolutions</frontName>
+                </args>
+            </coffeesolutions>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <coffeesolutions>
+                    <file>coffeesolutions.xml</file>
+                </coffeesolutions>
+            </updates>
+        </layout>
+        <menu>
+            <catalog>
+                <children>
+                    <coffeesolutions translate="title" module="coffeesolutions">
+                        <sort_order>5</sort_order>
+                        <title>Soluciones de Café</title>
+                        <action>coffeesolutions/adminhtml_solutions</action>
+                    </coffeesolutions>
+                </children>
+            </catalog>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <coffeesolution>
+                                            <title>Soluciones de Café</title>
+                                        </coffeesolution>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                        <catalog>
+                            <children>
+                                <coffeesolutions>
+                                    <title>Soluciones de Café</title>
+                                </coffeesolutions>
+                            </children>
+                        </catalog>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <frontend>
+        <routers>
+            <coffeesolutions>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_CoffeeSolutions</module>
+                    <frontName>coffeesolutions</frontName>
+                </args>
+            </coffeesolutions>
+        </routers>
+        <layout>
+            <updates>
+                <coffeesolutions>
+                    <file>coffeesolutions.xml</file>
+                </coffeesolutions>
+            </updates>
+        </layout>
+    </frontend>
+    <default>
+        <coffeesolution>
+            <solution>
+                <solutiondays>30</solutiondays>
+            </solution>
+        </coffeesolution>
+    </default>
+
+</config>

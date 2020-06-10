@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_ScheduleAppointment
+* @author     fabien.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <tabs>
+        <nestle translate="label" module="scheduleappointment">
+            <label>Nestlé</label>
+            <sort_order>150</sort_order>
+        </nestle>
+    </tabs>
+    <sections>        
+        <adminreseivers module="scheduleappointment">
+            <label>Notificar nueva cita a</label>
+            <tab>nestle</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1510</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                <receivers translate="label">
+                    <label>Usuarios a Notificar</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <category translate="label">
+                            <label>Enviar aviso de nueva cita a correo electrónico</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment><![CDATA[Separados por coma.]]></comment>
+                        </category>
+                    </fields>
+                </receivers>
+            </groups>
+        </adminreseivers>
+    </sections>
+</config>

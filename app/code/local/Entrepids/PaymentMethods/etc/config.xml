@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_PaymentMethods
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_PaymentMethods>
+            <version>1.0.0</version>
+        </Entrepids_PaymentMethods>
+    </modules>
+    <global>
+        <models>
+            <payment>
+                <rewrite>
+                    <method_cashondelivery>Entrepids_PaymentMethods_Model_Cashondelivery</method_cashondelivery>
+                </rewrite>
+            </payment>
+            <mercadopago>
+                <rewrite>
+                    <standard_payment>Entrepids_PaymentMethods_Model_Mercadopago</standard_payment>
+                </rewrite>
+            </mercadopago>
+        </models>
+    </global>
+</config>

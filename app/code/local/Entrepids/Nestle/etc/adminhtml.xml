@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Nestle
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <menu>
+        <customer>
+            <children>
+                <prospects translate="title" module="nestle">
+                    <sort_order>200</sort_order>
+                    <title>Clientes Prospecto</title>
+                    <action>adminhtml/prospects/</action>
+                </prospects>
+            </children>
+        </customer>
+    </menu>
+</config>

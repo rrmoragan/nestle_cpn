@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Nestle
+* @author     francisco.espinosa@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Credit>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Entrepids_Credit>
+    </modules>
+</config>

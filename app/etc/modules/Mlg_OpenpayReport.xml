@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+  <!-- file: magento_root/app/etc/modules/Mlg_OpenpayReport.xml -->
+  <config>
+      <modules>
+          <Mlg_OpenpayReport>
+              <active>true</active>
+              <codePool>local</codePool>
+              <depends>
+                  <Mage_Reports />
+              </depends>
+          </Mlg_OpenpayReport>
+      </modules>
+  </config>
+

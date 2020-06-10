@@ -1,0 +1,550 @@
+<?php if(Mage::helper('credit')->isEnabled() && Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+    <?php
+
+        //Variables para validar en js y ocultar los respectivos botones de agregar masivamente al carrito
+        $suppliesNumber = 0;
+        $relatedNumber = 0;
+        $solutionNumber = 0;
+
+        //Variables para agregar los ids que ya ha hayan sido validados e impedir que se repitan (por sección)
+        $validatedRelated = array();
+        $validatedSupplies = array();
+
+
+    ?>
+
+    
+    <h3 class="subtitle">Te sugerimos los siguientes productos</h3>
+
+    <?php //FIRST SECTION: RELATED PRODUCTS ?>
+
+    <h4 class="suggest-tit">Te puede interesar</h4>
+
+    <?php
+
+        //Colección de órdenes de cliente acual
+        $orders = Mage::getResourceModel('sales/order_collection')
+        ->addFieldToSelect('*')
+        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+        ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
+        ->setOrder('created_at', 'desc');
+
+        $orders->getSelect()->order(new Zend_Db_Expr('RAND()'));
+        $orders->getSelect()->limit(10);
+
+        $productsIds  = array(); //Array para guardar los ids de los productos relacionados, antes de validar que no hayan sido descartados
+        $jsProductIds = ""; //Cadena con los ids de los productos relacionados para mandar como parámetro en js después de validar que no hayan sido descartados.
+    
+        foreach ($orders as $order) 
+        {
+            foreach ($order->getAllItems() as $item) 
+            {
+                $product = Mage::getModel('catalog/product')->loadByAttribute("sku", $item->getSku());
+                foreach ($product->getRelatedProductIds() as $id) {
+                    array_push($productsIds, $id);
+                }                
+            }
+        }
+
+    ?>
+
+        <ul class="related-products owl-carousel owl-widget owl-theme"">
+            <?php $i=0; foreach ($productsIds as $id): 
+
+                //Se carga el producto por cada id
+                $_product = Mage::getModel('catalog/product')->load($id);
+                $stockItem = $_product->getStockItem();
+                //Si no está en stock o habilitado, se rompe la iteración y se salta a la siguiente
+                if(!$stockItem->getIsInStock() || $_product->getStatus()!=Mage_Catalog_Model_Product_Status::STATUS_ENABLED || $_product->getIsProfessional() == "1")
+                {
+                    continue;
+                }
+
+                //Validar que el producto actual no esté en la tabla de productos descartados por ese cliente
+                $model = Mage::getModel('relatedproducts/discarded')
+                        ->getCollection()
+                        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                        ->addFieldToFilter('product_id', $_product->getId());
+
+
+                //Si la consulta no devuelve resultados, entonces el producto no fue descartado
+                if(count($model)==0):
+
+                    //Si el id actual ya se pintó antes en la lista, romper iteración y continuar a la siguiente
+                    if(in_array($id, $validatedRelated)) 
+                        continue;
+
+                    $jsProductIds.=$id.","; //Se agrega a la cadena y se le concatena una coma
+                    $relatedNumber++; //El número de productos relacionados se incrementa
+                    array_push($validatedRelated, $id); //Se agrega el id actual al arreglo de ids validados
+            ?>
+                <li class="owl-item">
+                    <div>
+                        <a href="#" class="hide-item" onclick="discardRelated(<?php echo $_product->getId();?>, <?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>)">X</a>
+                        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage(); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                        <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $this->stripTags($_product->getName(), null, true) ?></a></h2>
+                        <?php if($_product->getRatingSummary()): ?>
+                        <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                        <?php endif; ?>
+                        <?php echo $this->getPriceHtml($_product, true) ?>
+                        <div class="actions">
+                            <?php if($_product->isSaleable()): ?>
+                                <?php if($_product->getTypeId() == 'simple'):?>
+                                <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-cart" onclick="setLocation('<?php echo Mage::helper('checkout/cart')->getAddUrl($_product); ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+
+                                <?php else: ?>
+                                    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('View Details')) ?>" class="button btn-cart" onclick="setLocation('<?php echo $_product->getProductUrl() ?>')"><span><span><?php echo $this->__('View Details') ?></span></span></button>
+                                <?php endif; ?>
+
+                            <?php else: ?>
+                                <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                            <?php endif; ?>                    
+                        </div>
+                    </div>
+                </li>
+            <?php endif;?>
+            <?php endforeach; ?>
+        </ul>
+
+        <p class="related-non-products" style="display:none">No hay productos en esta sección.</p>
+        <!-- El botón tiene un evento onclick que manda a llamar la función massiveAdd2Cart que recibe como parámetro un string de los ids válidos separados por comas-->
+        <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Agregar sugerencias a mi carrito')) ?>" class="button btn-cart related-cart-button" onclick="massiveAdd2Cart('<?php echo $jsProductIds;?>')"><span><span><?php echo $this->__('Agregar toda la sugerencia al carrito') ?></span></span></button>
+     
+
+
+    <?php //SECOND SECTION: SUPPLIES ?>
+    <h4 class="suggest-tit">¿Necesitas resurtir?</h4>
+
+    <?php
+
+        //Colección de órdenes de 30 días de antigüedad a 1 semana.
+        $orders = Mage::getResourceModel('sales/order_collection')
+        ->addFieldToSelect('*')
+        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+        ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
+        ->addFieldToFilter('created_at', array('from' => date('Y-m-d', strtotime('-30 day')), 'to' => date('Y-m-d', strtotime('-1 week'))))
+        ->setOrder('created_at', 'desc');
+
+        $orders->getSelect()->order(new Zend_Db_Expr('RAND()'));
+        $orders->getSelect()->limit(10);
+
+
+        $products  = array();
+        $jsProductIds2 = "";
+
+
+        foreach ($orders as $order) 
+        {
+            foreach ($order->getAllItems() as $item) 
+            {
+                $product = Mage::getModel('catalog/product')->loadByAttribute("sku", $item->getSku());
+                $categoryIds = $product->getCategoryIds();
+
+                //Si el producto actual se encuentra dentro de la categoría 10 (insumos)
+                if(in_array(10, $categoryIds))
+                {
+                    //Se valida que esté habilitado y en stock
+                    $stockItem = $product->getStockItem();
+                    if($stockItem->getIsInStock() && $product->getStatus()==Mage_Catalog_Model_Product_Status::STATUS_ENABLED || $product->getIsProfessional()==null || $product->getIsProfessional()=="0")
+                    {
+                        array_push($products, $product);
+                    }   
+                    
+                }            
+            }
+        }
+
+    ?>
+
+        <ul class="supplies-products owl-carousel owl-widget owl-theme">
+            <?php $i=0; foreach ($products as $_product): 
+              
+                //Se valida que el producto actual no esté en la tabla de descartados
+                $model = Mage::getModel('relatedproducts/discarded')
+                        ->getCollection()
+                        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                        ->addFieldToFilter('product_id', $_product->getId());
+
+
+                //Si la consulta devuelve cero resultados, quiere decir que no está descartado
+                if(count($model)==0):
+
+                    //Si el id actual ya se pintó antes en la lista, romper iteración y continuar a la siguiente
+                    if(in_array($_product->getId(), $validatedSupplies))
+                        continue;
+
+                    $jsProductIds2 .= $_product->getId().","; //Se añade al string de productos
+                    $suppliesNumber++; //Se incrementa el número de supplies
+                    array_push($validatedSupplies, $_product->getId()); //Se agrega id actual al arreglo de supplies validados
+            ?>  
+                <li class="owl-item">
+                    <div>
+                    <a href="#" class="hide-item" onclick="discardSupplies(<?php echo $_product->getId();?>, <?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>)">X</a>
+                    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage(); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                    <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $this->stripTags($_product->getName(), null, true) ?></a></h2>
+                    <?php if($_product->getRatingSummary()): ?>
+                    <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                    <?php endif; ?>
+                    <?php echo $this->getPriceHtml($_product, true) ?>
+                    <div class="actions">
+                        <?php if($_product->isSaleable()): ?>
+                            <?php if($_product->getTypeId() == 'simple'):?>
+                            <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-cart" onclick="setLocation('<?php echo Mage::helper('checkout/cart')->getAddUrl($_product); ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+
+                            <?php else: ?>
+                                <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('View Details')) ?>" class="button btn-cart" onclick="setLocation('<?php echo $_product->getProductUrl() ?>')"><span><span><?php echo $this->__('View Details') ?></span></span></button>
+                            <?php endif; ?>
+
+                        <?php else: ?>
+                            <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                        <?php endif; ?>                    
+                    </div>
+                </div>
+                </li>
+            <?php endif;?>
+            <?php endforeach; ?>
+        </ul>
+    <p class="supplies-non-products" style="display:none">No hay productos en esta sección.</p>
+    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Agregar sugerencias a mi carrito')) ?>" class="button btn-cart supplies-cart-button" onclick="massiveAdd2Cart('<?php echo $jsProductIds2;?>')"><span><span><?php echo $this->__('Agregar toda la sugerencia al carrito') ?></span></span></button><?php 
+
+
+    //THIRD SECTION: SUPPLIES ?>
+    <h4 class="suggest-tit">Otros clientes como tú también compraron</h4>
+    
+
+    <?php
+
+        $firstSolutionId = "";
+
+        //Colección de órdenes 
+        $orders = Mage::getResourceModel('sales/order_collection')
+        ->addFieldToSelect('*')
+        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+        ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
+        ->setOrder('created_at', 'desc');
+
+        //$orders->getSelect()->order(new Zend_Db_Expr('RAND()'));
+        //$orders->getSelect()->limit(10);
+
+        foreach ($orders as $order) 
+        {
+             $orderItems = Mage::getModel('sales/order_item')->getCollection()
+                ->addFieldToFilter('order_id', $order->getId())
+                ->addFieldToFilter('id_solution', array("neq"=>null));
+
+            $orderItems->getSelect()->group('id_solution');
+            
+
+            foreach ($orderItems as $item) 
+            {
+                if($firstSolutionId=="")
+                {
+                    $firstSolutionId = $item->getIdSolution();
+                    break;
+                }
+            }
+
+            if($firstSolutionId!="")
+                break;
+        }
+
+
+            $firstSolution = "";
+            $secondSolution = "";
+
+            $categoryId = "";
+
+            $solutions = Mage::getModel('coffeesolutions/solutionPlaces')->getCollection()
+            ->addFieldToFilter('solution_id', $firstSolutionId);
+            $solutions->getSelect()->order(new Zend_Db_Expr('RAND()'));
+
+            foreach ($solutions as $solution) 
+            {
+                $categoryId = $solution->getCategoryId();
+                break;
+            }
+
+            $newSolutions = Mage::getModel('coffeesolutions/solutionPlaces')->getCollection()
+                ->addFieldToFilter('category_id', $categoryId)
+                ->addFieldToFilter('solution_id', array("neq" => $firstSolutionId));
+            $newSolutions->getSelect()->order(new Zend_Db_Expr('RAND()'));  
+
+            foreach ($newSolutions as $newSolution) 
+            {
+                if($firstSolution=="")
+                    $firstSolution = $newSolution->getSolutionId();
+
+                else
+                {
+                    $secondSolution = $newSolution->getSolutionId();
+                    break;
+                }
+                    
+
+            }
+
+        
+            $currentSolution = Mage::getModel('coffeesolutions/solutions')->load($firstSolution);
+            $productIds = unserialize($currentSolution->getProducts());
+            $productsValidated = array();
+            $emptyArray = false;
+
+            if(count($productIds)==0)
+                $emptyArray = true;
+
+            else
+            {
+                foreach ($productIds as $productId) 
+                {
+                    $_product = Mage::getModel('catalog/product')->load($productId);
+                    $stockItem = $_product->getStockItem();
+
+                   //Si no está en stock o habilitado, se rompe la iteración y se salta a la siguiente
+                    if(!$stockItem->getIsInStock() || $_product->getStatus()!=Mage_Catalog_Model_Product_Status::STATUS_ENABLED || $_product->getIsProfessional() == "1")
+                    {
+                        continue;
+                    }
+                    //Se valida que el producto actual no esté en la tabla de descartados
+                    $model = Mage::getModel('relatedproducts/discarded')
+                            ->getCollection()
+                            ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                            ->addFieldToFilter('product_id', $productId);
+
+                    //Si la consulta devuelve cero resultados, quiere decir que no está descartado
+                    if(count($model)==0)
+                        array_push($productsValidated, $productId);
+                }
+
+                if(count($productsValidated)==0)
+                {
+                    $emptyArray = true;
+                }
+            }
+
+
+            if($emptyArray)
+            {
+                $currentSolution = Mage::getModel('coffeesolutions/solutions')->load($secondSolution);
+                $productIds = unserialize($currentSolution->getProducts());
+
+                foreach ($productIds as $productId) 
+                {
+                    $_product = Mage::getModel('catalog/product')->load($productId);
+                    $stockItem = $_product->getStockItem();
+
+                    //Si no está en stock o habilitado, se rompe la iteración y se salta a la siguiente
+                    if(!$stockItem->getIsInStock() || $_product->getStatus()!=Mage_Catalog_Model_Product_Status::STATUS_ENABLED || $_product->getIsProfessional() == "1")
+                    {
+                        continue;
+                    }
+
+                    //Se valida que el producto actual no esté en la tabla de descartados
+                    $model = Mage::getModel('relatedproducts/discarded')
+                            ->getCollection()
+                            ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                            ->addFieldToFilter('product_id', $productId);
+
+                    //Si la consulta devuelve cero resultados, quiere decir que no está descartado
+                    if(count($model)==0)
+                        array_push($productsValidated, $productId);
+                }
+            }
+
+              
+            $jsProductIds3 = "";
+
+    ?>
+
+        <ul class="solution-products owl-carousel owl-widget owl-theme">
+            <?php $i=0; foreach ($productsValidated as $_productId): 
+              
+
+                    $jsProductIds3 .= $_productId.","; //Se añade al string de productos
+                    $solutionNumber++; //Se incrementa el número de supplies
+                    $_product = Mage::getModel('catalog/product')->load($_productId);
+            ?>
+                <li class="owl-item">
+                    <div>
+                        <a href="#" class="hide-item" onclick="discardSolution(<?php echo $_product->getId();?>, <?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>)">X</a>
+                        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage(); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                        <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $this->stripTags($_product->getName(), null, true) ?></a></h2>
+                        <?php if($_product->getRatingSummary()): ?>
+                        <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                        <?php endif; ?>
+                        <?php echo $this->getPriceHtml($_product, true) ?>
+                        <div class="actions">
+                            <?php if($_product->isSaleable()): ?>
+                                <?php if($_product->getTypeId() == 'simple'):?>
+                                <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-cart" onclick="setLocation('<?php echo Mage::helper('checkout/cart')->getAddUrl($_product); ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+
+                                <?php else: ?>
+                                    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('View Details')) ?>" class="button btn-cart" onclick="setLocation('<?php echo $_product->getProductUrl() ?>')"><span><span><?php echo $this->__('View Details') ?></span></span></button>
+                                <?php endif; ?>
+
+                            <?php else: ?>
+                                <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                            <?php endif; ?>                    
+                        </div>
+                    </div>
+                </li>
+            <?php //endif;?>
+            <?php endforeach; ?>
+        </ul>
+    <p class="solution-non-products" style="display:none">No hay productos en esta sección.</p>
+    <button type="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Agregar sugerencias a mi carrito')) ?>" class="button btn-cart solution-cart-button" onclick="massiveAdd2Cart('<?php echo $jsProductIds3;?>')"><span><span><?php echo $this->__('Agregar toda la sugerencia al carrito') ?></span></span></button>
+
+
+<?php    
+else:
+    Mage::app()->getFrontController()->getResponse()->setRedirect(Mage::getBaseUrl());
+endif;  
+?>
+
+<script>
+
+var discardedIds = ""; //Variable para los ids descartados en tiempo real (sobre la misma página)
+
+//Contadores para los ids descartados en tiempo real
+var suppliesDiscardedByAjax = 0;
+var relatedDiscardedByAjax = 0;
+var solutionDiscardedByAjax = 0;
+
+function discardRelated(productId, customerId)
+{
+    var url = "<?php echo $this->getBaseUrl() . "relatedproducts/index/ajax"; ?>";
+    var relatedNumber = "<?php echo $relatedNumber; ?>"; //Número de productos relacionados al cargar la página
+    discardedIds+=productId+", "; //Se agrega el id del producto actual al string de productos descartados
+    relatedDiscardedByAjax++; //Se incrementan los productos relacionados descartados por ajax en tiempo real
+  
+
+    jQuery.ajax({
+            method: "POST",
+            url: url,
+            dataType: "json",
+            data: {productId: productId, customerId: customerId},
+            success: function(response){
+                //document.write(response.message);
+            }
+        });
+
+    //Si el número de productos relacionados es igual al número de productos relacionados descartados en tiempo real
+    if(relatedNumber == relatedDiscardedByAjax)
+    {
+        //Se oculta el botón de agregar masivamente para esa sección y se muestra el mensaje de que no hay productos.
+        jQuery(".related-cart-button").hide();
+        jQuery(".related-non-products").css("display", "block");
+    }
+
+
+}
+
+
+function discardSupplies(productId, customerId)
+{
+    var url = "<?php echo $this->getBaseUrl() . "relatedproducts/index/ajax"; ?>";
+    var suppliesNumber = "<?php echo $suppliesNumber; ?>";
+    discardedIds+=productId+", ";
+    suppliesDiscardedByAjax++;
+
+    jQuery.ajax({
+            method: "POST",
+            url: url,
+            dataType: "json",
+            data: {productId: productId, customerId: customerId},
+            success: function(response){
+                //document.write(response.message);
+            }
+        });
+
+    if(suppliesNumber == suppliesDiscardedByAjax)
+    {
+        jQuery(".supplies-cart-button").hide();
+        jQuery(".supplies-non-products").css("display", "block");
+    }
+}
+
+
+function discardSolution(productId, customerId)
+{
+    var url = "<?php echo $this->getBaseUrl() . "relatedproducts/index/ajax"; ?>";
+    var solutionNumber = "<?php echo $solutionNumber; ?>";
+    discardedIds+=productId+", ";
+    solutionDiscardedByAjax++;
+
+    jQuery.ajax({
+            method: "POST",
+            url: url,
+            dataType: "json",
+            data: {productId: productId, customerId: customerId},
+            success: function(response){
+                //document.write(response.message);
+            }
+        });
+
+    if(solutionNumber == solutionDiscardedByAjax)
+    {
+        jQuery(".solution-cart-button").hide();
+        jQuery(".solution-non-products").css("display", "block");
+    }
+}
+
+
+function massiveAdd2Cart(productIds)
+{
+    var url = "<?php echo $this->getBaseUrl() . "relatedproducts/index/massiveAdd2Cart"; ?>";
+    var cart = "<?php echo $this->getBaseUrl() . "checkout/cart"; ?>";
+  
+    jQuery.ajax({
+            method: "POST",
+            url: url,
+            dataType: "json",
+            data: {productIds: productIds, discardedIds:discardedIds},
+            success: function(response){
+                window.location.replace(cart);
+            }
+        });
+}
+
+
+jQuery(document).ready(function ()
+{
+
+    //Cuando el anchor de ocultar producto sea clickeado, llamará a su función onclick correspondiente, pero además ocultará a su padre, es decir al elemento li que lo contiene, ocultando todo el producto por completo
+    jQuery(".hide-item").click(function(event) 
+    {
+        event.preventDefault();
+        jQuery(this).parent().hide();
+  
+    });
+
+
+    //Validación para si alguna sección no tiene hijos al cargar la página, se oculte el botón de agregar masivamente y se muestre el mensaje.
+    if(jQuery(".supplies-products").children().length==0)
+    {
+        jQuery(".supplies-cart-button").hide();
+        jQuery(".supplies-non-products").css("display", "block");
+    }
+
+    if(jQuery(".related-products").children().length==0)
+    {
+        jQuery(".related-cart-button").hide();
+        jQuery(".related-non-products").css("display", "block");
+    }
+
+    if(jQuery(".solution-products").children().length==0)
+    {
+        jQuery(".solution-cart-button").hide();
+        jQuery(".solution-non-products").css("display", "block");
+    }
+
+});
+
+
+
+
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+  jQuery(".owl-carousel").owlCarousel();
+});
+</script>

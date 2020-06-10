@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Maintenance
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Maintenance>
+            <version>1.0.3</version>
+        </Entrepids_Maintenance>
+    </modules>
+    <global>
+        <models>
+            <maintenance>
+                <class>Entrepids_Maintenance_Model</class>
+            </maintenance>
+        </models>
+        <blocks>
+            <maintenance>
+                <class>Entrepids_Maintenance_Block</class>
+            </maintenance>
+        </blocks>
+        <helpers>
+            <maintenance>
+                <class>Entrepids_Maintenance_Helper</class>
+            </maintenance>
+        </helpers>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <controller_action_before>
+                        <class>maintenance/observer</class>
+                        <method>maintenancePreDispatch</method>
+                    </controller_action_before>
+                </observers>
+            </controller_action_predispatch>
+            <admin_system_config_changed_section_maintenance>
+                <observers>
+                    <tupertine_cache>
+                        <class>maintenance/observer</class>
+                        <method>checkVarnishTurpentine</method>
+                    </tupertine_cache>
+                </observers>
+            </admin_system_config_changed_section_maintenance>
+        </events>
+    </global>
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <maintenance>
+                                            <title>Entrepids Mantenimiento</title>
+                                        </maintenance>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <default>
+        <maintenance>
+            <option>
+                <active>0</active>
+                <code>entrepids</code>
+                <value>3ArF6fj7</value>
+                <cmspage>no-route</cmspage>
+            </option>
+        </maintenance>
+    </default>
+</config>

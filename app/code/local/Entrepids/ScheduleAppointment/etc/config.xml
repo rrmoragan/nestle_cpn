@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_ScheduleAppointment
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>  
+        <Entrepids_ScheduleAppointment>
+            <version>1.0.1</version>
+        </Entrepids_ScheduleAppointment>
+    </modules>
+
+    <global>
+        <blocks>
+            <scheduleappointment>
+                <class>Entrepids_ScheduleAppointment_Block</class>
+            </scheduleappointment>
+        </blocks>
+        <helpers>
+            <scheduleappointment>
+                <class>Entrepids_ScheduleAppointment_Helper</class>
+            </scheduleappointment>
+        </helpers>
+        <models>
+             <scheduleappointment>
+                <class>Entrepids_ScheduleAppointment_Model</class>
+                <resourceModel>scheduleappointment_mysql4</resourceModel>
+            </scheduleappointment>
+            <scheduleappointment_mysql4>
+                <class>Entrepids_ScheduleAppointment_Model_Mysql4</class>
+                <entities>
+                    <scheduleappointment>
+                        <table>nestle_schedule_appointment</table>
+                    </scheduleappointment>
+                    <cpscheduleappointment>
+                        <table>nestle_cp_schedule_appointment</table>
+                    </cpscheduleappointment>
+                </entities>
+            </scheduleappointment_mysql4>
+        </models>
+        <resources>
+            <nestle_schedule_appointment_setup>
+                <setup>
+                    <module>Entrepids_ScheduleAppointment</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </nestle_schedule_appointment_setup>
+            <nestle_schedule_appointment_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </nestle_schedule_appointment_write>
+            <nestle_schedule_appointment_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </nestle_schedule_appointment_read>
+        </resources>
+        
+        <template>
+            <email>
+                <entrepids_appointment_template module="credit">
+                    <label>Agendar Cita Producto</label>
+                    <file>entrepids/entrepids_appointment.html</file>
+                    <type>html</type>
+                </entrepids_appointment_template>
+                <entrepids_appointment_customer_template module="credit">
+                    <label>Agendar Cita Producto (Cliente)</label>
+                    <file>entrepids/entrepids_customer_appointment.html</file>
+                    <type>html</type>
+                </entrepids_appointment_customer_template>
+            </email>
+        </template> 
+        
+    </global>
+
+    <frontend>
+        <routers>
+            <scheduleappointment>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_ScheduleAppointment</module>
+                    <frontName>scheduleappointment</frontName>
+                </args>
+            </scheduleappointment>
+        </routers>
+    </frontend>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <scheduleappointment before="Mage_Adminhtml">Entrepids_ScheduleAppointment_Adminhtml</scheduleappointment>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <adminreseivers>
+                                            <title>Notificar nueva cita a</title>
+                                        </adminreseivers>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>

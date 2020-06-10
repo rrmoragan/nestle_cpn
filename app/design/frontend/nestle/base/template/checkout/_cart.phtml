@@ -1,0 +1,478 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Shopping cart template
+ *
+ * @var $this Mage_Checkout_Block_Cart
+ */
+$order = ["Maquinas","Insumos","Accesorios","Nature's heart","Aguas"];
+$categories = [];
+$coffesolutions = Mage::getBlockSingleton('coffeesolutions/solutions_details');
+
+/* modif rmorales@mlg.com.mx */
+$ppd=[];
+/* fin modif */
+
+foreach($this->getItems() as $_item){
+
+   $productGroupId = $_item->getProduct()->getAttributeSetId();
+   $key = $coffesolutions->getAttributeSetNameById($productGroupId);
+
+   if( !isset($categories[$key]["qty"]) ){ $categories[$key]["qty"] = 0; }
+   if( !isset($categories[$key]["totalPrice"]) ){ $categories[$key]["totalPrice"] = 0; }
+
+   $categories[$key]["items"][] = $_item;
+   $categories[$key]["qty"] = $categories[$key]["qty"] + $_item->getQty(); 
+   $categories[$key]["totalPrice"] = $categories[$key]["totalPrice"] + ($_item->getPrice() * $_item->getQty());
+
+   /* modif rmorales@mlg.com.mx */
+   
+   $ppda=null;
+   $ppda['key']=$key;
+   $ppda['qty']=$categories[$key]["qty"];
+   $ppda['priceb']=$_item->getPrice();	// precio por articulo
+   $ppda['pricec']=$_item->getQty();	// numero de articulos
+   $ppda['priced']=($_item->getPrice() * $_item->getQty());	// precio por el numero de articulos
+   $ppd[]=$ppda;
+
+   // echo '<pre style="display:none;">'; var_dump($ppd); echo '</pre>';
+
+   /* fin modif */
+}
+
+echo '<!-- list_categss -->';
+echo '<pre style="display:none;">';
+foreach ($categories as $et => $r) {
+    echo "\n$et";
+}
+echo '</pre>';
+
+/* list_all_products_ga */
+    $ga_lp = null;
+    foreach($this->getItems() as $_item){
+        foreach ($_item->_data as $et => $r) {
+            $ga_llp = null;
+            $ga_llp['sku'] = $_item->_data['sku'];
+            $ga_llp['name'] = $_item->_data['name'];
+            $ga_llp['category'] = '';
+            $ga_llp['marca'] = '';
+            $ga_llp['qty'] = $_item->_data['qty'];
+            $ga_llp['price'] = $_item->_data['price'];
+
+            $ga_lp[ $_item->_data['sku'] ] = $ga_llp;
+        }
+    }
+
+/* ver_boton_pagar_superior */
+    $button_sup = 0;
+
+/* codigo_vendedor */
+    $url_update = '/skin/frontend/base/default/mercadopago/images/loading.gif';
+
+    /* productos arma tu caja */
+    $sku_filtro = array(
+        '7501058636973',
+        '7501058636980',
+        '7501058629951',
+        '7501058637420'
+    );
+
+    /* si $is_code_vendor == true ==> significa que hay que agregar
+     * el formulario para agregar el codigo de vendedor */
+    $is_code_vendor = false;
+
+    if( $ga_lp ){
+        foreach ($sku_filtro as $et => $r) {
+            if( isset( $ga_lp[ $r ] ) ){
+                $is_code_vendor = true;
+            }
+        }
+    }
+
+    $cvd = null;
+    if( isset( $this->_quote->_data ) ){
+        $cvd = array(
+            'system'=> '',
+            'quote_id'=> $this->_quote->_data['entity_id'],
+            'store_id'=> $this->_quote->_data['store_id'],
+            'created_at'=> $this->_quote->_data['created_at'],
+            'updated_at'=> $this->_quote->_data['updated_at'],
+            'items_count'=> $this->_quote->_data['items_count'],
+            'items_qty'=> $this->_quote->_data['items_qty'],
+            'grand_total'=> $this->_quote->_data['grand_total'],
+            'customer_id'=> $this->_quote->_data['customer_id'],
+            'customer_email'=> $this->_quote->_data['customer_email'],
+            'customer_firstname'=> $this->_quote->_data['customer_firstname'],
+            'customer_lastname'=> $this->_quote->_data['customer_lastname'],
+            'remote_ip'=> $this->_quote->_data['remote_ip'],
+            'subtotal'=> $this->_quote->_data['subtotal'],
+            'customer_openpay_user_id'=> $this->_quote->_data['customer_openpay_user_id'],
+            'items'=> $ga_lp,
+            'code_vendor' => ''
+        );
+    }
+
+?>
+
+<?php $_priceDisplay = ($this->helper('tax')->displayCartBothPrices()) ? 'display-both-prices' : 'display-single-price'; ?>
+<div class="cart <?php echo $_priceDisplay; ?>">
+    <?php if( $button_sup ){ ?>
+        <div class="page-title title-buttons">
+            <h1><?php echo $this->__('Shopping Cart') ?></h1>
+            <?php if(!$this->hasError()): ?>
+            <ul class="checkout-types top">
+            <?php foreach ($this->getMethods('top_methods') as $method): ?>
+                <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
+                <li><?php echo $methodHtml; ?></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+    <?php } ?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
+    <?php echo $this->getChildHtml('form_before') ?>
+
+<?php 
+$size = count($categories);
+$counter = 0;
+
+foreach($order as $key ):
+    if(!isset( $categories[$key]["items"] ) ) continue;   ?>                                          
+    <form class="column-left" action="<?php echo $this->getFormActionUrl() ?>" method="post">
+        <div class="tabs">
+            <h2 class="tit_tab accordion"><?php echo $key ?>    <span class="<?php echo str_replace(" ", "", $key) ?>"></span></h2>
+            <div class="cont_panel">
+                <?php echo $this->getBlockHtml('formkey'); ?>
+                <!-- shopping-cart-table_op_1 -->
+                <table id="shopping-cart-table" class="cart-table data-table">
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                        <col width="1" />
+                        <col width="1" />
+                    <?php endif; ?>
+
+                    <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+                    <thead>
+                        <tr>
+                            <th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product') ?></span></th>
+                            <th class="a-center cart-price-head" colspan="<?php echo $mergedCells; ?>">
+                                <!-- <div class="cart-price-placeholder">-->
+                                    <span class="nobr"><?php echo $this->__('Price') ?></span>
+                                <!-- </div>-->
+                            </th>
+                            <th rowspan="<?php echo $mergedCells; ?>" class="a-center">
+                                <?php echo $this->__('Qty') ?>
+                                <?php /*if ($this->helper('wishlist')->isAllowInCart()) : ?>
+                                    <span class="nobr"><?php echo $this->__('Move to Wishlist') ?></span>
+                                <?php endif*/ ?>
+                            </th>
+                            <th class="a-center cart-total-head" colspan="<?php echo $mergedCells; ?>">
+                				<!-- <div class="cart-total-placeholder"> -->
+                                    <?php echo $this->__('Subtotal') ?>
+                				<!-- </div>-->
+                            </th>
+                            <th class="a-center" rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
+                        </tr>
+                        <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                        <tr>
+                            <th class="a-center cart-price-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                            <th class="a-center cart-price-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                            <th class="a-center cart-total-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                            <th class="a-center cart-total-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        </tr>
+                        <?php endif; ?>
+                    </thead>
+    
+                    <tbody>
+                    <?php foreach($categories[$key]["items"] as $_item):?>
+                        <?php echo $this->getItemHtml($_item);  ?>
+                    <?php endforeach ?>
+                       
+                    </tbody>
+                  
+                </table>
+            </div>
+        </div>
+			
+        <?php 
+        $counter++;
+    
+        if($size === $counter ): ?>        
+        <!-- shopping-cart-table_op_2 -->
+        <table id="shopping-cart-table" class="cart-table data-table">
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <col width="1" />
+            <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+            <col width="1" />
+            <col width="1" />
+            <?php endif; ?>
+            <tfoot>
+                <tr>
+                    <td colspan="50" class="a-right cart-footer-actions">
+                        <div class="cont_button">
+                            <button type="submit" name="update_cart_action" data-cart-empty value="empty_cart" title="<?php echo $this->quoteEscape($this->__('Empty Cart')); ?>" class="button btn-empty" id="empty_cart_button"><span><span><?php echo $this->__('Empty Cart'); ?></span></span></button>
+                        </div>
+                        <div class="cont_button continue">
+						<?php
+						
+						$__b='https://cafeparaminegocio.com.mx/nuestros-productos.html';
+						
+						?>
+						<button type="button" 
+						title="<?php echo $this->quoteEscape($this->__('Continue Shopping')) ?>" 
+						class="button btn-continue" 
+						onclick="setLocation('<?php echo $__b; ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+                        <?php //if($this->getContinueShoppingUrl()): ?>
+                            <!-- <button type="button" title="<?php echo $this->quoteEscape($this->__('Continue Shopping')) ?>" class="button btn-continue" onclick="setLocation('<?php echo Mage::helper('core')->quoteEscape($this->getContinueShoppingUrl()) ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button> -->
+                        <?php //endif; ?>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <?php endif; ?>
+<?php endforeach; ?>
+        
+        </form>
+         <?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
+    <div class="cart-forms">
+        <div class="resume">
+            <h2 class="title_red"><?php echo $this->quoteEscape($this->__('Summary of your purchase')); ?></h2>
+            <div class="sub">
+                <h2 class="title_black"><?php echo $this->quoteEscape($this->__('Subtotal')); ?></h2>
+                    <table id="shopping-cart-totals-table">
+                            <colgroup><col>
+                            <col width="1">
+                            </colgroup>
+                            <tbody>
+                        <?php foreach($order as $key): ?>  
+                           <?php if(isset($categories[$key]["totalPrice"])): ?>
+								<tr>
+									<td style="" class="a-right">
+										<span class="price" ><?php echo $this->helper('checkout')->formatPrice($categories[$key]["totalPrice"]) ?></span>    </td>
+									<td class="title_resume" colspan="1">
+										<?php echo $key ?><span class="<?php echo str_replace(" ", "", $key) ?>"></span></td>
+
+								</tr>
+                           <?php endif; ?>  
+                        <?php endforeach?> 
+                         </tbody>
+                            
+                    </table>
+            </div>
+            <div class="total">
+                <h2 class="title_black"><?php echo $this->quoteEscape($this->__('Total de productos')); ?></h2>
+            </div>
+            <span class="price"><strong>
+				<?php echo $this->helper('checkout')->formatPrice($this->getQuote()->getSubtotal()); ?>
+			</strong></span>
+            <?php //if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
+        </div>
+        <div class="resume grantotal">
+            <?php echo $this->getChildHtml('totals'); ?>
+        </div>           
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('checkout_cart_widget') ?>
+        <!-- vendor_code -->
+        <?php if($is_code_vendor){ ?>
+            <form id="vendor_code">
+                <div class="ccv">
+                    <h2>¿Tienes un código de vendedor?</h2>
+                    <div class="ccv_form">
+                        <div class="ccv_input" id="ccv_input">
+                            <input 
+                                type="text" 
+                                name="vendor_code_data" 
+                                id="vendor_code_data" 
+                                class="input-text" 
+                                value=""
+                                placeholder="Ingresa el código del vendedor">
+                        </div>
+                        <div class="cvv_upgrade" id="cvv_upgrade" style="display: none"><img src="<?php echo $url_update; ?>"></div>
+                        <div class="cvv_save" id="cvv_save"></div>
+                        <div class="ccv_err" id="ccv_err"></div>
+                    </div>
+                </div>
+            </form>
+        <?php } ?>
+        <?php echo $this->getChildHtml('coupon') ?>
+        <div class="cart-totals-wrapper">
+            <div class="cart-totals">
+                <?php if(!$this->hasError()): ?>
+                <ul class="checkout-types bottom">
+                <?php foreach ($this->getMethods('methods') as $method): ?>
+                    <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
+                    <li class="method-<?php echo preg_replace("/[^_a-zA-Z0-9-]/", '-', $method); ?>"><?php echo $methodHtml; ?></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].onclick = function(){
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "none") {
+                panel.style.display = "block";
+            } else {
+                panel.style.display = "none";
+            }
+        }
+    }
+    <?php foreach($categories as $key => $value ): ?>
+        var spans  = document.getElementsByClassName("<?php echo str_replace(" ", "", $key) ?>");
+        console.log(spans.length);
+        for(i = 0; i<spans.length ; i++){
+            console.log(i);
+            spans[i].textContent = " (<?php echo $categories[$key]["qty"]?>)";
+        }
+    <?php endforeach;?>
+
+    $$('.grantotal #shopping-cart-totals-table tr')[0].hide();
+    $$('.grantotal #shopping-cart-totals-table tr')[1].hide();
+</script>
+<!-- script_lga -->
+<script type="text/javascript">
+    var lga = <?php
+        /* listado de productos */
+        if( $ga_lp==null ){ ?>null<?php }else{
+            echo json_encode( $ga_lp );
+        }
+        ?>;
+
+    function checkout_data(id){
+        var a = lga[ id ];
+
+        ga('ec:addProduct', {
+            'id': a.sku,
+            'name': a.name,
+            'category': a.category,
+            'brand': a.marca,
+            'variant': '',
+            'price': a.price,
+            'quantity': a.qty
+        });
+        ga('ec:setAction', 'remove');
+        ga('send', 'event', 'UX', 'click', 'remove to cart');
+
+        console.log('ga_remove_item ==> '+a.sku);
+        console.log( a );
+        return true;
+    }
+    function ga_all_checkout(evt) {
+        for(var k in lga){
+            var ld = lga[ k ];
+
+            ga('ec:addProduct', {
+              'id': ld.sku,
+              'name': ld.name,
+              'category': ld.marca,
+              'brand': ld.category,
+              'variant': '',
+              'price': ld.price,
+              'quantity': ld.qty
+            });
+
+            console.log( ld.sku );
+        }
+
+        ga('ec:setAction','checkout', {'step': 2});
+        ga('send', 'pageview');     
+
+        console.log('checkout '+lga.length);
+        return true;
+    }
+</script>
+<!-- script_vendor_code -->
+<script type="text/javascript">//<![CDATA[
+    var dccv = <?php 
+    $ss = 'null';
+    if( $cvd != null ){ $ss = json_encode( $cvd ); }
+
+    echo $ss;
+    ?>;
+
+    Event.observe( $("cvv_save"),'click', function(){
+        $('cvv_save').hide();
+        $('cvv_upgrade').show();
+        $('ccv_err').innerHTML = '';
+        if( vendor_code_valid() ){
+            vendor_code_save( dccv );
+        }
+    } );
+
+    function vendor_code_valid(){
+        var d = $('vendor_code_data').value;
+        if( d.trim() != '' ){
+            dccv['code_vendor'] = d.trim();
+        }
+
+        return true;
+    }
+
+    function vendor_code_save(d){
+
+        d['system'] = 'code_vendor_save';
+
+        new Ajax.Request('https://cafeparaminegocio.com.mx/NESCA/ajx.code_vendor.php',
+        {
+            method: 'POST'
+            , parameters: d
+            , onFailure: function(transport) {
+                console.log('error to send vendor code');
+            }
+            , onSuccess: function(transport) {
+                var res = transport.responseText.evalJSON();
+                if( res['status']=='ok' ){
+                    $('ccv_err').innerHTML = 'Datos guardados';
+                }else{
+                    $('ccv_err').innerHTML = res['message'];
+                }
+                $('cvv_upgrade').hide();
+                $('cvv_save').show();
+                console.log( res );
+            }
+        } );
+    }
+//]]></script>

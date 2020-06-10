@@ -1,0 +1,224 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php 
+/** 
+ * @var $this Mage_Checkout_Block_Onepage_Shipping_Method_Available 
+ */
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * select_price_shipping
+ */
+
+$ga_data = false;
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * calc_shipping
+ */
+
+$calc_shipping_module = true;
+
+    $quote = Mage::getModel('checkout/session')->getQuote()->getData();
+
+    $sales_order = 0;
+    $calc_shipping = null;
+    if( isset( $quote['reserved_order_id'] ) ){
+        $sales_order = $quote['reserved_order_id'];
+        $calc_shipping = null;
+        $calc_shipping['sales_order'] = $sales_order;
+        $calc_shipping['data_base'] = Mage::getSingleton('core/session')->getEnvioData();
+        $calc_shipping['calc'] = Mage::getSingleton('core/session')->getEnvioCalculo();
+
+        $calc_shipping = json_encode( $calc_shipping );
+        Mage::log( " :::::: $calc_shipping", Zend_Log::INFO, '../../NESCA/log/calc_'.$sales_order.'.log');
+    }
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * data_shipping
+ */
+
+$data_shipping_display = true;
+    $data_shipping = null;
+
+        if( !isset( $_SESSION['payment_shipping'] ) ){
+            $data_shipping_display = false;
+            $data_shipping = $_SESSION['payment_shipping'];
+        }
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * accessPaymentMethod
+ */
+
+$accessPaymentMethod = false;
+    $shipping_data_display = true;
+    $view_message_price = true;
+    $message_price_shipping_aaa = 'Debido a las especificaciones de tu pedido, te llegar&aacute; un correo con las condiciones del env&iacute;o';
+
+    $group_id = Mage::getSingleton('customer/session')->getCustomerGroupId();
+    $group = Mage::getModel('customer/group')->load($group_id);
+    if( $group->getCode() == 'Clientes AAA' ){
+        $view_message_price = false;
+    }
+
+?>
+<!-- shipping_price_method -->
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<?php if (!$_shippingRateGroups): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+    <dl class="sp-methods">
+    <?php $shippingCodePrice = array(); ?>
+    <!-- shipping_methods [ <?php foreach ($_shippingRateGroups as $et => $r) { echo $et.', '; } ?> ] -->
+    <?php 
+        $_sole = count($_shippingRateGroups) == 1;
+        foreach ($_shippingRateGroups as $code => $_rates): ?>
+            <!-- ss <?php echo $code; ?> -->
+            <dt><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></dt>
+            <dd <?php echo 'id=opc_envio_'.$code; ?>>
+                <ul>
+                <?php $_sole = $_sole && count($_rates) == 1; foreach ($_rates as $_rate): ?>
+                    <!-- ss2 -->
+                    <?php $shippingCodePrice[] = "'".$_rate->getCode()."':".(float)$_rate->getPrice(); ?>
+                        <li>
+                           <?php if ($_rate->getErrorMessage()): ?>
+                                <ul class="messages">
+                                    <li class="error-msg">
+                                        <ul>
+                                            <li><?php echo $this->escapeHtml($_rate->getErrorMessage()) ?></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                           <?php else: ?>
+                                <?php if ($_sole) : ?>
+                                    <!-- solo 1 metodo -->
+                                    <span style="display:none;"><?php
+                                        ?><input <?php
+                                            ?>name="shipping_method" <?php
+                                            /*?>type="hidden" <?php*/
+                                            ?>type="radio" <?php
+                                            ?>value="<?php echo $_rate->getCode() ?>" <?php
+                                            ?>id="s_method_<?php echo $_rate->getCode() ?>"  <?php
+                                            ?>checked="checked"<?php ?> /> <?php
+                                    ?></span>
+                                <?php else: ?>
+                                    <input <?php
+                                        ?>name="shipping_method" <?php
+                                        ?>type="radio" <?php
+                                        ?>value="<?php echo $_rate->getCode() ?>" <?php
+                                        ?>id="s_method_<?php echo $_rate->getCode() ?>"
+                                        <?php if($_rate->getCode()===$this->getAddressShippingMethod()){
+                                            echo ' checked="checked"';
+                                        } ?> class="radio"/>
+
+                                    <?php if ($_rate->getCode() === $this->getAddressShippingMethod()): ?>
+                                        <script type="text/javascript">
+                                            //<![CDATA[
+                                                lastPrice = <?php echo (float)$_rate->getPrice(); ?>;
+                                            //]]>
+                                        </script>
+                                    <?php endif; ?>
+                                <?php endif; ?><?php
+
+                                if( $accessPaymentMethod ){
+                                    if( $view_message_price == false ){
+                                        ?><label for="s_method_<?php echo $_rate->getCode() ?>"><?php 
+                                            echo $message_price_shipping_aaa; 
+                                        ?></label><?php
+                                    }
+
+                                }
+
+                                if( $view_message_price ){
+                                    ?><label for="s_method_<?php echo $_rate->getCode() ?>"><?php 
+                                        echo $this->escapeHtml($_rate->getMethodTitle());
+                                        $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax());
+                                        $_incl = $this->getShippingPrice($_rate->getPrice(), true);
+                                        echo $_excl;
+                                        if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl){
+                                            echo "(".$this->__('Incl. Tax')." ".$_incl.")";
+                                        }
+                                    ?></label><?php
+                                }
+                            ?><?php endif ?>
+                        </li>
+                <?php endforeach; ?>
+                </ul>
+            </dd>
+    <?php endforeach; ?>
+    </dl>
+<script type="text/javascript">
+//<![CDATA[
+    <?php if (!empty($shippingCodePrice)): ?>
+        var shippingCodePrice = {<?php echo implode(',',$shippingCodePrice); ?>};
+    <?php endif; ?>
+
+    $$('input[type="radio"][name="shipping_method"]').each(function(el){
+        Event.observe(el, 'click', function(){
+            if (el.checked == true) {
+                var getShippingCode = el.getValue();
+                <?php if (!empty($shippingCodePrice)): ?>
+                    var newPrice = shippingCodePrice[getShippingCode];
+                    if (!lastPrice) {
+                        lastPrice = newPrice;
+                        quoteBaseGrandTotal += newPrice;
+                    }
+                    if (newPrice != lastPrice) {
+                        quoteBaseGrandTotal += (newPrice-lastPrice);
+                        lastPrice = newPrice;
+                    }
+                <?php endif; ?>
+                checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+                return false;
+            }
+       });
+    });
+//]]>
+</script>
+<?php endif; ?><?php
+
+if( $calc_shipping_module ){
+    ?><div style="display: none" id="calc_data_totals"><pre><?php
+
+    $d = Mage::getSingleton('core/session')->getEnvioData();
+    echo "\n margen = ".$d['margen'];
+    echo "\n envio = ".$d['envio'];
+    echo "\n margen_total = ".$d['margen_total'];
+    echo "\n envio_total = ".$d['envio_total'];
+
+    ?></pre></div><?php
+}
+
+if( $data_shipping_display ){
+    ?><div class="data_shipping" style="display: xnone"><pre><?php
+        print_r($data_shipping);
+    ?></pre></div><?php
+} ?>

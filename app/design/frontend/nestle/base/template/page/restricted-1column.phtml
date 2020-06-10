@@ -1,0 +1,110 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?><?php
+/**
+ * Template for Valid Restricted
+ */
+
+$page_restricted = true;
+
+    if( Mage::getSingleton('customer/session')->isLoggedIn() ){
+        $user = Mage::getSingleton('customer/session')->getCustomer();
+        $user_rfc = $user->getData('rfc');
+
+        if( $user_rfc != '' ){
+            $uri = $_SERVER['REQUEST_URI'];
+            $uri = explode('/', $uri);
+            $uri = $uri[ count( $uri )-1 ];
+            $uri = explode('.', $uri);
+            $uri = $uri[0];
+            $uri = explode('-', $uri);
+            $uri = $uri[ count( $uri )-1 ];
+            $uri = strtoupper( $uri );
+
+            if( $user_rfc == $uri ){
+                $page_restricted = false;
+            }
+        }
+
+        Mage::log("user ==> ".( print_r( $user_rfc,true ) )."\n", Zend_Log::INFO, 'category_access.log');
+        Mage::log("uri ==> ".( print_r( $uri,true ) )."\n", Zend_Log::INFO, 'category_access.log');
+    }
+    
+?>
+
+<!DOCTYPE html>
+
+<!--[if lt IE 7 ]> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head>
+<?php echo $this->getChildHtml('head') ?>
+</head>
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<?php echo $this->getChildHtml('after_body_start') ?>
+<div class="wrapper">
+    <?php echo $this->getChildHtml('global_notices') ?>
+    <div class="page">
+        <?php echo $this->getChildHtml('header') ?>
+        <?php echo $this->getChildHtml('category_banner') ?>
+
+        <!-- page_restricted -->
+        <div class="main-container page_restricted col1-layout">
+            <div class="main"><?php if( $page_restricted ){
+                ?>PAGINA RESTRINGIDA<?php
+                }else{ ?>
+                <?php echo $this->getChildHtml('breadcrumbs') ?>
+                <div class="col-main">
+                    <?php echo $this->getChildHtml('global_messages') ?>
+                    <?php echo $this->getChildHtml('content') ?>
+					<pre style="display:none;">
+					<?php //print_r( $this->getChild() ); ?>
+					<?php //print_r( $this->getChild() ); ?>
+					</pre>
+				</div>
+                <?php } /* END PAGE RESTRICTED */ ?>
+            </div>
+        </div><?php
+
+        echo $this->getChildHtml('footer_before');
+        echo $this->getChildHtml('footer');
+        echo $this->getChildHtml('global_cookie_notice');
+        echo $this->getChildHtml('before_body_end');
+
+    ?></div>
+</div>
+<?php echo $this->getAbsoluteFooter() ?>
+</body>
+</html>
+

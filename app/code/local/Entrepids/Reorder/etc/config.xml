@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Entrepids_Reorder>
+            <version>1.0.0</version>
+        </Entrepids_Reorder>
+    </modules>
+    
+    <frontend>
+		<routers>
+			<sales>
+				<args>
+					<modules>
+						<entrepids_reorder before="Mage_Sales">Entrepids_Reorder</entrepids_reorder>
+					</modules>
+				</args>
+			</sales>
+		</routers>
+    </frontend>
+    
+    <global>
+        <blocks>
+            <entrepids_reorder>
+                <class>Entrepids_Reorder_Block</class>
+            </entrepids_reorder>
+                <sales>
+                    <rewrite>
+                            <order_history>Entrepids_Reorder_Block_History</order_history>
+                    </rewrite>
+                    <rewrite>
+                            <order_info_buttons>Entrepids_Reorder_Block_Order_Info_Buttons</order_info_buttons>
+                    </rewrite>
+                </sales>            
+        </blocks>
+        <helpers>
+                <sales>
+                        <rewrite>
+                            <reorder>Entrepids_Reorder_Helper_Reorder</reorder>
+                        </rewrite>
+                </sales>
+        </helpers>
+    </global>
+    
+</config>

@@ -1,0 +1,33 @@
+<?php
+/**
+* @category   Entrepids
+* @package    Entrepids_Customer
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+
+/* @var $this Entrepids_Customer_Block_Widget_Employes */
+?>
+
+<?php 
+    $validations = $this->helper('entrepids_customer')->getAttributeValidationClass('employes');
+    $label = '<label for="'.$this->getFieldId('employes').'">';
+    if (strpos($validations, 'required-entry') !== false) {
+        $label = '<label for="'.$this->getFieldId('employes').'" class="required"><em>*</em>';
+    }
+?>  
+
+<div class="field employes">
+    <?php echo $label.$this->getStoreLabel('employes') ?></label>
+    <div class="input-box">
+        <select id="<?php echo $this->getFieldId('employes')?>" name="<?php echo $this->getFieldName('employes')?>" class="<?= $validations ?>">
+            <?php 
+                $options = $this->getAllOptions('employes');
+                foreach($options as $option):
+            ?>
+                <option value="<?= $option['value']?>"><?= $option['label']?></options>
+            <?php endforeach?>
+        </select>
+    </div>
+</div>
+

@@ -1,0 +1,26 @@
+
+:::: 2019-11-14 18:33:06 ::::  ==> procesar Array
+(
+    [so] => 1010103822712347
+    [srfc] => ohc080716l28
+    [scfdi] => G03
+    [srz] => OPERADORA DE HOTELES CARIDIAZ SANTA FE  SA DE CV.
+)
+
+:::: 2019-11-14 18:34:32 ::::  ==> procesar Array
+(
+    [so] => 100001023
+    [srfc] => ohc080716l28
+    [scfdi] => G03
+    [srz] => OPERADORA DE HOTELES CARIDIAZ SANTA FE S.A. DE C.V.
+)
+
+:::: 2019-11-14 18:35:55 ::::  ==> procesar Array
+(
+    [so] => 100001025
+    [srfc] => OHC080716L28
+    [scfdi] => G03
+    [srz] => OPERADORA DE HOTELES CARIDIAZ SANTA FE S.A. DE C.V.
+)
+
+:::: 2019-11-14 18:35:55 ::::  ... facturado[NESCA200_MLG100224TC1_OHC080716L28_0A739BFD1A95.xml]

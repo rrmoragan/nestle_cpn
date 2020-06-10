@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Contacts
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Contacts>
+            <version>1.0.0</version>
+        </Entrepids_Contacts>
+    </modules>
+
+    <frontend>
+		<routers>
+            <contacts>
+                <args>
+					<modules>
+						<entrepids_contacts before="Mage_Contacts">Entrepids_Contacts</entrepids_contacts>
+					</modules>
+				</args>
+            </contacts>
+		</routers>
+	</frontend>
+</config>

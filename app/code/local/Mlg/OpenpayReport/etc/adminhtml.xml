@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+  <!-- file: magento_root/app/code/local/Mlg/OpenpayReport/etc/adminhtml.xml -->
+  <config>
+      <menu>
+          <report>
+              <children>
+                  <products>
+                      <children>
+                          <bestsellers>
+                              <sort_order>20</sort_order>
+                          </bestsellers>
+                          <sold>
+                              <sort_order>40</sort_order>
+                          </sold>
+                          <mlg_openpayreport translate="title" module="mlg_openpayreport">
+                              <title>MLG Openpay Reportes</title>
+                              <action>adminhtml/openpayreport/index</action>
+                              <sort_order>40</sort_order>
+                          </mlg_openpayreport>
+                          <viewed translate="title" module="reports">
+                              <sort_order>50</sort_order>
+                          </viewed>
+                          <lowstock translate="title" module="reports">
+                              <sort_order>60</sort_order>
+                          </lowstock>
+                      </children>
+                  </products>
+              </children>
+          </report>
+      </menu>
+      <acl>
+          <resources>
+              <admin>
+                  <children>
+                      <report>
+                          <children>
+                              <products>
+                                  <children>
+                                      <mlg_openpayreport translate="title">
+                                          <title>MLG Openpay Reportes</title>
+                                      </mlg_openpayreport>
+                                  </children>
+                              </products>
+                          </children>
+                      </report>
+                  </children>
+              </admin>
+          </resources>
+      </acl>
+  </config>

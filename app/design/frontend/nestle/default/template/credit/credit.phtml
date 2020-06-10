@@ -1,0 +1,275 @@
+<?php if(Mage::helper('credit')->isEnabled() && Mage::getSingleton('customer/session')->isLoggedIn()) { ?>
+    <?php if(Mage::getSingleton('customer/session')->getCustomerGroupId() == 3): ?>
+        <?php if (Mage::getSingleton('customer/session')->getCustomer()->getCreditApplicationInProcess() == 0 || Mage::getSingleton('customer/session')->getCustomer()->getCreditApplicationInProcess() == "0"):?>
+            <?php if(Mage::helper('credit')->getTotalCustomerPurchase(Mage::getSingleton('customer/session')->getCustomer()->getId()) >= Mage::helper('credit')->getMinimumAmount()):?>
+                <div id="content9" class="content credit">
+                    <h3 class="subtitle"><?php echo Mage::helper('customer')->__('Credit')?></h3>
+                    <form class="box" method="post" id="upload-form" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);?>credit/index/upload" enctype="multipart/form-data">
+                        <p class="request">   
+                        <h4><?php echo Mage::helper('customer')->__('Instructions')?></h4>
+                        <div class="cred-step">
+                            <span>1</span>
+                            <p class=""><?php echo Mage::helper('customer')->__('Download the credit application ')?><a href="<?php echo Mage::helper('credit')->getCreditDocPath()?>"><?php echo Mage::helper('customer')->__('here')?></a></p>
+                        </div>
+
+                        <div class="cred-step">
+                            <span>2</span>
+                            <p class=""><?php echo Mage::helper('customer')->__('Upload the following documents and the credit application in this section')?></p>
+                        </div>
+
+                        <input type="hidden" name ="official_id_input" id="official_id_input">
+                        <input type="hidden" name ="address_proof_input" id="address_proof_input">
+                        <input type="hidden" name ="rfc_input" id="rfc_input">
+                        <input type="hidden" name ="signed_request_input" id="signed_request_input">
+                        <input type="hidden" name ="customer_name", id="customer_name" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>">
+                        <input type="hidden" name ="customer_email", id="customer_email" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getEmail()?>">
+                        <input type="hidden" name ="customer_id", id="customer_id" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId()?>">
+
+                        <div class="cont_box">
+
+                            <ul>
+                                <li>
+                                    <div class="input-box box__input">
+                                        <input type="file" name="official_id" id="official_id" class="doc required-entry box__file" onchange="validateId(this.value)" />
+                                        <label id="label-id" for="file"><?php echo $this->__('Official Id') ?><span class="box__dragndrop"> or drag it here</span></label>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="input-box box__input">
+                                        <input type="file" name="address_proof" id="address_proof" class ="doc required-entry box__file" onchange="validateAddressProof(this.value)" />
+                                        <label id="label-address-proof" for="file"><?php echo $this->__('Address Proof') ?><span class="box__dragndrop"> or drag it here</span></label>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="input-box box__input">
+                                        <input type="file" name="rfc" id="rfc" class="doc required-entry box__file" onchange="validateRfc(this.value)" />
+                                        <label id="label-rfc" for="file"><?php echo $this->__('RFC') ?><span class="box__dragndrop"> or drag it here</span></label>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="input-box box__input">
+                                        <input type="file" name="signed_request" id="signed_request" class="doc required-entry box__file" onchange="validateSignedRequest(this.value)" />
+                                        <label id="label-signed-request" for="file"><?php echo $this->__('Signed Request') ?><span class="box__dragndrop"> or drag it here</span></label>
+                                </li>
+
+                            </ul>
+                        </div>
+                        
+                        <div class="cred-step">
+                            <span>3</span><p class=""><?php echo Mage::helper('customer')->__('Once the loading of the documents is completed, send the credit application')?></p>
+                        </div>
+                        <div class="cred-step">
+                            <span>4</span><p class=""><?php echo Mage::helper('customer')->__("Wait for our administrator's contact for next steps")?></p>
+                        </div>
+                        <div class="cred-step">
+                            <p class=""> <i><?php echo Mage::helper('customer')->__('Important: ')?></i><?php echo Mage::helper('customer')->__("You must perform the process of loading documents in one step. If you leave the process without sending the request, the system will not store your documents and you will have to load them again")?></p>
+                        </div>
+                        <div class="confirmation">
+                            <input type="checkbox" name="" for="" class="input-check required-entry" /><?php echo Mage::helper('customer')->__('I want to apply for credit in the store')?></p>
+                        </div>
+                    <button class="button f-right"><?php echo Mage::helper('customer')->__('Submit request')?></button>
+                    </form>
+                </div>
+
+
+                <script type="text/javascript">
+                    //< ![CDATA[
+                        var customForm = new VarienForm('upload-form');
+                    //]]>
+                </script>
+
+
+                <script>
+
+
+                    function validateId(file) {
+                        var isValid = true;
+                        var vp= jQuery("#official_id").val();
+                        var i= vp.substr(12);
+                        jQuery("#official_id_input").val(i);
+                        var ext = file.split(".");
+                        var file_size = jQuery('#official_id')[0].files[0].size;
+                        ext = ext[ext.length-1].toLowerCase();
+                        var arrayExtensions = ["jpg" , "jpeg", "png", "pdf"];
+
+
+                        if (arrayExtensions.lastIndexOf(ext) == -1) {
+                            alert("<?php echo $this->__('Only images (jpeg, jpg, png) and pdf docs are allowed')?>");
+                            jQuery("#official_id").val('');
+                            jQuery("#official_id_input").val('');
+                            isValid = false;
+
+
+                        }
+                        else{
+                            if(file_size > 2097152){
+                                alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                                jQuery("#official_id").val('');
+                                jQuery("#official_id_input").val('');
+                                isValid = false;
+
+
+                            }
+                        }
+
+                        if(isValid)
+                        {
+                            jQuery("#label-id").text(jQuery("#official_id_input").val());
+                        }
+
+                    }
+
+
+                    function validateAddressProof(file) {
+                        var isValid = true;
+                        var vp= jQuery("#address_proof").val();
+                        var i= vp.substr(12);
+                        jQuery("#address_proof_input").val(i);
+                        var ext = file.split(".");
+                        var file_size = jQuery('#address_proof')[0].files[0].size;
+                        ext = ext[ext.length-1].toLowerCase();
+                        var arrayExtensions = ["jpg" , "jpeg", "png", "pdf"];
+
+
+                        if (arrayExtensions.lastIndexOf(ext) == -1) {
+                            alert("<?php echo $this->__('Only images (jpeg, jpg, png) and pdf docs are allowed')?>");
+                            jQuery("#address_proof").val('');
+                            jQuery("#address_proof_input").val('');
+                            isValid = false;
+
+
+                        }
+                        else{
+                            if(file_size > 2097152){
+                                alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                                jQuery("#address_proof").val('');
+                                jQuery("#address_proof_input").val('');
+                                isValid = false;
+
+
+                            }
+                        }
+
+                        if(isValid)
+                        {
+                            jQuery("#label-address-proof").text(jQuery("#address_proof_input").val());
+                        }
+
+                    }
+
+
+                    function validateRfc(file) {
+                        var isValid = true;
+                        var vp= jQuery("#rfc").val();
+                        var i= vp.substr(12);
+                        jQuery("#rfc_input").val(i);
+                        var ext = file.split(".");
+                        var file_size = jQuery('#rfc')[0].files[0].size;
+                        ext = ext[ext.length-1].toLowerCase();
+                        var arrayExtensions = ["jpg" , "jpeg", "png", "pdf"];
+
+
+                        if (arrayExtensions.lastIndexOf(ext) == -1) {
+                            alert("<?php echo $this->__('Only images (jpeg, jpg, png) and pdf docs are allowed')?>");
+                            jQuery("#rfc").val('');
+                            jQuery("#rfc_input").val('');
+                            isValid = false;
+
+
+                        }
+                        else{
+                            if(file_size > 2097152){
+                                alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                                jQuery("#rfc").val('');
+                                jQuery("#rfc_input").val('');
+                                isValid = false;
+
+
+                            }
+                        }
+
+                        if(isValid)
+                        {
+                            jQuery("#label-rfc").text(jQuery("#rfc_input").val());
+                        }
+
+                    }
+
+
+                    function validateSignedRequest(file) {
+                        var isValid = true;
+                        var vp= jQuery("#signed_request").val();
+                        var i= vp.substr(12);
+                        jQuery("#signed_request_input").val(i);
+                        var ext = file.split(".");
+                        var file_size = jQuery('#signed_request')[0].files[0].size;
+                        ext = ext[ext.length-1].toLowerCase();
+                        var arrayExtensions = ["jpg" , "jpeg", "png", "pdf"];
+
+
+                        if (arrayExtensions.lastIndexOf(ext) == -1) {
+                            alert("<?php echo $this->__('Only images (jpeg, jpg, png) and pdf docs are allowed')?>");
+                            jQuery("#signed_request").val('');
+                            jQuery("#signed_request_input").val('');
+                            isValid = false;
+
+
+                        }
+                        else{
+                            if(file_size > 2097152){
+                                alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                                jQuery("#signed_request").val('');
+                                jQuery("#signed_request_input").val('');
+                                isValid = false;
+
+
+                            }
+                        }
+
+                        if(isValid)
+                        {
+                            jQuery("#label-signed-request").text(jQuery("#signed_request_input").val());
+                        }
+
+                    }
+                </script>
+            <?php else:?>
+                <div class="not-total-amount-enough">
+                    <h3 class="subtitle"><?php echo Mage::helper('customer')->__('Credit')?></h3>
+                    <p class=""> 
+                        <?php echo Mage::helper('customer')->__("Sorry, you do not have the minimum amount in your purchase history to be subject to credit.")?>
+                    </p>
+                </div>
+            <?php endif;?>
+        <?php else: ?>
+            <div class="credit-application-in-process">
+                <h3 class="subtitle"><?php echo Mage::helper('customer')->__('My Credit')?></h3>
+                <p class=""> 
+                    <?php echo Mage::helper('customer')->__("Sorry, you already have a credit application in process.")?>
+                </p>
+            </div>
+        <?php endif; ?>
+
+
+    <?php else: ?>
+        <div class="not-customer-group">
+            <h3><?php echo Mage::helper('customer')->__('Credit')?></h3>
+            <p class=""> 
+                <?php echo Mage::helper('customer')->__("We are sorry, you already have credit")?>
+            </p>
+        </div>
+    <?php endif;?>
+<?php 
+
+}
+
+else
+{
+    Mage::app()->getFrontController()->getResponse()->setRedirect(Mage::getBaseUrl());
+}  
+?>
+
+

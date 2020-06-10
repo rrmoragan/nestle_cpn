@@ -1,0 +1,122 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+
+$_portal = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST']; // https://midominio.com
+
+$report_type = '';
+
+if( isset( $this->_data['type'] ) ){
+	$report_type = $this->_data['type'];
+}
+
+?>
+<!-- grid container -->
+<!-- [<?php echo $report_type; ?>] -->
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php
+
+			if( isset( $this->_data['type'] ) ){
+				if( $this->_data['type'] == 'adminhtml/report_shopcart_abandoned' ){
+
+					?><button id="download_abandoned_carts" type="button">Descargar</button><?php
+					?><iframe id="download_file_ca" style="display:none;"></iframe><?php
+
+				}else{
+					echo $this->getButtonsHtml();	
+				}	
+			}else{
+				echo $this->getButtonsHtml();
+			}
+
+            ?></td>
+        </tr>
+    </table>
+</div>
+<div>
+	<!-- ==> seccion [<?php if( isset( $this->_data['type'] ) ){ echo $this->_data['type']; } ?>] --><?php
+
+	if( isset( $this->_data['type'] ) ){
+		if( $this->_data['type'] == 'adminhtml/report_shopcart_abandoned' ){
+			?><div id="error_report_ca"></div><?php
+		}else{ ?><?php echo $this->getGridHtml() ?><?php }
+	}else{ ?><?php echo $this->getGridHtml() ?><?php } ?>
+</div>
+<?php
+
+if( isset( $this->_data['type'] ) ){
+	if( $this->_data['type'] == 'adminhtml/report_shopcart_abandoned' ){
+		?><script>
+var cadowm = document.getElementById('download_abandoned_carts');
+cadowm.addEventListener('click', function () {
+    console.log('inicia descarga');
+    download_ca();
+});
+
+var file_ca = null;
+
+document.observe("dom:loaded", function() {
+	last_report_ca();
+} );
+
+function last_report_ca(){
+	var url = "<?php echo $_portal ?>/NESCA/ajx.report_ca.php";
+	new Ajax.Request( url,
+		{
+			method: 'POST'
+			, parameters: { "mkd":"s820b7sjhjsfejkloo9399qqr7" }
+			, onFailure: function(transport) {
+				console.log('error conexion');
+			}
+			, onSuccess: function(transport) {
+				var res = transport.responseText.evalJSON();
+				file_ca = res;
+			}
+		} );
+}
+
+function download_ca(){
+
+	if( file_ca == null ){
+		$('error_report_ca').innerHTML = 'reporte no accesible';
+		return null;
+	}
+
+	var iframe = document.getElementById('download_file_ca');
+	var fl = "<?php echo $_portal; ?>/NESCA/mlg_reports/"+file_ca['f'];
+	console.log( fl );
+
+    iframe.src = fl;
+}
+
+</script><?php
+	}	
+}
+
+?>

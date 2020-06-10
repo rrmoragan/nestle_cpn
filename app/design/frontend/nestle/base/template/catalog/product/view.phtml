@@ -1,0 +1,1033 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+/**
+ * Product view template
+ *
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * popup view logo 
+ * 
+ */
+
+$popup_logo = true;
+    $popup_logo_html = '';
+    if( $popup_logo ){
+        $logo_img_url = $this->getSkinUrl('images/logo_temporal1.png');
+        $logo_title = $this->getLogoAlt();
+
+        $popup_logo_html = '<div class="popup_logo"><img src="'.$logo_img_url.'" alt="'.$logo_title.'" title="'.$logo_title.'" /></div>';
+    }
+
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct();
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * configura el numero maximo de productos
+ * 
+ */
+$_cntl_max_prods = 0;
+	if ($_product->isSaleable() && $this->hasOptions()){
+		if( $_product->configurable_max_prods>0 || $_product->configurable_max_prods!='' ){
+			$_cntl_max_prods = $_product->configurable_max_prods;
+		}
+	}
+
+    $config_opcion = null;
+    if( $_product->_data['configurable_opcion'] != '' ){
+        $config_opcion = json_decode( $_product->_data['configurable_opcion'] );
+    }
+
+    //$lprods = $this->getOption()->getSelections();
+
+?><?php
+$categoryId = $_product->getCategoryIds();
+    if(is_array($categoryId)){
+        $categoryId = array_pop($categoryId);
+    }
+    $category = Mage::getModel('catalog/category')->load($categoryId);
+
+    $lmarca = Mage::getResourceModel('catalog/product') ->
+                    getAttribute('marca') ->
+                        getSource()->
+                            getOptionText($_product->_data['marca']);
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * modulo me interesa
+ * 
+ * 
+ */
+
+$cntrl_me_interesa = false;
+$is_login = Mage::getSingleton('customer/session')->isLoggedIn();
+
+    $meinteresa   = 'Me interesa';
+    $meinteresa_a = 'Te notificaremos por correo electr&oacute;nico cuando este art&iacute;culo se encuentre disponible.';
+    $meinteresa_b = 'Proporciona un correo electr&oacute;nico para avisarte cuando tengamos stock del producto.';
+    $p_sku = $_product->getSku();
+
+    /* venta multiplos */
+    $v_multiplo = false;
+    $m_rules = $_product->_data['configurable_opcion'];
+    $m_rules = trim( $m_rules );
+    if( $m_rules != '' ){
+
+        $m_rules = json_decode( $m_rules );
+        if( isset( $m_rules->data->py_multiplo ) ){
+            $v_multiplo = true;
+        }
+    }
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * google analitycs
+ *
+ */
+
+ $_ga = false;
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * mensage proxy
+ * 
+ */
+
+$message_proxy = true;
+
+    $proxy_message          = Mage::helper('core')->quoteEscape($this->__('Proxy Message'));
+    $proxy_message_question = Mage::helper('core')->quoteEscape($this->__('Proxy Message Question'));
+    $proxy_message_click    = Mage::helper('core')->quoteEscape($this->__('Proxy Message Click'));
+    $proxy_title            = Mage::helper('core')->quoteEscape($this->__('Proxy Message Title'));
+    $proxy_message_a        = Mage::helper('core')->quoteEscape($this->__('Proxy Message A'));
+    $proxy_message_b        = Mage::helper('core')->quoteEscape($this->__('Proxy Message B'));
+    $enterado               = Mage::helper('core')->quoteEscape($this->__('Enterado'));
+
+    $session_id = $_SESSION['core']['visitor_data']['session_id'];
+    $url = parse_url( $_SERVER['REQUEST_URI'] );
+    $url = $url['path'];
+
+    if( !isset( $_SESSION['ccurl'] ) ){
+        $message_proxy_status = 0;
+
+        $_SESSION['ccurl'] = $url;
+        $_SESSION['nccurl'] = 0;
+    }else{
+        if( $url == $_SESSION['ccurl'] ){
+            $_SESSION['nccurl']++;
+        }else{
+            $_SESSION['ccurl'] = $url;
+            $_SESSION['nccurl'] = 0;
+        }
+    }
+
+?><?php $buttonTitle = Mage::helper('core')->quoteEscape($this->__('Add to Cart')); ?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
+<div class="product-view">
+    <div class="product-essential">
+        <form action="<?php echo $this->getSubmitUrl($_product, array('_secure' => $this->_isSecure())) ?>" 
+            method="post" 
+            id="product_addtocart_form"<?php if($_product->getOptions()): ?> 
+            enctype="multipart/form-data"<?php endif; ?>>
+            <?php echo $this->getBlockHtml('formkey') ?>
+            <div class="no-display">
+                <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+                <input type="hidden" name="related_product" id="related-products-field" value="" />
+            </div>
+
+            <div class="product-img-box">
+                <div class="product-name">
+                    <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                </div>
+                <?php echo $this->getChildHtml('media') ?>
+            </div>
+
+            <div class="col-right-prod">
+                <div class="product-shop">
+                    <div class="product-name">
+                        <span class="h1"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></span>
+                    </div>
+                    <div class="product-title">
+                    <?php if ($_product->getNombreSecundario()):?>
+                        <div class="short-description">
+                            <div class="std"><h3><?php echo $_product->getNombreSecundario();  ?></h3></div>
+                        </div>
+                    <?php endif;?>
+                    </div>
+                    <div class="sku-tit"><h2>SKU: <?php echo $this->__('%s', $this->escapeHtml($_product->getSku())); ?></h2></div>
+                    <div class="review"><?php echo $this->getReviewsSummaryHtml($_product, 'default', false)?></div>
+                    <!-- price_and_descripcion -->
+                    <div class="border-prod" data_type="<?php echo $_product->getTypeId() ?>">
+                        <?php if(!$validateIsProfessional = $_product->getIsProfessional() ): ?>
+                            <div class="block-price">
+                                <div class="price-info">
+                                    <!-- get_price --><?php echo $this->getPriceHtml($_product); ?>
+                                    <?php //echo $this->getChildHtml('bundle_prices') ?>
+                                    <!-- tier_price --><?php echo $this->getTierPriceHtml() ?>
+                                </div>
+                                <?php if( !$_product->isGrouped() ): ?><?php
+
+                                        $stock = $this->getProduct()->getStockItem()->getQty();
+                                        if( $stock>0 ){
+                                        if( $v_multiplo ){
+                                            echo "\n"; ?><input 
+                                                type="hidden" 
+                                                name="qty" 
+                                                id="qty" 
+                                                maxlength="12" 
+                                                value="0" 
+                                                title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" 
+                                                class="input-text qty validate-digits"  
+                                                /><?php
+                                            foreach ($m_rules->data->py_multiplo as $et => $r) {
+                                                echo "\n"; ?><div  class="qty-wrapper"><?php
+                                                echo "\n"; ?><div class="pack_text"><span class="text"><?php echo "paquete de ".($m_rules->data->cont_caja * $r).' piezas'; ?></span><?php
+                                                echo "\n"; ?><!--div class="pack_text"><span class="text"><?php echo "paquete de ".($r).' piezas'; ?></span--><?php
+                                                echo "\n"; ?><span class="minus" onclick="a_rules('minus',<?php echo $r; ?>)"></span><?php
+                                                echo "\n"; ?><input 
+                                                    type="number" 
+                                                    id="qty_<?php echo $r; ?>" 
+                                                    maxlength="12" 
+                                                    value="0" 
+                                                    title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" 
+                                                    class="qty_cntl display"  
+                                                    data_multiplo="<?php echo $r; ?>"
+                                                    /><?php
+                                                echo "\n"; ?><span class="plus"  onclick="a_rules('plus',<?php  echo $r; ?>)"></span><?php
+                                                echo "\n"; ?></div></div><?php
+                                            }
+
+                                            echo "\n"; ?><div  class="display_text" id="displayt">0<?php if( isset( $m_rules->data->display_pos_fijo ) ){ echo " ".$m_rules->data->display_pos_fijo; } ?></div><?php
+                                        }else{
+                                    ?>
+                                    <div class="qty-wrapper">
+                                        <span class="less"></span>
+                                        <input type="number" name="qty" id="qty" maxlength="12" value="<?php echo $this->getProductDefaultQty() * 1 ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" class="input-text qty validate-digits"  onkeydown="validateChars(event)" onchange="validateChange(this)" />
+                                        <span class="more">
+                                    </div>
+                                    <?php } } ?>
+                                <?php endif; ?><?php
+
+                                if( $_product->getTypeId() == 'bundle' ){ 
+
+                                    ?><!-- product_bundle --><div class="qty-wrapper" id="qty-wrapper">
+                                        <span class="less"></span>
+                                        <input type="number" name="qty" id="qty" maxlength="12" value="<?php echo $this->getProductDefaultQty() * 1 ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" class="input-text qty validate-digits"  onkeydown="validateChars(event)" onchange="validateChange(this)" />
+                                        <span class="more">
+                                    </div><?php 
+                                }
+                            ?></div>
+                        <?php endif; ?><?php
+
+                            $class= "block-info";
+                            if($validateIsProfessional){  $class = "professional"; }
+    						if( $_product->isGrouped() ){ $class .= " product_group"; }
+                        ?>
+                        <div class="<?php echo $class?>">  
+                            <?php if ($_product->getShortDescription()):?>
+                                <div class="short-description">
+                                    <div class="std"><?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></div>
+                                </div>
+                            <?php endif;?>
+                            <?php if($_product->getIsProfessional()): ?>
+                                <div class="is-professional">
+                                    <?php echo Mage::helper('entrepids_product')->getProfessionalText(); ?>
+                                </div>
+                            <?php endif ?>
+                            <div class="extra-info"><?php 
+                                $pp = $this->getProduct();
+                                //echo '<pre>qty '.print_r( $this->getProduct()->_data['stock_item']->_data['qty'], true ).'</pre>';
+                                //echo '<pre>*****'.print_r( $pp, true ).'</pre>';
+
+                                echo $this->getChildHtml('product_type_availability');
+
+                                if( $cntrl_me_interesa && !$_product->isSaleable() ){
+                                    ?><a  title="<?php echo $meinteresa; ?>" class="button" id="prod-<?php echo $p_sku; ?>" onclick="f_interesa(this)"><?php echo $meinteresa; ?></a><?php
+                                }else{
+                                    //echo $this->getChildHtml('alert_urls');
+                                }
+
+                                ?><div class="interesa"></div><?php
+                            ?></div>
+                            <?php echo $this->getChildHtml('other');?>
+                            <div class="add-to-cart-wrapper">
+                                <!-- product_type_data -->
+                                <?php echo $this->getChildHtml('product_type_data') ?>
+                                <!-- extrahint -->
+                                <?php echo $this->getChildHtml('extrahint') ?>
+								
+                                <?php 
+                                    $view_cart = 1; 
+                                    if (!$this->hasOptions() && $view_cart ):?>
+                                        <div class="add-to-box">
+                                        <?php 
+                                            if($_product->isSaleable()){
+                                                echo $this->getChildHtml( 'addtocart' );
+                                            } ?>
+                                        
+										<?php //echo $this->getChildHtml('addto') /* boton agregar al carrito */ ?>
+                                        <?php //echo $this->getChildHtml('sharing') /* iconos redes sociales */ ?>
+                                    </div>
+                                    <?php echo $this->getChildHtml('extra_buttons') ?>
+                                <?php elseif (!$_product->isSaleable()): ?>
+                                    <div class="add-to-box">
+                                        <?php //echo $this->getChildHtml('addto') ?>
+                                        <?php //echo $this->getChildHtml('sharing') ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div><?php
+                                if( $v_multiplo ){
+                                    echo "\n"; ?><div  class="display_text" id="displayp"></div><?php
+                                }
+                            ?>
+                        </div>
+                    </div><?php
+
+                    ?><div style="display: none"><pre><?php
+
+                        if( $_cntl_max_prods>0 ){
+                            echo "esta configurado un limite de productos";
+
+                            //print_r( $_product->_data );
+                            // type_id = bundle
+
+                            /*
+                            $lprods = $_product->getOption();//->getSelections();
+                            foreach ($_product->_data as $et => $r) {
+                                echo "\n $et";
+                            }*/
+
+                        }
+
+                    ?></pre></div><?php
+
+                    ?><?php if ($_product->isSaleable() && $this->hasOptions()):?><?php 
+                        // listado de productos y boton de comprar
+
+                        echo $this->getChildChildHtml('container1', '', true, true);
+
+                    ?><?php endif;?>
+                </div>               
+                <!-- more data -->
+                <div id="more_data_attribs" style="display: none;"><?php
+                    $cart_notification_imge = '';
+                    if( isset( $_product->_data['cart_notification_buttons'] ) ){ ?><div id="notifi_cart_button"><?php
+                        echo $_product->_data['cart_notification_buttons']; ?></div><?php }
+                    if( isset( $_product->_data['cart_notification_title'] ) ){ ?><div id="notifi_cart_text"><?php
+                        echo $_product->_data['cart_notification_title']; ?></div><?php }
+                    if( isset($_product->_data['cart_notification_image']) ){
+                        switch ( $_product->_data['cart_notification_image'] ) {
+                            case 'thumbnail':
+                            case 'small_image':
+                            case 'image':
+                                $cart_notification_imge = $_product->getImageUrl();
+                                break;
+                            default:
+                                $surl = $_product->_data['cart_notification_image'];
+                                $aurl = explode('url,',$surl);
+                                if( isset($aurl[1]) ){
+                                    $cart_notification_imge = $aurl[1];
+                                }
+                                break;
+                        }
+                    }
+                    if( $cart_notification_imge != '' ){
+                        ?><div id="notifi_cart_image"><?php echo $cart_notification_imge; ?></div><?php
+                    }
+                ?>
+                </div>
+            </div>
+
+            <div id="gga" style="display:none;">
+                <input type="hidden" name="ga_id" value="<?php echo $_product->getSku(); ?>">
+                <input type="hidden" name="ga_name" value="<?php echo trim( $_product->getName().' '.$_product->getNombreSecundario() ); ?>">
+                <input type="hidden" name="ga_categortia" value="<?php echo trim( $category->_data['name'] ); ?>">
+                <input type="hidden" name="ga_marca" value="<?php echo $lmarca; ?>">
+                <input type="hidden" name="ga_precio" value="<?php echo $_product->getPrice(); ?>">
+            </div>
+
+            <div class="clearer"></div>
+            <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+            <?php endif;?>
+        </form>
+
+		<?php if( $_cntl_max_prods>0 ): ?>
+            <div class="config_popup" id="config_elems">
+                <div class="message_popup">
+                    Por favor seleccione solo <?php echo $_cntl_max_prods; ?> productos.
+                </div>
+            </div>
+		<?php endif; ?>
+
+        <!-- popup -->
+        <div class="config_popup" id="open_message"><div class="message_popup" id="popup_message"></div></div>
+        <?php if( $cntrl_me_interesa ): ?>
+            <!-- me interesa -->
+            <div class="config_popup block" id="open_message_interesa" style="display: none">
+                <div class="message_popup" id="popup_message">
+                    <div class="close" onclick="f_interesa_close()">X</div>
+                    <div class="data"><?php
+                        if( $is_login ){
+                            ?><div class="title"><?php echo $meinteresa_a; ?></div><div class="form">
+                                <form id="me_interesa" class="fmeinteresa">
+                                <input type="hidden" name="product" value="" id="datap">
+                                <input type="hidden" name="usid" value="">
+                                <div class="error" id="me_interesa_error"></div>
+                            </form></div><?php
+                        }else{
+                            ?><div class="title"><?php echo $meinteresa_b; ?></div><div class="form">
+                                <form id="me_interesa" class="fmeinteresa">
+                                <input type="hidden" name="product" value="" id="datap">
+                                <input type="email" name="usemail" value="" id="usemail" required>
+                                <input type="button" value="Guardar" class="submit" id="bmeinteresa">
+                                <div class="error" id="me_interesa_error"></div>
+                            </form></div><?php
+                        }
+                    ?></div>
+                </div>
+            </div><?php
+            endif; ?>
+
+        <div class="schedule-appointment-wrapper">
+            <?php echo $this->getChildHtml('form_schedule') ?>
+        </div>
+
+        <?php if(!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+            <div class="know-more-about-product-wrapper">
+                <?php echo $this->getChildHtml('popup_session') ?>
+            </div>
+        <?php endif; ?>
+       
+	<?php if( $_cntl_max_prods>0 ): ?>
+	<script type="text/javascript">//<![CDATA[
+	var pcg_max = <?php echo $_product->configurable_max_prods; ?>;
+	//]]></script>
+	<?php endif; ?>
+
+    <?php if( $_ga ){ ?><!-- ga_aditional_product -->
+        <script type="text/javascript">
+    	   var ga_p = {
+                  'id': '7501058629159',
+                  'name': 'NESCAFÉ Cappuccino VAINILLA  Polvo para preparar café, caja 6 sobres de 132g (2 pack)',
+                  'category': 'Insumos',
+                  'brand': 'Nescafé'
+                };
+
+            function ga_addToCart() {
+                var product = $('product_addtocart_form');
+
+                var a = {
+                    'id': product.ga_id.value,
+                    'name': product.ga_name.value,
+                    'category': product.ga_categortia.value,
+                    'brand': product.ga_marca.value,
+                    'variant': '',
+                    'price': product.ga_precio.value,
+                    'quantity': product.qty.value
+                };
+
+                ga('ec:addProduct', a);
+                ga('ec:setAction', 'add');
+                ga('send', 'event', 'UX', 'click', 'add to cart');
+
+                // console.log('product_add_to_card ==> '+a.id);
+                // console.log(a);
+                return true;
+            }
+
+            document.observe("dom:loaded", function() {
+                /*    var ga_p = {
+                  'id': '<?php echo $_product->getSku(); ?>',
+                  'name': '<?php echo trim( $_product->getName().' '.$_product->getNombreSecundario() ); ?>',
+                  'category': '<?php echo trim( $category->_data['name'] ); ?>',
+                  'brand': '<?php echo $lmarca; ?>'
+                }*/
+
+                ga('ec:addProduct', ga_p);
+
+                ga('ec:setAction', 'detail');
+                ga('send', 'pageview');       
+
+                // console.log('data_prodct_view ==> '+ga_p.id);
+                // console.log(ga_p);
+            });
+        </script><?php } ?>
+    <!-- var configurable_opcion -->
+    <?php 
+        if( $_product->_data['configurable_opcion'] != '' ){
+            $config_opcion = json_decode( $_product->_data['configurable_opcion'] );
+            if($config_opcion!=null){
+                ?><script type="text/javascript">//<![CDATA[
+                <?php
+
+                echo "var py_title = '".$config_opcion->py_title."';";
+                foreach ($config_opcion->data as $et => $r) {
+                    echo "\n var $et = ".( is_numeric( $r )?$r.';':"'$r';" );
+                }
+
+                if( $_product->_data['button_sales_title'] ){
+                    ?>var lc = $$('.btn-cart').length;
+                    for( var i=0; i<lc; i++ ){
+                        $$('.btn-cart')[ i ].innerHTML = '<?php echo '<span><span>'.$_product->_data['button_sales_title'].'</span></span>'; ?>';
+                    }
+                    <?php
+                }
+
+                ?>//]]></script><?php
+            }
+        } ?>	
+    <script type="text/javascript">
+        //<![CDATA[
+        var productAddToCartForm = new VarienForm('product_addtocart_form');
+        productAddToCartForm.submit = function(button, url) {
+
+            // console.log('productAddToCartForm.submit() paso 1');
+    		<?php if( $_cntl_max_prods>0 ): ?>
+    		if( $$('.group_edit')!=null ){
+    			if( !validate_group() ){
+    				$('config_elems').setStyle({ display: 'block' });
+    				event.preventDefault();
+    				return;
+    			}
+    		}else{
+                // console.log('productAddToCartForm.submit() group_edit ==> null');
+            }
+    		<?php endif; ?>
+
+            // console.log('productAddToCartForm.submit() paso 2');
+            <?php if( $_product->_data['configurable_opcion'] != '' ): ?>
+            if( $$('.qty')!=null ){
+                if( !valid_arma_tu_caja() ){
+                    $('open_message').setStyle({ display: 'block' });
+                    event.preventDefault();
+                    return;
+                }
+            }
+            <?php endif; ?>
+
+            // console.log('productAddToCartForm.submit() paso 3');
+    		if (this.validator.validate()) {
+    			
+                var form = this.form;
+                var oldUrl = form.action;
+
+                if (url) {
+                   form.action = url;
+                }
+                var e = null;
+                try {
+                    this.form.submit();
+                } catch (e) {
+                }
+                this.form.action = oldUrl;
+                if (e) {
+                    throw e;
+                }
+
+                if (button && button != 'undefined') {
+                    button.disabled = true;
+                }
+            }
+        }.bind(productAddToCartForm);
+
+        productAddToCartForm.submitLight = function(button, url){
+    		if(this.validator) {
+                var nv = Validation.methods;
+                delete Validation.methods['required-entry'];
+                delete Validation.methods['validate-one-required'];
+                delete Validation.methods['validate-one-required-by-name'];
+                // Remove custom datetime validators
+                for (var methodName in Validation.methods) {
+                    if (methodName.match(/^validate-datetime-.*/i)) {
+                        delete Validation.methods[methodName];
+                    }
+                }
+
+                if (this.validator.validate()) {
+                    if (url) {
+                        this.form.action = url;
+                    }
+                    this.form.submit();
+                }
+                Object.extend(Validation.methods, nv);
+            }
+        }.bind(productAddToCartForm);
+    	
+        <?php if( $_cntl_max_prods>0 ): ?>
+    		function validate_group(){
+
+    			var nnn=0;
+    			$$('.group_edit input').forEach( function(elem, indx){ 
+    				if(elem.checked){ nnn +=1; } 
+    			} );
+    			
+    			if( nnn == pcg_max ){ 
+                    // console.log('validate_group() ok'); 
+                    return 1;
+                }
+                // console.log('validate_group() error ==> ( pcg_max = '+pcg_max+') != (nnn = '+nnn+' )');
+    			return 0;
+    		}
+    		message_configure_on = function(){
+    			$('config_elems').setStyle({ display: 'block' });
+    		}
+    		message_configure_off = function(){
+    			$('config_elems').setStyle({ display: 'none' });
+    		}
+    		
+    		Event.observe('config_elems', 'click', message_configure_off);
+        <?php endif; ?>
+
+        <?php /* validaciones proyecto arma tu caja */
+        if( $_product->_data['configurable_opcion'] != '' ): ?>
+            function valid_arma_tu_caja(){
+                var ff = $$('.t_super_group');
+                var fn = ff.length;
+                var nam = 0;
+                for( var i=0; i<fn; i++ ){
+                    var fe = ff[ i ];
+                    nam += parseInt( fe['value'] );
+                }
+                // console.log( nam );
+
+                $proceess = 1;
+                switch( py_title ){
+                    case 'arma_tu_caja':
+                        var numc = {
+                            '1':'primera',
+                            '2':'segunda',
+                            '3':'tercera',
+                            '4':'cuarta',
+                            '5':'quinta',
+                            '6':'sexta',
+                            '7':'séptima',
+                            '8':'octava',
+                            '9':'novena',
+                            '10':'décima',
+                            '11':'undécima',
+                            '12':'duodécima',
+                            '13':'décima tercera',
+                            '14':'décima cuarta',
+                            '15':'décima quinta',
+                            '16':'décima sexta',
+                            '17':'décima séptima',
+                            '18':'décima octava',
+                            '19':'décima novena',
+                            '20':'vigésima'
+                        }
+
+                        /* regla 1 - la suma de todos los productos debe ser minimo 6 */
+                        if( nam < py_min ){
+                            popup_message( 'Escoge mínimo 6 productos' );
+                            return 0;
+                        }
+                        /* regla 2 - la suma de todos los productos debe ser un multiplo de 6 */
+                        var dif = nam % py_multiplo;
+                        if( dif > 0 ){
+                            var niv = nam / py_multiplo;
+                                niv = Math.floor( niv );
+                                niv = niv + 1;
+                                dif = py_multiplo - dif;
+
+                            popup_message( 'Te faltan '+dif+' artículo(s) para completar la '+ numc[ niv ] +' caja. Recuerda que debes elegir '+py_min+' productos.' );
+                            return 0;
+                        }
+                    break;
+                }
+
+                return true;
+            }
+        <?php endif; ?>
+
+        function prod_decr( id_tag ){
+            $(id_tag).value = parseInt($(id_tag).value) - 1;
+            if( $(id_tag).value < 0 ){ $(id_tag).value = 0; }
+
+            price_box_update();
+        }
+        function prod_incr( id_tag ){
+            var max = $( id_tag ).attributes['dat_max'].value;
+            $(id_tag).value = parseInt( $(id_tag).value ) + 1;
+            if( parseInt( $(id_tag).value ) > max ){
+                $(id_tag).value = max;
+            }
+
+            price_box_update();
+        }
+
+        message_popup_off = function(){    $('open_message').setStyle({ display: 'none' }); }
+        function popup_message( message ){ $('popup_message').innerHTML = message; }
+        function price_box_update(){
+
+        }
+
+        Event.observe('open_message', 'click', message_popup_off);
+        //]]>
+    </script>
+    <!-- validate_bundle -->
+    <script type="text/javascript">
+        var part = <?php $v=1;
+        if( isset($_product->_data['configurable_max_prods']) && $_product->_data['configurable_max_prods']>0 ){
+            $v = $_product->_data['configurable_max_prods'];
+        }
+        echo $v; ?>;
+
+        document.observe("dom:loaded", function() {
+            var nopc = $$('.options-list li').length;
+            if( nopc != part ){
+                //$('product-options-wrapper').innerHTML = '<div style="color:red;font-size:1.5em;">Contiene productos agotados, no es posible proceder a la venta.</div>';
+                //$('qty-wrapper').innerHTML = "";
+                //$$('.product-options-bottom .add-to-cart .add-to-cart-buttons')[0].innerHTML = '';
+            }
+        } );
+    </script>
+    <!-- multiplos -->
+    <script type="text/javascript">
+        var mrules = <?php
+
+            if( $_product->_data['configurable_opcion'] == '' ){ ?>null<?php }else{
+                echo $_product->_data['configurable_opcion'];
+            }
+
+            ?>;
+        <?php if( $v_multiplo ){ ?>
+            document.observe("dom:loaded", function() {
+                $('displayp').innerHTML = mltp_price(0);
+            });<?php } ?>
+
+        function a_rules( opc, multiplo, id_display ){
+            if( mrules['data']['py_multiplo'] ){
+                if( opc == 'minus' ){ multiplo_preview( multiplo, id_display ); }                
+                if( opc == 'plus' ){  multiplo_next( multiplo, id_display ); }
+            }
+        }
+        function multiplo_next( multiplo ){
+            // console.log( 'multiplo_next()' );
+            // console.log( multiplo );
+            var qt = 'qty_'+multiplo;
+            // console.log( qt );
+            $(qt).value = parseInt( $(qt).value ) + multiplo;
+
+            mltp_display();
+        }
+        function multiplo_preview( multiplo ){
+            var qt = 'qty_'+multiplo;
+            $(qt).value = parseInt( $(qt).value ) - multiplo;
+
+            if( $(qt).value < 0 ){
+                $(qt).value = 0;
+            }
+
+            mltp_display();
+        }
+        function mltp_display(){
+            var n = 0
+            for( i=0; i<( $$('.qty_cntl').length ); i++ ){
+                /*n = n + ( $$('.qty_cntl')[ i ].attributes.data_multiplo.value * $$('.qty_cntl')[ i ].value );*/
+                n = n + parseInt( $$('.qty_cntl')[ i ].value );
+            }
+
+            var cajat = mrules.data.display_pos_fijo;
+
+            $('qty').value = n;
+            //$('displayt').innerHTML = (n * mrules.data.cont_caja)+' '+cajat;
+            $('displayt').innerHTML = n+' '+cajat;
+            $('displayp').innerHTML = mltp_price( n );            
+        }
+        function mltp_price( n ){
+            var price = <?php
+
+                $price = $_product->getPrice();
+
+                if( $_product->_data['tax_class_id']>0 ){
+                    echo round( ($price * 1.16), 2 );
+                }else{
+                    echo round( $price, 2 );
+                }
+                ?>;
+            var p = n * price;
+            var d = float2int( ( p - float2int( p ) ) * 100 );
+
+            var pint = float2int( p );
+            var pdec = float2int( (p - pint) * 100 );
+            if( pdec<10 ){
+                pdec = '0'+pdec;
+            }
+
+            var s = '<div class="price-box-text">subtotal</div><div class="price-box"><span class="regular-price"><span class="price"><span class="symbol">$</span>'+pint+'<sup>'+pdec+'</sup></span></span></div>';
+
+            return s;
+        }
+        function float2int (value) {
+            return value | 0;
+        }
+    </script>    
+    </div>
+    <a id="viewreview"></a>
+    <!-- modif product-collateral -->
+    <div class="pview_extra">
+        <div class="product-collateral toggle-content tabs">
+            <?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')):?>
+                <dl id="collateral-tabs" class="collateral-tabs">
+                    <?php foreach ($detailedInfoGroup as $alias => $html):?>
+                        <?php if( $this->getChildData($alias,'type') == 'catalog/product_view_description' ){ continue; } ?>
+                        <dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
+                        <dd class="tab-container">
+                            <div class="tab-content"><?php echo $html ?></div>
+                        </dd>
+                    <?php endforeach;?>
+                </dl>
+            <?php endif; ?>
+        </div>
+        <?php echo $this->getChildHtml('related_products') ?>
+        <?php echo $this->getChildHtml('upsell_products') ?>
+        <!--<?php echo $this->getChildHtml('product_additional_data') ?>-->
+    </div><?php if( $cntrl_me_interesa ){ ?><!-- me interesa -->
+    <script type="text/javascript">
+        function f_interesa(e){
+            $('datap').value = e.attributes.id.value;
+            $('open_message_interesa').show();
+            <?php if( $is_login ): ?>f_interesa_save();<?php endif; ?>
+        }
+
+        <?php if( !$is_login ): ?>Event.observe( $('bmeinteresa'), 'click', f_interesa_save );<?php endif; ?>
+
+        function f_interesa_close(){
+            // console.log('cerrando');
+            $('open_message_interesa').hide();
+        }
+
+        function f_interesa_save(){
+        <?php if( !$is_login ): ?>
+            $('me_interesa_error').innerHTML = '';
+
+            var str_valid_email = 'Teclee un email válido';
+            var uemail = ($('usemail').value).trim();
+            var email_valid = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+            if( uemail == '' ){
+                $('me_interesa_error').innerHTML = str_valid_email;
+                return false;
+            }
+
+            if( !email_valid.test( uemail ) ){
+                $('me_interesa_error').innerHTML = str_valid_email;
+                return false;
+            }
+
+            $('me_interesa_error').innerHTML = '';
+
+            if( !submit_interesa( { "usid":0,"usemail":( ($('usemail').value).trim() ), "datap":($('datap').value) } ) ){
+                // console.log('error al enviar datos');
+            }
+
+            f_interesa_close();
+            return true;
+        <?php else: 
+
+            $customer_data=Mage::getSingleton('customer/session')->getCustomer();
+
+            ?>if( !submit_interesa( { "usid":'<?php echo $customer_data->getEntityId(); ?>', "usemail":"", "datap":($('datap').value) } ) ){
+                // console.log('error al enviar datos');
+            }
+
+            //f_interesa_close();
+        <?php endif ?>}
+
+        function submit_interesa( d ){
+
+            d["mkd"] = "<?php echo $_SESSION['core']['visitor_data']['session_id']; ?>";
+
+            // console.log(d);
+
+            var url = "<?php echo Mage::getBaseUrl()."NESCA/ajx.code_interesa.php"; ?>";
+            // console.log(url);
+
+            new Ajax.Request( url, {
+                method: 'POST'
+                , parameters: d
+                , onFailure: function(transport) {
+                    // console.log('error to send "me interesa"');
+                }
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+
+                    // console.log( res );
+
+                    if( res['status']=='ok' ){
+                        return true;
+                    }else{
+                        // console.log( res );
+                        return false;
+                    }
+                }
+            } );
+
+            return false;
+        }
+    </script><?php }
+    ?>
+</div>
+
+<!-- popup message proxy --><?php 
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+    if( $message_proxy ): ?>
+    <div class="config_popup config_popup_show message_proxy" id="open_message_proxy" style="display: none">
+        <div class="message_popup" id="message_proxy">
+            <div class="close" onclick="f_message_proxy_close()">X</div>
+            <?php echo $popup_logo_html; ?>
+            <div class="popup_content">
+                <div id="popup_message">
+                    <!-- message_proxy_gral -->
+                    <div class="message_one" id="message_one_content">
+                        <p class="message"><?php echo $proxy_message.'<strong>'.$proxy_message_question.'</strong>'; ?></p>
+                        <p class="message center vlink" id="message_one"><?php echo $proxy_message_click; ?></p>
+                    </div>
+                    <div id="message_two" class="message_two" style="display: none">
+                        <div class="message_dos">
+                            <h2><?php echo $proxy_title; ?></h2>
+                        </div>
+                        <div class="message_dos scroll">
+                            <p class="message"><?php echo $proxy_message_a; ?></p>
+                            <p class="message"><?php echo $proxy_message_b; ?></p>
+                        </div>
+                    </div>
+                    <div class="no_check" id="no_notifycation">
+                        <div class="check"><input type="checkbox" name="no_rule_checkout" value="0" id="no_notifycationB"></div>
+                        <div class="check_message"><?php echo $enterado; ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var d_not = {}
+            d_not['process'] = '<?php echo 'checkout_onepage_notifycation_none'; ?>'; 
+            d_not['status'] = '<?php echo $_SESSION['nccurl']; ?>'; 
+            d_not['uemail'] = '<?php echo $customer->getEmail(); ?>';
+            d_not['uid'] = '<?php echo $customer->getId(); ?>';
+            d_not['sse'] = '<?php echo $session_id ; // get session id ?>';
+            d_not['sset'] = '<?php echo time(); // get session time ?>';
+
+        // console.log( d_not );
+        // console.log( '<?php echo $_SESSION['ccurl']; ?>' );
+        // console.log( '<?php echo $_SESSION['nccurl']; ?>' );
+
+        function f_message_proxy_close(){
+            $('message_one_content').show();
+            $('message_two').hide();
+            $('open_message_proxy').hide();
+            valid_no_notifycation();
+        }
+
+        document.observe("dom:loaded", function() {
+            if( d_not['status']==0 ){
+                no_notifycation_get();
+            }
+        });
+
+        $('message_one').observe("click", function() {
+            $('message_one_content').hide();
+            $('message_two').show();
+        });
+
+        function valid_no_notifycation(){
+            // console.log('valid_no_notifycation()');
+
+            if( $('no_notifycationB').checked ){
+                d_not['status'] = 1;
+                no_notifycation_save();
+            }
+        }
+
+        function no_notifycation_save(email=0){
+            // console.log( 'no_notifycation_save' );
+
+            d_not['email_force'] = 0;
+            if(email==1){
+               d_not['email_force'] = 1; 
+            }
+
+            if( d_not['status'] != 1 ){ return; }
+
+            // console.log( 'no_notifycation_save ==> ['+ d_not['status'] +']' );
+
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>NESCA/ajx.notify_checkbox.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {
+                    // console.log('error to send data');
+                }
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+                    // console.log(res);
+                }
+            } );
+        }
+
+        function no_notifycation_get(){
+            // console.log( 'no_notifycation_get' );
+
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>NESCA/ajx.notify_checkbox_get.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {
+                    /*console.log('error to send data');*/
+                }
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+                    // console.log(res);
+                    // console.log(res['status']);
+                    if( res['status']==0 ){
+                        d_not['status'] = 0;
+                        $('open_message_proxy').show();
+                    }else{
+                        d_not['status'] = 1;
+                        if( d_not['uemail']!='' ){
+                            no_notifycation_save(1);
+                        }
+                    }
+                }
+            } );
+        }
+
+        </script><?php
+endif; ?>

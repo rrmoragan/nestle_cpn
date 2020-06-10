@@ -1,0 +1,251 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?><?php
+
+/* validando si el usuario ha iniciado secion */
+$u = Mage::getSingleton('customer/session')->isLoggedIn();
+
+?>
+
+<!DOCTYPE html>
+
+<!--[if lt IE 7 ]> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head>
+<?php echo $this->getChildHtml('head');
+
+
+/* listado uso cfdi */
+$lcfdi = array(
+    "G01" => array( "title" => "Adquisici&oacute;n de mercanc&iacute;as", "select" => false ),
+    "G02" => array( "title" => "Devoluciones, descuentos o bonificaciones", "select" => false ),
+    "G03" => array( "title" => "Gastos en general", "select" => true ),
+    "I01" => array( "title" => "Construcciones", "select" => false ),
+    "I02" => array( "title" => "Mobiliario y equipo de oficina por inversiones", "select" => false ),
+    "I03" => array( "title" => "Equipo de transporte", "select" => false ),
+    "I04" => array( "title" => "Equipo de computo y accesorios", "select" => false ),
+    "I05" => array( "title" => "Dados, troqueles, moldes, matrices y herramental", "select" => false ),
+    "I06" => array( "title" => "Comunicaciones telef&oacute;nicas", "select" => false ),
+    "I07" => array( "title" => "Comunicaciones satelitales", "select" => false ),
+    "I08" => array( "title" => "Otra maquinaria y equipo", "select" => false ),
+    "D01" => array( "title" => "Honorarios m&eacute;dicos, dentales y gastos hospitalarios.", "select" => false ),
+    "D02" => array( "title" => "Gastos m&eacute;dicos por incapacidad o discapacidad", "select" => false ),
+    "D03" => array( "title" => "Gastos funerales.", "select" => false ),
+    "D04" => array( "title" => "Donativos.", "select" => false ),
+    "D05" => array( "title" => "Intereses reales efectivamente pagados por cr&eacute;ditos hipotecarios (casa habitaci&oacute;n).", "select" => false ),
+    "D06" => array( "title" => "Aportaciones voluntarias al SAR.", "select" => false ),
+    "D07" => array( "title" => "Primas por seguros de gastos m&eacute;dicos.", "select" => false ),
+    "D08" => array( "title" => "Gastos de transportaci&oacute;n escolar obligatoria.", "select" => false ),
+    "D09" => array( "title" => "Dep&oacute;sitos en cuentas para el ahorro, primas que tengan como base planes de pensiones.", "select" => false ),
+    "D10" => array( "title" => "Pagos por servicios educativos (colegiaturas)", "select" => false ),
+    //"P01" => array( "title" => "Por definir", "select" => false ),
+);
+
+?>
+</head>
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<?php echo $this->getChildHtml('after_body_start') ?>
+<div class="wrapper">
+    <?php echo $this->getChildHtml('global_notices') ?>
+    <div class="page">
+        <?php echo $this->getChildHtml('header') ?>
+        <?php echo $this->getChildHtml('category_banner') ?>
+        <div class="main-container col1-layout no-image">
+            <div class="main">
+                <?php echo $this->getChildHtml('breadcrumbs') ?>
+                <div class="col-main">
+
+                    <?php echo $this->getChildHtml('global_messages') ?>
+
+                    <div class="facturacion">
+                        <h2>Facturaci&oacute;n</h2>
+                        
+                        <form id="valid_sales" class="dfact">
+                            <div class="reg">
+                                <label>ingrese el numero de la orden de compra</label>
+                                <input type="number" name="sf_order" value="" class="input" id="sf_order" required>
+                                <div id="sf_order_error" class="error"></div>
+                            </div>
+                            <div class="reg">
+                                <label>ingrese su rfc</label>
+                                <input type="text" name="sf_rfc" value="" class="input rfc" id="sf_rfc">
+                                <div id="sf_rfc_error" class="error"></div>
+                            </div>
+                            <div class="reg">
+                                <label>ingrese su raz&oacute;n social</label>
+                                <input type="text" name="sf_rz" value="" class="input" id="sf_rz">
+                                <div id="sf_rz_error" class="error"></div>
+                            </div>
+                            <!-- <div class="reg">
+                                <label>ingrese su emial</label>
+                                <input type="email" name="sf_mail" value="" class="input" id="sf_mail" required>
+                                <div id="sf_mail_error" class="error"></div>
+                            </div> -->
+                            <div class="reg">
+                                <label>seleccione el uso CFDI</label>
+                                <select name="sf_cfdi" class="select required-entry" id="sf_cfdi"><?php
+
+                                foreach ($lcfdi as $et => $r) {
+                                    ?> <option value="<?php echo $et; ?>"<?php if( $r['select'] == true ){ echo ' selected=""'; } ?> ><?php echo $r['title']; ?></option><?php
+                                }
+
+                                ?></select>
+                                <div id="sf_cfdi_error" class="error"></div>
+                            </div>
+                            <div class="reg">
+                                <input type="button" name="" value="Generar" class="submit <?php if($u==null){ echo 'remark'; } ?>" id="sf_submit">
+                                <div id="sf_ok" class="error"></div>
+                            </div>
+                        </form>
+
+                        <div class="sf_ok" id="sf_ok">
+                            <div class="config_popup" id="config_elems" style="display: none;">
+                                <div class="message_popup" id="config_elems_message"></div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+            </div>
+        </div>
+        <?php echo $this->getChildHtml('footer_before') ?>
+        <?php echo $this->getChildHtml('footer') ?>
+        <?php echo $this->getChildHtml('global_cookie_notice') ?>
+        <?php echo $this->getChildHtml('before_body_end') ?>
+    </div>
+</div>
+<?php echo $this->getAbsoluteFooter() ?>
+<style>.cms-page-view .main-container.no-image{background-image: none;}</style>
+<script type="text/javascript">
+    //document.observe("dom:loaded", function() {});
+
+    var af = null;
+
+    $('sf_submit').addEventListener('click', function(){
+        if( !valid_data_factura() ){ console.log('error en formulario'); return false; }
+        genera_factura();
+    } );
+
+    function valid_data_factura(){
+        
+        limpia_error();
+
+        var a = {};
+
+        a['so']     = ( $('sf_order').value ).trim();    // sales order
+        a['srfc']   = ( $('sf_rfc').value ).trim();      // rfc
+        //a['semail'] = ( $('sf_mail').value ).trim();     // email
+        a['scfdi']  = ( $('sf_cfdi').value ).trim();     // uso cfdi
+        a['srz']    = ( $('sf_rz').value ).trim();       // razon social
+
+        var er = 0;
+        if( !a['so'] ){     er++; $('sf_order_error').innerHTML = 'Introduzca un n&uacute;mero de orden de venta v&aacute;lido'; }
+        if( !a['srfc'] ){   er++; $('sf_rfc_error').innerHTML   = 'Introduzca un rfc v&aacute;lido'; }
+        //if( !a['semail'] ){ er++; $('sf_mail_error').innerHTML  = 'Introduzca un email v&aacute;lido'; }
+        if( !a['scfdi'] ){  er++; $('sf_cfdi_error').innerHTML  = 'Seleccione un uso CFDI'; }
+        if( !a['srz'] ){    er++; $('sf_rz_error').innerHTML    = 'Introduzca la raz&oacute;n social'; }
+
+        if( er>0 ){
+            $('sf_error').innerHTML    = 'Rellene adecuadamente todos los campos';
+            return false;
+        }
+
+        af = a;
+        return true;
+    }
+
+    function limpia_error(){
+        $('sf_order_error').innerHTML = '';
+        $('sf_rfc_error').innerHTML   = '';
+        //$('sf_mail_error').innerHTML  = '';
+        $('sf_cfdi_error').innerHTML  = '';
+        $('sf_rz_error').innerHTML    = '';
+        //$('sf_error').innerHTML       = '';
+
+        return true;
+    }
+
+    function genera_factura(){
+
+        var url = 'https://<?php echo $_SERVER['HTTP_HOST'] ?>/NESCA/ajx.so_valid.php';
+
+        console.log( '---- enviando datos ----' );
+
+        new Ajax.Request( url, {
+            method: 'POST'
+            , parameters: af
+            , dataType: "json"
+            , onFailure: function(transport) {
+                console.log('error to send data');
+            }
+            , onSuccess: function(transport) {
+                var res = transport.responseText.evalJSON();
+                if( res['status'] == 'error' ){
+                    data_error( res['data'] );
+                }else{
+                    $('config_elems_message').innerHTML = res['message'];
+                    message_configure_on();
+                }
+            }
+        } );
+    }
+
+    function data_error( r ){
+        for( var key in r ){
+            switch( key ){
+                case 'so':      var m = 'sf_order_error';       $(m).innerHTML = r[ key ]['message']; break;
+                case 'srfc':    var m = 'sf_rfc_error';         $(m).innerHTML = r[ key ]['message']; break;
+                case 'srz':     var m = 'sf_rz_error';          $(m).innerHTML = r[ key ]['message']; break;
+                case 'scfdi':   var m = 'sf_cfdi';              $(m).innerHTML = r[ key ]['message']; break;
+                case 'otros':
+                    var m = 'config_elems_message';
+                    $(m).innerHTML = r[ key ]['message'];
+                    message_configure_on();
+                    break;
+            }
+        }
+    }
+
+    message_configure_on = function(){
+        $('config_elems').setStyle({ display: 'block' });
+    }
+    message_configure_off = function(){
+        $('config_elems').setStyle({ display: 'none' });
+    }
+
+    Event.observe('config_elems', 'click', message_configure_off);
+</script>
+</body>
+</html>
+

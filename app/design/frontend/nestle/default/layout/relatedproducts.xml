@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<relatedproducts_index_index>
+		<update handle="customer_account"/>
+    	<reference name="my.account.wrapper">
+			<block type="core/template" name="relatedproducts" template="relatedproducts/related.phtml" />
+		</reference>
+	</relatedproducts_index_index>
+</layout>

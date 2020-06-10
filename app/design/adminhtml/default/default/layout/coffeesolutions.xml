@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_CoffeeSolutions
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<layout>
+    <coffeesolutions_adminhtml_solutions_productos>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="coffeesolutions/adminhtml_solutions_edit_tab_productos" name="edit.coffeesolutions.productos"/>
+            
+            <block type="adminhtml/widget_grid_serializer" name="grid_serializer">
+               <reference name="grid_serializer">
+                   <action method="initSerializerBlock">
+                       <grid_block_name>edit.coffeesolutions.productos</grid_block_name>
+                       <data_callback>getProducts</data_callback>
+                       <hidden_input_name>product_ids</hidden_input_name>
+                       <reload_param_name>products</reload_param_name>
+                   </action>
+               </reference>
+           </block>
+        </block>
+    </coffeesolutions_adminhtml_solutions_productos>
+    
+    <coffeesolutions_adminhtml_solutions_gridproductos>
+         <block type="core/text_list" name="root" output="toHtml">
+            <block type="coffeesolutions/adminhtml_solutions_edit_tab_productos" name="edit.coffeesolutions.productos"/>
+        </block>
+    </coffeesolutions_adminhtml_solutions_gridproductos>
+    
+    
+    <coffeesolutions_adminhtml_solutions_solutions>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="coffeesolutions/adminhtml_catalog_category_tab_soluciones" name="edit.coffeesolutions.soluciones"/>
+            
+            <block type="adminhtml/widget_grid_serializer" name="grid_serializer">
+               <reference name="grid_serializer">
+                   <action method="initSerializerBlock">
+                       <grid_block_name>edit.coffeesolutions.soluciones</grid_block_name>
+                       <data_callback>getSolutions</data_callback>
+                       <hidden_input_name>solutions_ids</hidden_input_name>
+                       <reload_param_name>solutions</reload_param_name>
+                   </action>
+                   <action method="addColumnInputName">
+                       <input_name>position</input_name>
+                   </action>
+               </reference>
+           </block>
+        </block>
+    </coffeesolutions_adminhtml_solutions_solutions>
+    
+    <coffeesolutions_adminhtml_solutions_gridsolutions>
+         <block type="core/text_list" name="root" output="toHtml">
+            <block type="coffeesolutions/adminhtml_catalog_category_tab_soluciones" name="edit.coffeesolutions.soluciones"/>
+        </block>
+    </coffeesolutions_adminhtml_solutions_gridsolutions>
+    
+    <adminhtml_customer_edit>
+        <reference name="head">
+            <action method="addJs"><script>entrepids/adminhtml/customer.js</script></action>
+        </reference>
+    </adminhtml_customer_edit>
+    
+</layout>

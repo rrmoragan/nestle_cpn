@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+  <!-- file: magento_root/app/code/local/Mlg/OpenpayReport/etc/config.xml -->
+  <!-- Mlg_OpenpayReport_Block -->
+  <!-- Mlg_OpenpayReport_Model ==> Mlg_OpenpayReport_Resource -->
+  <!-- Mlg_OpenpayReport_Model_Resource -->
+  <!-- Mlg_OpenpayReport_Helper -->
+  <!-- Mlg_OpenpayReport_Adminhtml -->
+  <config>
+      <modules>
+          <Mlg_OpenpayReport>
+              <version>1.0.0</version>
+          </Mlg_OpenpayReport>
+      </modules>
+      <global>
+          <blocks>
+              <mlg_openpayreport>
+                  <class>Mlg_OpenpayReport_Block</class>
+              </mlg_openpayreport>
+          </blocks>
+          <models>
+              <mlg_openpayreport>
+                  <class>Mlg_OpenpayReport_Model</class>
+                  <resourceModel>Mlg_OpenpayReport_Resource</resourceModel>
+              </mlg_openpayreport>
+              <mlg_openpayreport_resource>
+                  <class>Mlg_OpenpayReport_Model_Resource</class>
+              </mlg_openpayreport_resource>
+          </models>
+          <helpers>
+              <mlg_openpayreport>
+                  <class>Mlg_OpenpayReport_Helper</class>
+              </mlg_openpayreport>
+          </helpers>
+      </global>
+      <admin>
+          <routers>
+              <adminhtml>
+                  <args>
+                      <modules>
+                          <Mlg_OpenpayReport_Adminhtml after="Mage_Adminhtml">Mlg_OpenpayReport_Adminhtml</Mlg_OpenpayReport_Adminhtml>
+                      </modules>
+                  </args>
+              </adminhtml>
+          </routers>
+      </admin>
+  </config>

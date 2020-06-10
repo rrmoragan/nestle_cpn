@@ -1,0 +1,251 @@
+/*@import "compass";*/
+/*@import "compass/css3";*/
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,500,700);
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+
+input:focus, button:focus {
+  outline: 0px; }
+
+/*
+// ----------------------------------------------
+// Usage example:
+// For IE set $mq-support to false.
+// Set the fixed value.
+// Then use mixins to test whether styles should be applied.
+// ----------------------------------------------
+
+$mq-support: false;
+$mq-fixed-value: 1024;
+
+// Renders at fixed value
+@include bp (min-width, 300px) { 
+    div { color:#000; }
+}
+
+// Doesn't render without MQ support
+@include bp (min-width, 1200px) { 
+    div { color:#FFF; }
+}
+
+// Doesn't render without MQ support
+@include bp (max-width, 300px) { 
+    div { color:#444; }
+}
+
+// Renders at fixed value
+@include bp (max-width, 1200px) { 
+    div { color:#888; }
+}
+
+// ----------------------------------------------
+*/
+/* Font Styles */
+/* Media Queries */
+/* Setting the Web Font inside a media query so that Outlook doesn't try to render the web font */
+@media screen {
+  .email-heading h1,
+  .store-info h4,
+  th.cell-name,
+  a.product-name,
+  p.product-name,
+  .address-details h6,
+  .method-info h6,
+  h5.closing-text,
+  .action-button,
+  .action-button a,
+  .action-button span,
+  .action-content h1 {
+    font-family: 'Gotham-Book', Verdana, Arial !important;
+    font-weight: normal; } }
+@media screen and (max-width: 600px) {
+  body {
+    width: 94% !important;
+    padding: 0 3% !important;
+    display: block !important; }
+
+  .container-table {
+    width: 100% !important;
+    max-width: 600px;
+    min-width: 300px; }
+
+  td.store-info h4 {
+    margin-top: 8px !important;
+    margin-bottom: 0px !important; }
+
+  td.store-info p {
+    margin: 5px 0 !important; }
+
+  .wrapper {
+    width: 100% !important;
+    display: block;
+    padding: 5px 0 !important; }
+
+  .cell-name,
+  .cell-content {
+    padding: 8px !important; } }
+@media screen and (max-width: 450px) {
+  .email-heading,
+  .store-info {
+    float: left;
+    width: 98% !important;
+    display: block;
+    text-align: center;
+    padding: 10px 1% !important;
+    border-right: 0px !important; }
+
+  .address-details, .method-info {
+    width: 85%;
+    display: block; }
+
+  .store-info {
+    border-top: 1px dashed #C3CED4; }
+
+  .method-info {
+    margin-bottom: 15px !important; } }
+/* Remove link color on iOS */
+.no-link a {
+  color: #f4f3f3 !important;
+  cursor: default !important;
+  text-decoration: none !important; }
+
+.method-info h6,
+.address-details h6,
+.closing-text {
+  color: #e1261c !important; }
+
+td.order-details h3,
+td.store-info h4 {
+  color: #f4f3f3 !important; }
+
+.method-info p,
+.method-info dl {
+  margin: 5px 0 !important;
+  font-size: 12px !important; }
+
+td.align-center {
+  text-align: center !important; }
+
+td.align-right {
+  text-align: right !important; }
+
+/* Newsletter styles */
+td.expander {
+  padding: 0 !important; }
+
+table.button td,
+table.social-button td {
+  width: 92% !important; }
+
+table.facebook:hover td {
+  background: #2d4473 !important; }
+
+table.twitter:hover td {
+  background: #0087bb !important; }
+
+table.google-plus:hover td {
+  background: #CC0000 !important; }
+
+/* ============================================ *
+ * Product Grid
+ * ============================================ */
+@media screen and (max-width: 600px) {
+  .products-grid tr td {
+    width: 50% !important;
+    display: block !important;
+    float: left !important; } }
+.product-name a:hover {
+  color: #e1261c !important;
+  text-decoration: none !important; }
+
+/* ============================================ *
+ * Entrepids DDUX transactional email styles 
+ * ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+
+body {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto; }
+  body header > img {
+    width: 600px; }
+  body main .text {
+    position: relative;
+    height: 388px; }
+    body main .text .paragraph {
+      position: relative;
+      color: white; }
+      body main .text .paragraph h1 {
+        width: 50%;
+        float: left;
+        position: relative;
+        z-index: 5;
+        top: 81px;
+        left: 104px;
+        font-family: "Gotham-Bold", "Trebuchet MS", Arial, sans-serif;
+        font-size: 20px; }
+      body main .text .paragraph div {
+        width: 45%;
+        float: right;
+        position: relative;
+        z-index: 5;
+        top: 100px;
+        padding-right: 30px; }
+        body main .text .paragraph div h3 {
+          font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif;
+          font-size: 18px; }
+        body main .text .paragraph div p {
+          font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+        body main .text .paragraph div button {
+          background: black;
+          padding: 10px 14px;
+          color: white;
+          border-radius: 5px;
+          margin-top: 20px;
+          font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif; }
+    body main .text .bg {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      width: 600px; }
+tr.footer {
+    background-color: #aa1616;
+    color: white;
+    padding: 30px;
+    border-top: 2px solid white;
+    color: white; }
+tr.footer ul li {
+      list-style: none;
+      display: inline-block;
+      text-align: center; }
+tr.footer ul li img {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px; }
+tr.footer ul li a {
+        height: 32px;
+        line-height: 32px;
+        text-decoration: none;
+        color: white;
+        font-style: normal;
+        font-size: 11px; }
+tr.footer ul li.phone {
+        width: 49%; }
+tr.footer ul li.phone a {
+          font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+tr.footer ul li.mail {
+        width: 49%; }
+tr.footer ul li.mail a {
+          font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+tr.footer ul li.terms {
+        display: block; }
+tr.footer ul li.terms a {
+          font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif; }
+
+/*# sourceMappingURL=email-non-inline.css.map */

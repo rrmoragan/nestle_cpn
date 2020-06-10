@@ -1,0 +1,244 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * popup message proxy
+ * 
+ */
+
+$popup_mp = true;
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * accesPaymentMethod
+ * 
+ */
+
+$user_aaa = false;
+$message_title = '';
+$message_subtitle = '';
+
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+    if( isset( $_SESSION['payment_method_access_cntl'] ) ){
+        if( $_SESSION['payment_method_access_cntl'] != null ){
+            $user_aaa = true;
+            $message_title = $customer->getData('message_pm_tit');
+            $message_subtitle = $customer->getData('message_pm_subtit');
+        }
+    }
+
+    if( $message_title=='' && $message_subtitle=='' ){
+        if( $user_aaa ){
+            $popup_mp = false;
+        }
+    }
+
+?><!-- select_method_payment -->
+<script type="text/javascript">
+    //<![CDATA[
+    var quoteBaseGrandTotal = <?php echo (float)$this->getQuoteBaseGrandTotal(); ?>;
+    var checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+    var quoteGrandTotalClean = quoteBaseGrandTotal;
+    var payment = new Payment('co-payment-form', '<?php echo $this->getUrl('checkout/onepage/savePayment') ?>');
+    var lastPrice;
+    //]]>
+</script>
+<form action="" id="co-payment-form">
+    <div class="fieldset">
+        <?php echo $this->getChildChildHtml('methods_additional', '', true, true) ?>
+        <?php echo $this->getChildHtml('methods') ?>
+    </div>
+    <?php echo $this->getBlockHtml('formkey') ?>
+</form>
+<div class="tool-tip" id="payment-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="payment-tool-tip-close" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Close')) ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content"><img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Card Verification Number Visual Reference')) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Card Verification Number Visual Reference')) ?>" /></div>
+</div>
+<div class="step_method_error" id="step_paymeth_method_error"></div>
+<?php echo $this->getChildChildHtml('additional') ?>
+<div class="buttons-set" id="payment-buttons-container">
+    <?php // Moved to CC form ?>
+    <?php /* <p class="required"><?php echo $this->__('* Required Fields') ?></p> */ ?>
+    <p class="back-link"><a href="#" onclick="checkout.back(); return false;"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+    <button type="button" class="button" onclick="payment.save()"><span><span><?php echo $this->__('Continue') ?></span></span></button>
+    <span class="please-wait" id="payment-please-wait" style="display:none;">
+        <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Loading next step...')) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Loading next step...')) ?>" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+    </span>
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+    function toggleToolTip(event){
+        if($('payment-tool-tip')){
+            $('payment-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('payment-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('payment-tool-tip-close')){
+        Event.observe($('payment-tool-tip-close'), 'click', toggleToolTip);
+    }
+    //]]>
+</script>
+<script type="text/javascript">
+    //<![CDATA[
+    payment.currentMethod = "<?php echo $this->getChild('methods')->getSelectedMethodCode() ?>";
+    //]]>
+</script>
+
+<!-- popup message proxy --><?php
+
+    if( $popup_mp ){
+
+    $proxy_message = Mage::helper('core')->quoteEscape($this->__('Proxy Message'));
+    $proxy_message_question = Mage::helper('core')->quoteEscape($this->__('Proxy Message Question'));
+    $proxy_message_click = Mage::helper('core')->quoteEscape($this->__('Proxy Message Click'));
+    $proxy_title = Mage::helper('core')->quoteEscape($this->__('Proxy Message Title'));
+    $proxy_message_a = Mage::helper('core')->quoteEscape($this->__('Proxy Message A'));
+    $proxy_message_b = Mage::helper('core')->quoteEscape($this->__('Proxy Message B'));
+    $enterado = Mage::helper('core')->quoteEscape($this->__('Enterado'));
+
+    ?>
+    <div id="popup_payment_method" class="popup" style="display:none;">
+        <div id="popup_payment_method_close" class="popup_close">X</div>
+        <div class="popup_content">
+            <div id="popup_message"><?php 
+                if( !$user_aaa ): ?>
+                    <!-- message_proxy_gral -->
+                    <div class="message_one" id="message_one_content">
+                        <p class="message"><?php echo $proxy_message.'<strong>'.$proxy_message_question.'</strong>'; ?></p>
+                        <p class="message center vlink" id="message_one"><?php echo $proxy_message_click; ?></p>
+                    </div>
+                    <div id="message_two" class="message_two" style="display: none">
+                        <div class="message_dos">
+                            <h2><?php echo $proxy_title; ?></h2>
+                        </div>
+                        <div class="message_dos scroll">
+                            <p class="message"><?php echo $proxy_message_a; ?></p>
+                            <p class="message"><?php echo $proxy_message_b; ?></p>
+                        </div>
+                    </div>
+                    <div class="no_check" id="no_notifycation">
+                        <div class="check"><input type="checkbox" name="no_rule_checkout" value="0" id="no_notifycationB"></div>
+                        <div class="check_message"><?php echo $enterado; ?></div>
+                    </div><?php 
+                else: ?><div class="message_one" id="message_one_content">
+                    <h3><?php echo $message_title; ?></h3>
+                    <p class="message"><?php echo $message_subtitle; ?></p>
+                </div><?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var d_not = {}
+            d_not['process'] = '<?php echo 'checkout_onepage_notifycation_none'; ?>'; 
+            d_not['status'] = '0'; 
+            d_not['uemail'] = '<?php echo $customer->getEmail(); ?>';
+            d_not['uid'] = '<?php echo $customer->getId(); ?>';
+
+        document.observe("dom:loaded", no_notifycation_get );
+
+        /*$('message_payment_method_view').observe( 'click', notification_on );*/
+        $('popup_payment_method_close').observe( 'click', notification_off );
+        $('message_one').observe( 'click', message_two_on );
+        $('no_notifycation').observe( 'click', valid_notifycation );
+        function valid_notifycation(){
+            console.log( 'checked ==> '+$('no_notifycationB').checked );
+
+            if( $('no_notifycationB').value==1 ){
+                $('no_notifycationB').value = 0;
+                $('no_notifycationB').checked = false;
+                console.log( 'checked ==> '+$('no_notifycationB').checked );
+            }else{
+                $('no_notifycationB').value = 1;
+                $('no_notifycationB').checked = true;
+                console.log( 'checked ==> '+$('no_notifycationB').checked );
+            }
+
+            if( $('no_notifycationB').value==1 ){
+                no_notifycation_save();
+            }
+        }
+        function no_notifycation_get(){
+            //console.log('leyendo status notify');
+            //console.log( d_not );
+
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>NESCA/ajx.notify_checkbox_get.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {
+                    console.log('error to send vendor code');
+                }
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+
+                    if( res['status']=='1' ){
+                        notification_on();
+                        d_not['status'] = 1;
+                    }
+                }
+            } );
+        }
+        function no_notifycation_save(){
+            /*console.log( d_not );*/
+            d_not['status'] = 0;
+
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>/NESCA/ajx.notify_checkbox.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {}
+                , onSuccess: function(transport) {}
+            } );
+        }
+        function message_two_on(){
+            $('message_two').show();
+            $('message_one_content').hide();
+        }
+        function notification_on(){ $('popup_payment_method').show(); }
+        function notification_off(){
+            $('popup_payment_method').hide();
+            $('message_one_content').show();
+        }
+    </script>
+    <?php } ?><!-- fin popup message proxy -->
+
+<style type="text/css">
+.step_method_error{
+    display: block;
+    clear: both;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    color: #e1261c;
+    font-size: 1.2em;
+}
+</style>

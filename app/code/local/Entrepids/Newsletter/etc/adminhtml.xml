@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config> 
+  <menu>
+      <newsletter>
+        <children>
+          <manage_categories translate="title" module="entrepids_newsletter">
+            <title>Admin Newsletter Categories</title>
+            <sort_order>4</sort_order>
+            <action>adminhtml/newsletter/</action>
+          </manage_categories>
+        </children>
+      </newsletter>
+    </menu>
+    
+   <menu>
+        <newsletter>
+             <children>
+                 <subscriber>
+                            <depends>
+                                <module>HideMe</module> <!-- Fake dependance to hide menu item -->
+                            </depends>
+                </subscriber>
+            </children>
+        </newsletter>
+    </menu>
+
+</config>

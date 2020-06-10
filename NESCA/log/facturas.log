@@ -1,0 +1,33 @@
+.........
+ listando 24 
++===========+========+=============+======+===============+===================================+=============+==============+===+
+| sales     | status | total       | CFDI | rfc           | email                             | customer_id | payment      | f |
++===========+========+=============+======+===============+===================================+=============+==============+===+
+| 100001061 | pagado | 1187.5000   | G03  | LAD050405LM2  | finanzas@la-cc.com.mx             | 683         | stores       | X |
+| 100001052 | pagado | 1347.3500   | G03  | GAFG850322BU6 | gabdi0911@gmail.com               | 483         | charges      | X |
+| 100001049 | pagado | 1130.1200   | G03  | MOJL810105T41 | luis_fmoreno@hotmail.com          | 712         | charges      | X |
+| 100001048 | pagado | 1168.5200   | G03  | RAFE850522B67 | emmanuelrf@icloud.com             | 806         | banks        | X |
+| 100001044 | pagado | 1499.0000   | G03  | CETG791212K20 | profetoxqui@hotmail.com           | 796         | charges      | X |
+| 100001043 | pagado | 3148.1400   | G03  | ACA1106028A8  | gabriel@expendor.mx               | 753         | banks        | X |
+| 100001041 | pagado | 4900.5600   | G03  | JIRA830502JL7 | CDC24DEMARZO@GMAIL.COM            | 788         | charges      | X |
+| 100001040 | pagado | 1321.8200   | G03  | VIMM690703AD1 | marxiall89@gmail.com              | 536         | stores       | X |
+| 100001036 | pagado | 4375.6000   | G03  | PAZJ690903EX7 | gabriel@expendor.mx               | 753         | banks        | X |
+| 100001030 | pagado | 2704.9700   | G01  | MOSR640415AG4 | TABAQUERIAOFELIA@GMAIL.COM        | 774         | banks        | X |
+| 100001028 | pagado | 354.3900    | G03  | LAD050405LM2  | finanzas@la-cc.com.mx             | 683         | charges      | X |
+| 100001027 | pagado | 985.4000    | G03  | LAD050405LM2  | finanzas@la-cc.com.mx             | 683         | stores       | X |
+| 100001025 | pagado | 1033.4600   | G03  | OHC080716L28  | jwsf.asiscompras@grupodiestra.com | 760         | stores       | X |
+| 100001022 | pagado | 1995.4100   | G03  | EFM160919SW3  | esanchez@efin.com.mx              | 761         | charges      | X |
+| 100001020 | pagado | 2340.7200   | G03  | MRA080229PI8  | leslie.gonzalez@notaria49.mx      | 302         | stores       | X |
+| 100001019 | pagado | 1166.2700   | I04  | GALE901027RP7 | centralpuertatoreo@gmail.com      | 598         | charges      | X |
+| 100001018 | pagado | 1221.1600   | G03  | GAFG850322BU6 | gabdi0911@gmail.com               | 483         | stores       | X |
+| 100001009 | pagado | 1217.7400   | G03  | VIMM690703AD1 | marxiall89@gmail.com              | 536         | stores       | X |
+| 100001008 | pagado | 3450.4800   | G03  | ITE430714KI0  | anabel.arredondo@tec.mx           | 665         | charges      | X |
+| 100001005 | pagado | 162194.5500 | G03  | DFD0610027S4  | ivette.torres@dafen.com.mx        | 663         | banktransfer |   |
+| 100001004 | pagado | 1212.6700   | G03  | MOJL810105T41 | luis_fmoreno@hotmail.com          | 712         | charges      | X |
+| 100001002 | pagado | 1236.5500   | G03  | LAD050405LM2  | finanzas@la-cc.com.mx             | 683         | stores       | X |
+| 100000995 | pagado | 6960.0000   | G03  | COZY540122D6A | VLLERAB@HOTMAIL.COM               | 635         | charges      | X |
+| 100000992 | pagado | 900.8500    | G03  | SPI971106579  | elizabeth@samprevinc.com          | 699         | charges      | X |
++===========+========+=============+======+===============+===================================+=============+==============+===+
+| sales     | status | total       | CFDI | rfc           | email                             | customer_id | payment      | f |
++===========+========+=============+======+===============+===================================+=============+==============+===+
+

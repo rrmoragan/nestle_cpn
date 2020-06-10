@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Cronscheduler
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Cronscheduler>
+            <version>1.0.0</version>
+        </Entrepids_Cronscheduler>
+    </modules>
+    <global>
+        <blocks>
+            <aoe_scheduler>
+                <rewrite>
+                    <adminhtml_job_edit_tab_form>Entrepids_Cronscheduler_Block_Adminhtml_Job_Edit_Tab_Form</adminhtml_job_edit_tab_form>
+                    <adminhtml_job_edit_tabs>Entrepids_Cronscheduler_Block_Adminhtml_Job_Edit_Tabs</adminhtml_job_edit_tabs>
+                    <adminhtml_job_grid>Entrepids_Cronscheduler_Block_Adminhtml_Job_Grid</adminhtml_job_grid>
+                    <adminhtml_scheduler_grid>Entrepids_Cronscheduler_Block_Adminhtml_Scheduler_Grid</adminhtml_scheduler_grid>
+                    <adminhtml_timeline>Entrepids_Cronscheduler_Block_Adminhtml_Timeline</adminhtml_timeline>
+                    <adminhtml_timelineDetail>Entrepids_Cronscheduler_Block_Adminhtml_Timeline</adminhtml_timelineDetail>
+                </rewrite>
+            </aoe_scheduler>
+            <cronscheduler>
+                <class>Entrepids_Cronscheduler_Block</class>
+            </cronscheduler>
+        </blocks>
+        <models>
+            <aoe_scheduler>
+                <rewrite>
+                    <job>Entrepids_Cronscheduler_Model_Job</job>
+                    <schedule>Entrepids_Cronscheduler_Model_Schedule</schedule>
+                    <scheduleManager>Entrepids_Cronscheduler_Model_ScheduleManager</scheduleManager>
+                </rewrite>
+            </aoe_scheduler>
+            <aoe_scheduler_resource>
+                <rewrite>
+                    <job>Entrepids_Cronscheduler_Model_Resource_Job</job>
+                    <job_collection>Entrepids_Cronscheduler_Model_Resource_Job_Collection</job_collection>
+                </rewrite>
+            </aoe_scheduler_resource>
+            <cron>
+                <rewrite>
+                    <observer>Entrepids_Cronscheduler_Model_Observer</observer>
+                    <schedule>Entrepids_Cronscheduler_Model_Schedule</schedule>
+                </rewrite>
+            </cron>
+            <cronscheduler>
+                <class>Entrepids_Cronscheduler_Model</class>
+                <resourceModel>cronscheduler_resource</resourceModel>
+            </cronscheduler>
+            <cronscheduler_resource>
+                <class>Entrepids_Cronscheduler_Model_Resource</class>
+                <entities>
+                    <htcron>
+                        <table>ht_cron_schedule</table>
+                    </htcron>
+                </entities>
+            </cronscheduler_resource>
+        </models>
+        <helpers>
+            <cronscheduler>
+                <class>Entrepids_Cronscheduler_Helper</class>
+            </cronscheduler>
+        </helpers>
+        <resources>
+            <cronscheduler_setup>
+                <setup>
+                    <module>Entrepids_Cronscheduler</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </cronscheduler_setup>
+        </resources>
+        <template>
+            <email>
+                <system_cron_notification_email_template translate="label" module="cronscheduler">
+                    <label>Cron Notification Default</label>
+                    <file>entrepids/cron_notification_email.html</file>
+                    <type>html</type>
+                </system_cron_notification_email_template>
+            </email>
+        </template>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <cronschedule>
+                    <file>entrepids_cronscheduler.xml</file>
+                </cronschedule>
+            </updates>
+        </layout>
+    </adminhtml>
+    <frontend>
+        <routers>
+            <cronscheduler>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_Cronscheduler</module>
+                    <frontName>cronscheduler</frontName>
+                </args>
+            </cronscheduler>
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Entrepids_Cronscheduler before="Aoe_Scheduler_Adminhtml">Entrepids_Cronscheduler_Adminhtml</Entrepids_Cronscheduler>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+        <translate>
+            <modules>
+                <translations>
+                    <files>
+                        <default>Entrepids_Cronscheduler.csv</default>
+                    </files>
+                </translations>
+            </modules>
+        </translate>
+    </admin>
+	<crontab>
+        <jobs>
+            <aoescheduler_heartbeat>
+                <schedule>
+                    <config_path>system/cron/scheduler_cron_expr_heartbeat</config_path>
+                </schedule>
+                <run>
+                    <model>aoe_scheduler/task_heartbeat::run</model>
+                </run>
+                <groups>all</groups>
+				<name>Detector de Funcionamiento del Cron</name>
+				<short_description>Detecta que se ejecuten las tareas programadas.</short_description>
+				<visible>1</visible>
+            </aoescheduler_heartbeat>
+        </jobs>
+    </crontab>
+    <default>
+        <system>
+            <cron>
+                <history_cleanup_every>60</history_cleanup_every>
+                <history_success_lifetime>4320</history_success_lifetime>
+                <history_failure_lifetime>4320</history_failure_lifetime>
+                <notification_email_template>system_cron_notification_email_template</notification_email_template>
+            </cron>
+        </system>
+    </default>
+</config>

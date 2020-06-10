@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Cronscheduler
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<layout>
+    <adminhtml_job_edit>
+        <reference name="head">
+            <action method="addJs"><script>entrepids/cronscheduler/crontimehelper.js</script></action>     
+        </reference>
+    </adminhtml_job_edit>
+    
+    <adminhtml_hiddenjobs_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+        </reference>
+        <reference name="content">
+            <block type="cronscheduler/adminhtml_hiddenjobs" name="cronscheduler.hiddenjobs"/>
+        </reference>
+    </adminhtml_hiddenjobs_index>
+    <adminhtml_timeline_index>
+        <reference name="aoe_scheduler.timeline">
+            <action method="setTemplate">
+                <name>entrepids_cronscheduler/timeline.phtml</name>
+            </action>
+        </reference>
+    </adminhtml_timeline_index>
+</layout>

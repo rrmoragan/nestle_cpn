@@ -1,0 +1,56 @@
+<!--@subject Aviso de una suscripción al boletín @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$customer.name":"Customer Name",
+"var customer.email":"Customer Email",
+"store url=\"customer/account/\"":"Customer Account Url"}
+@-->
+
+{{template config_path="design/email/header"}}
+<tr>
+<td height="40" bgcolor="#ef2226" style="font-size:18px;text-align:center; color: #fff; text-transform: uppercase; ">
+	Suscripción</td></tr>
+<tr></tr>
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td height="25">
+<table width="800" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+<tr>
+<td width="20" style="background-color:#000;">&nbsp;</td>
+<td width="10" height="40">&nbsp;</td>
+<td width="636" height="70" style="padding-right: 33px;font-size:20px;font-weight:bold;text-align:center;color:#58595b;">
+	Hola, {{htmlescape var=$customer.name}}<br /></td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" bgcolor="#fff" border="0" cellspacing="0" cellpadding="0" style="border-top:#ccc solid 1px;">
+<tr>
+<td height="80">
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="2">
+<tr>
+<td width="500" height="120" align="center" bgcolor="">
+<span>
+<span style="color: #ef2226;font-weight: bold;font-size: 20px">Pronto recibirás noticias de nuestros productos</span> <br>
+precios especiales, lanzamientos, recetas, tips y mucho más. 
+Disfruta ser parte de Café para mi negocio.
+</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">&nbsp;</td>
+</tr>
+{{template config_path="design/email/footer"}}

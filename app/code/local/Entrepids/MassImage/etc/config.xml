@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+@category    Entrepids
+@package     Entrepids_MassImage
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <modules>
+        <Entrepids_MassImage>
+            <version>0.0.1</version>
+        </Entrepids_MassImage>
+    </modules>
+
+    <global>
+        <helpers>
+            <massimage>
+                <class>Entrepids_MassImage_Helper</class>
+            </massimage>
+        </helpers>
+
+
+        <models>
+            <massimage>
+                <class>Entrepids_MassImage_Model</class>
+            </massimage>
+        </models>
+
+        <events>
+            <admin_system_config_changed_section_entrepids_massimage>
+                <observers>
+                    <upload>
+                        <type>singleton</type>
+                        <class>massimage/observer</class>
+                        <method>uploadImageBySku</method>
+                    </upload>
+                </observers>
+            </admin_system_config_changed_section_entrepids_massimage>
+        </events>
+    </global>
+</config>

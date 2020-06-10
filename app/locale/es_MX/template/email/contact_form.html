@@ -1,0 +1,38 @@
+<!--@subject Formulario de contacto@-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"var data.name":"Sender Name",
+"var data.email":"Sender Email",
+"var data.telephone":"Sender Telephone",
+"var data.comment":"Comment"}
+
+@-->
+
+{{template config_path="design/email/header"}}
+<tr>
+  <td style="color:#fff;font-size:18px;text-align:center;"height="40"bgcolor="#ef2226">Formulario de contacto</td>
+</tr>
+<tr>
+  <td colspan="2" align="center" valign="top" bgcolor="#FFFFFF" ><br />
+    <table cellSpacing="0" cellPadding="0" width="80%" border="0">
+      <tr>
+        <td align="left" width="160" style="border-bottom: 1px dotted #cccccc;padding-top: 5px;">Nombre:</td>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;"> {{var data.name}} </td></tr>
+      <tr>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;padding-top: 5px;">Apellido:</td>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;"> {{var data.lastname}} </td></tr>
+      <tr>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;padding-top: 5px;">Correo electrónico:</td>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;"> {{var data.email}} </td></tr>
+      <tr>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;padding-top: 5px;">Asunto:</td>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;"> {{var data.subject}} </td></tr>
+      <tr>
+        <td valign="top" align="left" style="border-bottom: 1px dotted #cccccc;padding-top: 5px;">Comentario:</td>
+        <td align="left" style="border-bottom: 1px dotted #cccccc;"> {{var data.comment}} </td></tr>
+    </table>
+  </td>
+</tr>
+{{template config_path="design/email/footer"}}

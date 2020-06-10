@@ -1,0 +1,310 @@
+<?php
+/**
+ * @category   Entrepids
+ * @package    Entrepids_Nestle
+ * @author     miguel.perez@entrepids.com
+ * @website    http://www.entrepids.com
+ */
+$_urlPost = $this->getAdd2CartUrl();
+$_products = $this->getProductsSolution();
+$_ProductsQty = $this->getRecommendedQty();
+$idSolution = $this->getRequest()->getParam('id');
+
+?>
+<!-- soluciones para tu negocio pagina 2 -->
+<div class="col-main">
+    <div class="breadcrumbs">
+        <a href="<?php echo Mage::getUrl('/'); ?>">Inicio</a> &gt;
+        <a href="<?php echo Mage::getUrl('soluciones-para-ti.html'); ?>"> Soluciones para su negocio</a> &gt; 
+        <span> Su solución</span>
+    </div>
+    <form action="<?php echo $_urlPost; ?>" method="post" id="form-solution-coffee">
+        <input type="hidden" id="idsolucion" name="idsolucion" value="<?php echo $idSolution; ?>"> 
+        <div class="actions-solution">
+            <div class="titles">
+                <h3>Nuestra recomendaci&oacute;n personalizada para:</h3>
+                <h4><?php echo $this->getBreadcrumb(); ?><!--<a href="#">Modificar elecci&oacute;n</a>--></h4>
+                <p class="subtitle">Total de productos: <span id="total-qty-products">0</span></p>
+            </div>
+            <div class="cta">
+                <a href="#" id="selectall" class="button btn-white select" onclick="nestle_cs.checkAll()"> Seleccionar Todo</a>
+                <a href="#" id="deselect" class="button btn-white select deselect" onclick="nestle_cs.uncheckAll()" style="display:none;" > Deseleccionar Todo</a>
+                <input class="button btn-cart f-right" type="submit" value="Agregar selecci&oacute;n">
+                <div class="grantotal" style="display:none">
+                	Total a pagar: <span class="price" id="final-price-1">0.<sup>00</sup></span>
+                </div>
+            </div>
+        </div>
+		<div class="actions-solution-nota">
+			<?php if($idSolution==19 || $idSolution==20){ ?>
+				<p class="subtitle">Esta solución considera el consumo de 1 mes por producto de acuerdo al número de tazas diarias que consume tu negocio e incluye una de las diferentes máquinas que tenemos disponibles. </p>
+				<p class="subtitle">El modelo de la máquina podría variar al momento de la instalación debido a condiciones de disponibilidad de equipos por zona geográfica y canal. </p>
+				<p class="subtitle">Todos los equipos de Nestlé Professional cuentan con el respaldo de nuestro servicio técnico especializado y con refacciones originales sin costo extra.</p>
+			<?php }else{ ?>
+				<p class="subtitle">Esta solución considera el consumo de 1 mes por producto de acuerdo al número de tazas diarias que consume tu negocio e incluye una de las diferentes máquinas que tenemos disponibles. </p>
+				<p class="subtitle">¡Elige la que más te guste!</p>
+			<?php } ?>
+		</div>
+
+        <?php
+        if (is_array($_products) && !empty($_products)):
+            $keys = array_keys($_products);
+            foreach ($keys as $productGroup):
+                if (!empty($_products[$productGroup])):
+                    $productGroupTitle = $this->getAttributeSetNameById($productGroup);
+                    ?>
+                    <div class="content_solution w-100 f-left">
+                        <div id="tab-group-<?php echo $productGroup; ?>" class="tabs item">
+                            <div class="cont_title">
+                                <h2>
+                                    <?php echo $productGroupTitle; ?>
+                                    <!-- <p class="info">
+                                        <span class="ico">?</span>
+                                        <span class="show">Cantidades sugeridas para el consumo aproximado de <?php echo $this->getDaysToCalc(); ?> d&iacute;as.</span>
+                                    </p> -->
+                                </h2><!-- 
+                                <p class="total" id="<?php echo 'price-group-' . $productGroup; ?>">Total: $ <span>0.<sup>00</sup></span></p> -->
+                                <!-- <p class="show-info">*Cantidades sugeridas para el consumo aproximado de <?php //echo $this->getDaysToCalc(); ?> d&iacute;as.</p> -->
+                                <p class="show-info"></p>
+                                <a class="restart" onclick="nestle_cs.resetAllGroup(<?php echo $productGroup; ?>);">Restablecer cantidades</a>
+                                <a class="selectall" onclick="nestle_cs.checkAllGroup(<?php echo $productGroup; ?>);">Seleccionar todo</a>
+                            </div> 
+                            <span class="tit_tab accordion"></span>
+                            <div class="panel">
+                                <?php foreach ($_products[$productGroup] as $_p): ?>
+                                    <div class="prod w-100 f-left border-b" id="<?php echo $_p->getId(); ?>">
+                                        <div class="img-product-view">
+                                            <img src="<?php echo $_p->getImageUrl(); ?>" alt="<?php echo $_p->getName(); ?>" class="small">
+                                        </div>
+										<?php if($_p->getIsProfessional()): ?>
+											<div class="detail-product-view cons_profesional">
+										<?php else: ?>
+											<div class="detail-product-view">
+										<?php endif; ?>
+                                            <a class="name" href="<?php echo $_p->getProductUrl(); ?>"><?php echo $_p->getName(); ?><br> <span><small><?php echo $_p->getNombreSecundario();  ?></small></span> </a>
+                                            <a class="sku" href="<?php echo $_p->getProductUrl(); ?>">SKU <?php echo $_p->getSku(); ?></a>
+                                                <?php if($_p->getIsProfessional()): ?>
+                                                    <input type="hidden" class="isProfessionalProduct" value="true">
+                                                <?php endif; ?>
+                                                <?php if(12 == $productGroup): //If Is Machine ?>
+                                                    <input type="hidden" class="solutionMachineUrl" value="<?php echo $_p->getProductUrl(); ?>">
+                                                <?php endif; ?>
+                                            <div class="info-block">
+                                                <div class="block-descr">
+                                                    <p class="description"><?php echo $_p->getDescription(); ?></p>
+                                                    <?php if(strtolower($productGroupTitle) != "maquinas"): ?>
+                                                        <p class="show-info">*Cantidades sugeridas para el consumo aproximado de <?php echo $this->getDaysToCalc(); ?> d&iacute;as con base en el consumo diario indicado.</p> 
+                                                    <?php endif ?>
+                                                </div>
+                                                <?php if(!$_p->getIsProfessional()): ?>
+                                                <div class="block-price"> 
+                                                <?php echo '<div class="pu">Precio unitario</div> '.$this->getPriceHtml($_p); ?>
+                                                </div>
+                                                <?php endif; ?>
+												
+												<?php if($_p->getIsProfessional()): ?>
+												<div class="block-price"> 
+												<a href="<?php echo $_p->getProductUrl(); ?>" class="button">Detalles</a>
+												</div>
+												<?php endif; ?>
+												
+                                                <div style="clear:both;"></div>
+                                            </div>                            
+                                        </div>
+                                        <?php $inStock = $_p->getStockItem()->getIsInStock(); ?>
+                                        <?php if(!$_p->getIsProfessional()): ?>
+                                            <?php if($inStock): ?>
+                                            <div class="cont_actions_prod">
+                                                <div class="qty">
+                                                    <div class="qty-prod">
+                                                        <p class="title_sol">Cantidad sugerida</p>
+                                                        <span class="red" onclick="nestle_cs.subQty(this)" data-qty-id="qty-<?php echo $_p->getId(); ?>">-</span>
+															<input id="qty-<?php echo $_p->getId(); ?>" type="number" name="qty[<?php echo $_p->getId(); ?>]" placeholder="0" value="<?php echo (isset($_ProductsQty[$_p->getId()])) ? $_ProductsQty[$_p->getId()] : ''; ?>" data-original-value="<?php echo (isset($_ProductsQty[$_p->getId()])) ? $_ProductsQty[$_p->getId()] : ''; ?>" data-product-id="<?php echo $_p->getId(); ?>" data-id-group="<?php echo $productGroup; ?>" onchange="nestle_cs.inputValueCheck(this)"  class="validate-zero-or-greater validate-digits" onkeydown="validateChars(event)">
+                                                        <span class="add" onclick="nestle_cs.addQty(this)" data-qty-id="qty-<?php echo $_p->getId(); ?>">+</span>
+                                                    </div>
+                                                    <a class="lnk f-center" data-original-value="<?php echo (isset($_ProductsQty[$_p->getId()])) ? $_ProductsQty[$_p->getId()] : ''; ?>" data-product-id="<?php echo $_p->getId(); ?>"  onclick="nestle_cs.resetProduct(this)">Restablecer</a>
+                                                </div>
+                                                <div class="cont_check">
+                                                    <p class="title_sol">Seleccionar</p>
+                                                    <div class="mycheck w-auto f-center">
+                                                        <input 
+														type="checkbox" 
+														name="product[]" 
+														onchange="nestle_cs.checkbox(this)" 
+														value="<?php echo $_p->getId(); ?>" id="product-<?php echo $_p->getId(); ?>" data-product-id="<?php echo $_p->getId(); ?>" data-product-price="<?php echo $_p->getFinalPrice(); ?>" data-id-group="<?php echo $productGroup; ?>" 
+														class="cscheck <?php 
+															if($productGroup==12) echo 'mmaquinas'; 
+															if($productGroup==13) echo 'minsumos'; 
+															if($productGroup==14) echo 'maccesorios';
+														?>">
+                                                        <span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php else: ?>
+                                            <div class="cont_actions_prod">
+                                                <div class="qty">
+                                                    <div class="qty-prod">
+                                                        <!-- <div class="info-tooltip" id="tooltip-info-qty-<?php //echo $_p->getId(); ?>"><p>Cantidad de producto calculado en base a un consumo de <?php //echo $this->getDaysToCalc(); ?> d&iacute;as.</p></div> -->
+                                                        <p class="title_sol">Cantidad</p>
+                                                        <input id="qty-<?php echo $_p->getId(); ?>" type="number" placeholder="0" value="<?php echo (isset($_ProductsQty[$_p->getId()])) ? $_ProductsQty[$_p->getId()] : ''; ?>" data-original-value="<?php echo (isset($_ProductsQty[$_p->getId()])) ? $_ProductsQty[$_p->getId()] : ''; ?>" data-product-id="<?php echo $_p->getId(); ?>" data-id-group="<?php echo $productGroup; ?>" onchange="nestle_cs.inputValueCheck(this)"  disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="cont_check">
+                                                    <div class="qty-out-stock">
+                                                        <p class="out-of-stock"><span class="value">Agotado</span></p>
+                                                        <a href="<?php echo $_p->getProductUrl(); ?>" target="_blank" class="button"><span><span>Ver detalles</span></span></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                endif;
+            endforeach;
+            ?>
+
+            <div class="actions-solution w-100">
+                <div class="cta">
+                    <div class="grantotal">
+                        Total a pagar: <span class="price" id="final-price-2">0.<sup>00</sup></span>
+                    </div>
+                    <a id="selectallbot" class="button btn-white select" onclick="nestle_cs.checkAll()"> Seleccionar Todo</a>
+                    <a id="deselectbot" class="button btn-white select deselect" onclick="nestle_cs.uncheckAll()" style="display: none;"> Deseleccionar Todo</a>
+                    <input class="button btn-cart f-right" type="submit" value="Agregar selecci&oacute;n">
+
+                </div>
+            </div>
+            <div class="div70"></div>
+
+            <?php
+        else:
+            ?><h2>No hay productos para esta soluci&oacute;n de caf&eacute;.</h2><?php
+        endif;
+        ?>  
+    </form>
+    <script type="text/javascript">
+        //< ![CDATA[
+        var solutionForm = new VarienForm('form-solution-coffee');
+        var fullSolutionTotal = <?php echo $this->getFullSolutionPrice(); ?>;
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].onclick = function () {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "none") {
+                    panel.style.display = "block";
+                } else {
+                    panel.style.display = "none";
+                }
+            }
+        }
+        //]]>
+    </script>
+</div>
+
+
+<div class="solutions_background_addAlert">
+    <div>
+        <div class="popupCloseButton">X</div>
+        <p>
+            Los productos que estás agregando est&aacute;n formulados exclusivamente
+            para m&aacute;quinas expendedoras de bebidas de caf&eacute; NESCAF&Eacute;.
+        </p><br />
+        <span class="solutionPopupAction" onclick="submitSolutionsForm()">Tengo la m&aacute;quina </span>
+        <span onclick="redirectSolutionsForm()" class="solutionPopupAction">No tengo la m&aacute;quina</span>
+    </div>
+</div>
+
+<div class="solutions_alert_prods" style="display:none;">
+    <div>
+        <div class="popupCloseButton2">X</div>
+        <p class="center">Por favor:</p>
+		<p style="display:none;" id="maquina1">Seleccione al menos 1 m&aacute;quina</p>
+		<p style="display:none;" id="insumo1">Seleccione al menos 1 insumo</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+	jQuery( document ).ready(function() {
+		//nestle_cs.checkAll();
+		nestle_cs.uncheckAll();
+	});
+
+    /** MAchine Solutions Popup (Professional)***/
+    /* Catch Add Products Submit for Solutions */
+    jQuery('#form-solution-coffee').submit(function(e) {
+		/* checa si hay elementos seleccionados en maquinas e insumos */
+		var mmn=0;
+		var min=0; 
+		/* en caso de que las maquinas no se puedan seleccionar saltate este paso */
+		if( ($$('.mmaquinas').size())==0 ){
+			mmn++;
+		}else{
+			$$('.mmaquinas').each( function(item){ if( item.checked==true ) mmn++; } );
+		}
+		$$('.minsumos').each( function(item){ if( item.checked==true ) min++; } );
+
+		if(mmn>0 && min>0){
+			/* en caso de si tener elementos seleccionados agrega al carrito */
+			if(solutionHasProfessionalItems()) {
+				e.preventDefault();
+				openSolutionsPopup();
+			}
+		}else{
+			if(mmn==0){ jQuery('#maquina1').show(); }
+			if(min==0){ jQuery('#insumo1').show(); }
+			/* en caso de no haber elementos seleccionados abrir popup con mensaje que debe seleccionar articulos */
+			e.preventDefault();
+			openSolutionsNecesariPopup();
+		}		
+    });
+
+    jQuery('.solutions_background_addAlert, .popupCloseButton').click(function(){
+        closeSolutionsPopup();
+    });
+    jQuery('.solutions_alert_prods, .popupCloseButton2').click(function(){
+        closeSolutionsNecesariPopup();
+    });
+
+    /* Submit Form (After Popup) */
+    function submitSolutionsForm() { jQuery('#form-solution-coffee').unbind().submit(); }
+
+    /* Redirect to Machine Solutiosn (After Popup) */
+    function redirectSolutionsForm() { window.location.href=getProfessionalMachineUrl(); }
+
+    /* Display Solutiosn Add Product Popup confirm */
+    function openSolutionsPopup() { jQuery('.solutions_background_addAlert').show(); }
+	
+    /* Hide Solutiosn Add Product Popup confirm */
+    function closeSolutionsPopup() { jQuery('.solutions_background_addAlert').hide(); }
+	
+	/* muestra el formulario de articulos necesarios */
+	function openSolutionsNecesariPopup(){ jQuery('.solutions_alert_prods').show(); }
+
+    /* oculta el formulario de articulos necesarios */
+    function closeSolutionsNecesariPopup() {
+		jQuery('#maquina1').hide();
+		jQuery('#insumo1').hide();
+		jQuery('.solutions_alert_prods').hide();
+	}
+
+    /* Check if the solution has Professional items */
+    function solutionHasProfessionalItems() {
+        return undefined != typeof jQuery('.isProfessionalProduct').val() && 'true' == jQuery('.isProfessionalProduct').val();
+    }
+
+    /* Check for the url of machine's solution */
+    function getProfessionalMachineUrl() {
+        return undefined != typeof jQuery('.solutionMachineUrl').val() && '' != jQuery('.solutionMachineUrl').val() ?
+            jQuery('.solutionMachineUrl').val() : '/nuestros-productos/maquinas.html';
+    }
+</script>

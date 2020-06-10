@@ -1,0 +1,580 @@
+<?php
+/*
+ * funciones para generar el reporte de ventas
+ */
+
+class report{
+
+	public $data = null;
+	public $marca = null;
+
+	public function report_ventas(){
+
+		$n = $this->select_all_sales();
+		tt('numero de ventas ==> '.$n);
+
+		// echo print_table( $this->data['sales'] );
+
+		$this->data = $this->struct_report_ventas();
+
+		return true;
+	}
+
+	public function select_all_sales(){
+
+		$s = "SELECT 
+			sfo.entity_id,sfo.state,sfo.status,sfo.customer_id,sfo.billing_address_id,sfo.shipping_address_id,
+			sfo.increment_id,
+			sfo.customer_email,sfo.customer_firstname,sfo.customer_lastname,
+			sfo.order_currency_code,sfo.subtotal,sfo.subtotal_incl_tax,sfo.shipping_amount,sfo.shipping_tax_amount,sfo.shipping_method,sfo.discount_amount,sfo.tax_amount,sfo.grand_total,sfo.total_item_count,sfo.total_qty_ordered,
+			sfo.created_at,sfo.updated_at,
+			sfo.remote_ip,sfo.x_forwarded_for,
+			sfo.weight as peso_volumetrico
+			from sales_flat_order as sfo
+			order by entity_id DESC";
+		$a = query( $s );
+		if($a==null){ return 0; }
+
+		$b = null;
+		foreach ($a as $et => $r) {
+			$b[ $r['increment_id'] ] = $r;
+		}
+
+		$this->data['sales'] = $b;
+		return count( $b );
+	}
+
+	public function select_all_products_of_sale( $sales_id = 0, $dat = null ){
+		if( $sales_id==0 ){ return null; }
+
+		$omited = ' -- omitiendo producto ==> ';
+
+		/* listando todos los productos de la venta */
+			$s = "SELECT * from sales_flat_order_item where order_id = $sales_id";
+			$a = query( $s );
+			//echo "  -- $s --";
+
+			if( $a==null ){ echo "\nsin datos de productos\n"; return null; }
+
+			$b = null;
+			foreach ($a as $et => $r) {
+				$b[ $r['item_id'] ] = $r;
+			}
+			$a = $b; $b = null;
+		/* verificando productos agrupados */
+			$grp = null;
+			foreach ($a as $et => $r) {
+				if( $r['product_type'] == 'grouped' ){
+					$grp[ $r['item_id'] ] = 'no_asociado';
+				}
+			}
+
+			foreach ($a as $et => $r) {
+				if( $r['parent_item_id'] != null ){
+					$grp[ $r['parent_item_id'] ] = 'asociado';
+				}
+			}
+
+			if( $grp ){
+				foreach ($grp as $et => $r) {
+					if( $r=='asociado' ){ unset( $a[ $et ] ); }
+				}
+			}
+		/* obteniendo datos adicionales de los productos */
+			foreach ($a as $et => $r) {
+				/* casos especiales */
+					if( $r['product_type'] == 'bundle' ){
+						$fsku = explode('KIT-', $r['sku']);
+						if( count($fsku)>1 ){
+							unset( $a[ $et ] );
+							continue;
+						}
+					}
+
+					$fsku = explode('MCH-', $r['sku']);
+					if( count($fsku)>1 ){
+						unset( $a[ $et ] );
+						echo "\n sales_id ==> ".$sales_id.$omited.$r['sku'];
+						continue;
+					}
+
+				//$a[ $et ]['product_options'] = null;
+
+				$pid = $r['product_id'];
+				$s = '';
+				$s = $s."SELECT 'url_key' as ltable,cpev.entity_id,cpev.attribute_id,cpev.value,ea.attribute_code
+					from catalog_product_entity_url_key as cpev
+					inner join eav_attribute as ea on ea.attribute_id = cpev.attribute_id
+					where cpev.entity_id IN ( $pid )
+
+					union
+					select 'decimal' as ltable,cpev.entity_id,cpev.attribute_id,cpev.value,ea.attribute_code
+					from catalog_product_entity_decimal as cpev
+					inner join eav_attribute as ea on ea.attribute_id = cpev.attribute_id
+					where cpev.entity_id IN ( $pid )
+
+					union
+					select 'int' as ltable,cpev.entity_id,cpev.attribute_id,cpev.value,ea.attribute_code
+					from catalog_product_entity_int as cpev
+					inner join eav_attribute as ea on ea.attribute_id = cpev.attribute_id
+					where cpev.entity_id IN ( $pid )
+
+					union
+					select 'text' as ltable,cpev.entity_id,cpev.attribute_id,cpev.value,ea.attribute_code
+					from catalog_product_entity_text as cpev
+					inner join eav_attribute as ea on ea.attribute_id = cpev.attribute_id
+					where cpev.entity_id IN ( $pid )
+
+					union
+					select 'varchar' as ltable,cpev.entity_id,cpev.attribute_id,cpev.value,ea.attribute_code
+					from catalog_product_entity_varchar as cpev
+					inner join eav_attribute as ea on ea.attribute_id = cpev.attribute_id
+					where cpev.entity_id IN ($pid )
+					";
+				$b = query( $s );
+				if(!$b){ tt('sql no data'); continue; }
+
+				$c = null;
+				foreach ($b as $etr => $rr) {
+					$c[ $rr['attribute_code'] ] = $rr;
+				}
+
+				unset( $c['description'] );
+				unset( $c['short_description'] );
+
+				$a[ $et ]['product_data'] = $c;
+			}
+
+		return $a;
+	}
+
+	public function struct_report_ventas(){
+		if( $this->data['sales'] == null ){ return 0; }
+
+		$l = null;
+		foreach ($this->data['sales'] as $et => $r) {
+			$itms = null;
+			//echo "\n increment_id ==> ".$r['increment_id'];
+
+			$itms = $this->struct_report_ventas_item( $r );
+
+			if( !$itms ){
+				echo ' struct_report_ventas_item() ==> null ';
+				continue; 
+			}
+
+			foreach ($itms as $et => $r) {
+				$l[] = $r;
+			}
+			//$l[] = array( 'nombre'=>'' );
+		}
+
+		echo "\nnumero de registros ==> ".count( $l )."\n";
+		/*
+		foreach ($l as $et => $r) {
+			if( isset( $r['nu'] ) ){
+				tt( '=============> '.$r['idcanasta'].' ==> '.$r['total_piezas'].' ==> '.$r['margen_unit'].' ==> '.$r['margen_total'] );
+			}
+		}*/
+
+		return $l;
+	}
+
+	/* estructura todos los items de la venta */
+	public function struct_report_ventas_item( $reg=null ){
+		if($reg==null){ return null; }
+
+		//echo print_table( $reg );
+
+		/* obtiene todos los productos de la venta */
+		$items = $this->select_all_products_of_sale( $reg['entity_id'], $reg );
+
+		/* buscando datos de envio */
+		$dir = $this->select_address_shipping( $reg );
+
+		/* estructurando */
+		$b = null;
+		$margen_total = 0;
+		if( !$items ){
+			echo 'struct_report_ventas_item() ==> sin datos';
+			return null;
+		}
+
+		$margen = 0;
+		foreach ($items as $et => $r) {
+			$margen += ( $r['product_data']['precio_unitario_margen_monto']['value'] * $r['qty_ordered'] );
+		}
+
+		$margen_tot = $margen;
+
+		foreach ($items as $et => $r) {
+			if( !isset( $r['product_data'] ) ){
+				echo "\n faltan datos adicionales de producto\n"; continue; }
+			if( !isset( $r['product_data']['precio_unitario']['value'] ) ){
+				echo "\n ".$r['sku']." ==> faltan datos ==> precio_unitario\n"; }
+			if( !isset( $r['product_data']['cost'] ) ){
+				echo "\n ".$r['sku']." ==> faltan datos ==> cost\n"; continue; }
+			if( !isset( $r['product_data']['costo_ieps_monto'] ) ){
+				echo "\n ".$r['sku']." ==> faltan datos ==> costo_ieps_monto\n"; continue; }
+			if( !isset( $r['product_data']['costo_total'] ) ){
+				echo "\n ".$r['sku']." ==> faltan datos ==> costo_total\n"; continue; }
+
+			$min = 1;
+			if( isset( $r['product_data']['sku_alterno_cantidad']['value'] ) ){
+				$min = $r['product_data']['sku_alterno_cantidad']['value'];
+			}
+
+			$margen = $margen_tot;
+
+			$a = null;
+			$a['nombre'] 			= $reg['customer_firstname'];
+			$a['apellidos'] 		= $reg['customer_lastname'];
+			$a['idcanasta'] 		= $reg['increment_id'];
+			$a['sku'] 				= $r['sku'];
+			$a['article'] 			= $r['product_data']['name']['value'].' '.$r['product_data']['nombre_secundario']['value'];
+			$a['cantidad'] 			= $r['qty_ordered'];
+			$a['total_piezas'] 		= $min * $r['qty_ordered'];
+			$a['marca'] 			= $this->select_marca( $r['product_data']['marca']['attribute_id'], $r['product_data']['marca']['value'] );
+
+			/* precio */
+				$a['precio_sin_imp'] 	= $r['product_data']['precio_unitario']['value'];
+				$a['precio_ieps'] 		= $r['product_data']['impuesto_ieps_monto']['value'];
+				//$a['precio_mas_ieps'] 	= $r['product_data']['precio_unitario']['value'];
+				$a['precio_iva'] 		= $r['product_data']['impuesto_iva_monto']['value'];
+				$a['precio_venta'] 		= $r['price'];
+
+			/* peso */
+				$alp1 = 0;	if( isset( $r['product_data']['peso_empaque'] ) ){ 	$alp1 = $r['product_data']['peso_empaque']['value']; }
+				$alp2 = 0;	if( isset( $r['product_data']['ancho'] ) ){ 		$alp2 = $r['product_data']['ancho']['value']; }
+				$alp3 = 0;	if( isset( $r['product_data']['largo'] ) ){ 		$alp3 = $r['product_data']['largo']['value']; }
+				$alp4 = 0;	if( isset( $r['product_data']['alto'] ) ){ 			$alp4 = $r['product_data']['alto']['value']; }
+				$alp5 = 0;	if( isset( $r['product_data']['weight'] ) ){ 		$alp5 = $r['product_data']['weight']['value']; }
+
+				$a['peso']		= $alp1;
+				$a['ancho'] 	= $alp2;
+				$a['profundo'] 	= $alp3;
+				$a['alto'] 		= $alp4;
+				$a['m3'] 		= $alp5;
+
+			/* costo */
+				$costo = $r['product_data']['precio_unitario']['value'];
+				$iva = 0;	
+				$ieps = 0;
+				if( $r['product_data']['impuesto_iva']['value'] > 0 ){ /* % 116 */
+					$iva = (100 * $costo) / ( $r['product_data']['impuesto_iva']['value'] + 100 );
+				}
+
+				if( $r['product_data']['impuesto_ieps']['value'] > 0 ){ /* % 108 */
+					$ieps = (100 * ( $costo - $iva ) ) / ( $r['product_data']['impuesto_iva']['value'] + 100 );
+				}
+
+				$a['costo_unit_sin_imp'] 	= $r['product_data']['cost']['value'];
+				$a['costo_unit_ieps'] 		= $r['product_data']['costo_ieps_monto']['value'];
+				$a['costo_unit_con_ieps'] 	= $r['product_data']['cost']['value'];
+				$a['costo_unit_iva'] 		= $r['product_data']['costo_iva_monto']['value'];
+				$a['costo_unit'] 			= $r['product_data']['costo_total']['value'];
+
+			/* precio unitario */
+				$a['precio_unit_sin_imp'] 	= $r['product_data']['precio_unitario']['value'];
+				$a['precio_unit_ieps'] 		= $r['product_data']['precio_unitario_ieps_monto']['value'];
+				$a['precio_unit_mas_ieps'] 	= $r['product_data']['precio_unitario']['value'];
+				$a['precio_unit_iva'] 		= $r['product_data']['precio_unitario_iva_monto']['value'];
+				//$a['precio_unit'] 			= $r['product_data']['precio_unitario_total']['value'];
+				$a['precio_acumulado'] 		= $r['price'] * $a['total_piezas'];
+
+				//$a['margen_unit'] 			= $r['product_data']['precio_unitario_margen']['value'];
+				$a['margen_unit'] 			= $r['product_data']['precio_unitario_margen_monto']['value'];
+
+			if( $r['product_data']['precio_unitario_iva_monto']['value']>0 ){
+
+			}
+
+			$a['pedido_subtotal'] 		= $reg['subtotal'];
+			$a['pedido_subtotal_iva'] 	= $reg['subtotal_incl_tax'] - $reg['subtotal'];
+
+			$a['pedido_envio'] 			= $reg['shipping_amount'];
+			$a['margen_total'] 			= $margen_tot;
+
+			$a['pedido_envio_margen']	= $reg['shipping_amount'] - $margen;
+			
+			if( $a['pedido_envio_margen']<0 ){ $a['pedido_envio_margen'] = 0; }
+
+			$margen = $margen - $a['pedido_envio_margen'];
+			if( $margen<0 ){ $margen=0; }
+
+			$a['op']					= ( $reg['subtotal'] + $a['pedido_envio_margen'] ) * 0.029;
+			$a['op_trans']				= $a['op'] + 2.5;
+
+			$margen -= $a['op_trans'];
+			if( $margen<0 ){ $margen=0; }
+
+			$a['pedido_envio_iva'] 		= $reg['shipping_tax_amount'];
+			$a['pedido_envio_total'] 	= $reg['subtotal_incl_tax'];
+
+			$a['pedido_descuento'] 		= $reg['discount_amount'];
+
+			$a['pedido_iva'] 			= $reg['tax_amount'];
+			$a['descuento'] 			= $reg['discount_amount'];
+			$a['pedido_total'] 			= $reg['grand_total'];
+			$a['margen_restante']		= $margen;
+
+			$a['pedido_status'] 		= $reg['status'];
+			$a['pedido_fecha'] 			= $reg['created_at'];
+			$a['pedido_pago'] 			= $reg['updated_at'];
+			$a['pedido_envio_text'] 	= ( ( $a['pedido_envio_total']>0 )?'PAGO ENVIO':'NO PAGO ENVIO' );
+
+			/* agregando datos de direccion */
+				if( $dir ){
+					foreach ($dir as $etr => $rr) {
+						if( $etr == 'nombre' ){ continue; }
+						if( $etr == 'apellidos' ){ continue; }
+						$a[ $etr ] = $rr;
+					}
+				}else{
+					echo ' no shipping data ';
+				}
+
+			$b[] = $a;
+		}
+
+		if( $b==null ){ return null; }
+
+		return $b;
+	}
+
+	public function select_address_shipping( $dat = null ){
+
+		if( $dat == null ){ return null; }
+
+		$customer_email 		= $dat['customer_email'];
+		$customer_id 			= $dat['customer_id'];
+		$shipping_address_id 	= $dat['shipping_address_id'];
+		$nombre 				= $dat['customer_firstname'];
+		$apellidos 				= $dat['customer_lastname'];
+
+		if( $shipping_address_id == null ){ $shipping_address_id = 0; }
+		if( $customer_id == null ){ $customer_id = 0; }
+		if( $customer_email == null ){ $customer_email = ''; }
+
+		if( $shipping_address_id == 0 && $customer_id == 0 && $customer_email == '' ){
+			return null;
+		}
+
+		$address = null;
+
+		if( $shipping_address_id > 0 ){
+			$address['sales'] = $this->sales_address_id( $shipping_address_id );
+		}
+		if( $customer_id>0 ){
+			$address['customer'] = $this->customer_id_address( $customer_id );
+		}else{
+			$customer_id = $this->customer_email_address( $customer_email );
+			if( $customer_id>0 ){
+				$address['customer'] = $this->customer_id_address( $customer_id );	
+			}
+		}
+
+		$dir = null;
+		$dir['nombre'] 			= '';
+		$dir['apellidos'] 		= '';
+		$dir['telefono'] 		= '';
+		$dir['telefono_ext'] 	= '';
+		$dir['email'] 			= $customer_email;
+		$dir['calle'] 			= '';
+		$dir['nu'] 				= '';
+		$dir['nu_int'] 			= '';
+		$dir['cp'] 				= '';
+		$dir['colonia'] 		= '';
+		$dir['delegacion_municipio'] = '';
+		$dir['estado'] 			= '';
+		$dir['referencia'] 		= '';
+
+		if( isset( $address['sales'] ) ){
+
+			if( $dir['email'] == '' ){
+				$dir['email'] 	= $address['sales']['email'];
+			}
+			$dir['nombre'] 		= $nombre;
+			$dir['apellidos'] 	= $apellidos;
+
+			$dir['calle'] 		= $address['sales']['street'];
+			$dir['telefono'] 	= $address['sales']['telephone'];
+			$dir['cp'] 			= $address['sales']['postcode'];
+			$dir['colonia'] 	= $address['sales']['neighborhood'];
+			$dir['delegacion_municipio'] = $address['sales']['city'];
+			$dir['estado'] 		= $address['sales']['region'];
+		}
+
+		if( isset( $address['customer'] ) ){
+			foreach ($address['customer'] as $et => $r) {
+				if( !isset( $r['num_ext'] ) ){ continue; }
+
+				if( $r['error']==1 ){ continue; }
+
+				$dir['nu'] 				= $r['num_ext'];
+				if( isset( $r['nu_int'] ) ){
+					$dir['nu_int'] = $r['num_int'];
+				}
+				if( isset( $r['adress_references'] ) ){
+					$dir['referencia'] = $r['adress_references'];
+				}
+				if( isset( $r['telefono_ext'] ) ){
+					$dir['telefono_ext'] 	= $r['telephone_extension'];
+				}
+				if( $r['postcode'] != $dir['cp'] ){ continue; }
+				if( $r['street']   != $dir['calle'] ){ continue; }
+			}
+		}
+
+		return $dir;
+	}
+
+	public function sales_address_id( $id = 0 ){
+		if($id==0){ return null; }
+
+		$s = "SELECT
+			entity_id,parent_id,customer_address_id,customer_id,fax,email,firstname,lastname,region,postcode,street,city,telephone,country_id,neighborhood,address_type,prefix,company,is_billing,rfc
+			from sales_flat_order_address where entity_id = $id
+			and address_type = 'shipping'";
+		$a = query($s);
+		if( $a == null ){ return null; }
+
+		return $a[0];
+	}
+
+	public function customer_id_address( $cid=0 ){
+		if($cid==0){ return null; }
+
+		$s = "SELECT
+			ce.entity_id,
+			ce.email,
+			cae.entity_id as address_id
+			from customer_entity as ce
+			inner join customer_address_entity as cae on cae.parent_id = ce.entity_id
+			where
+			cae.is_active = 1
+			and cae.is_billing = 0
+			and ce.entity_id = $cid
+			;";
+		$a = query( $s );
+		if( $a==null ){ return null; }
+
+		$d = null;
+		foreach ($a as $et => $r) {
+			$address_id = $r['address_id'];
+
+			$s = "SELECT 'varchar' as ltable,caev.attribute_id,caev.value,ea.attribute_code
+				from customer_address_entity_varchar as caev
+				inner join eav_attribute as ea on ea.attribute_id = caev.attribute_id
+				where entity_id = $address_id
+
+				union
+				SELECT 'text' as ltable,caev.attribute_id,caev.value,ea.attribute_code
+				from customer_address_entity_text as caev
+				inner join eav_attribute as ea on ea.attribute_id = caev.attribute_id
+				where entity_id = $address_id
+
+				union
+				SELECT 'int' as ltable,caev.attribute_id,caev.value,ea.attribute_code
+				from customer_address_entity_int as caev
+				inner join eav_attribute as ea on ea.attribute_id = caev.attribute_id
+				where entity_id = $address_id
+
+				union
+				SELECT 'decimal' as ltable,caev.attribute_id,caev.value,ea.attribute_code
+				from customer_address_entity_decimal as caev
+				inner join eav_attribute as ea on ea.attribute_id = caev.attribute_id
+				where entity_id = $address_id
+
+				union
+				SELECT 'datetime' as ltable,caev.attribute_id,caev.value,ea.attribute_code
+				from customer_address_entity_datetime as caev
+				inner join eav_attribute as ea on ea.attribute_id = caev.attribute_id
+				where entity_id = $address_id
+				";
+			$b = query( $s );
+
+			$c = null;
+			if( $b != null ){
+				foreach ($b as $etr => $rr) {
+					$c[ $rr['attribute_code'] ] = $rr['value'];
+				}
+
+				$c['is_company'] = 0;
+				if( isset( $c['is_company'] ) ){
+					if( $c['is_company'] != '' ){ $b['is_company'] = 1; }
+				}
+
+				$c['address_id'] = $address_id;
+
+				$c['error']	= $this->address_error( $c );
+
+				$d[] = $c;
+			}
+		}
+
+		return $d;
+	}
+
+	public function customer_email_address( $email='' ){
+		if($email==''){ return 0; }
+
+		$s = "SELECT ce.entity_id
+			from customer_entity as ce
+			where
+			ce.email = '$email'
+			limit 0,1
+			";
+
+		$a = query( $s );
+		if($a==null){ return 0; }
+
+		return $a[0]['entity_id'];
+	}
+
+	public function address_error( $dat=null ){
+		if($dat==null){ return 1; }
+
+		if( $dat['city']  		== '.....' ){ return 1; }
+		if( $dat['postcode'] 	== '99999' ){ return 1; }
+		if( $dat['telephone'] 	== '000000000' ){ return 1; }
+		if( $dat['street'] 	== '.....' ){ return 1; }
+
+		return 0;
+	}
+
+	public function select_marca( $attribute=0, $option=0 ){
+
+		if( $attribute==0 ){ return ''; }
+
+		if( $this->marca ){
+			if( isset( $this->marca[ $option ]['value'] ) ){
+				return $this->marca[ $option ]['value'];
+			}
+			return '';
+		}
+
+		$s = "SELECT * from eav_attribute_option_value where store_id = 1 and option_id IN (
+			select option_id from eav_attribute_option where attribute_id = $attribute order by sort_order ASC
+		);";
+
+		$a = query( $s );
+		//tt( $s );
+		if( $a==null ){ return ''; }
+
+		$b = null;
+		foreach ($a as $et => $r) {
+			$b[ $r['option_id'] ] = $r;
+		}
+
+		$this->marca = $b;
+
+		if( isset( $b[ $option ]['value'] ) ){
+			return $b[ $option ]['value'];
+		}
+
+		return '';
+	}
+}
+
+?>

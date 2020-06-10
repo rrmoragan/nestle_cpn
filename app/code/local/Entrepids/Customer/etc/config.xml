@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Customer
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Customer>
+            <version>1.0.0</version>
+        </Entrepids_Customer>
+    </modules>
+
+    <global>
+        <blocks>
+            <entrepids_customer>
+                <class>Entrepids_Customer_Block</class>
+            </entrepids_customer>
+        </blocks>
+        <helpers>
+            <entrepids_customer>
+                <class>Entrepids_Customer_Helper</class>
+            </entrepids_customer>
+        </helpers>
+        <models>
+            <entrepids_customer>
+                <class>Entrepids_Customer_Model</class>
+            </entrepids_customer>
+        </models>
+    </global>
+
+    <frontend>
+		<routers>
+			<customer>
+				<args>
+					<modules>
+						<entrepids_customer before="Mage_Customer">Entrepids_Customer</entrepids_customer>
+					</modules>
+				</args>
+			</customer>
+		</routers>
+	</frontend>
+
+    <adminhtml>
+        <events>
+            <customer_save_before>
+                <observers>
+                    <entrepids_customer>
+                        <class>entrepids_customer/observer</class>
+                        <method>validateCustomer</method>
+                    </entrepids_customer>
+                </observers>
+            </customer_save_before>
+        </events>
+    </adminhtml>
+</config>

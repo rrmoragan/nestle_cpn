@@ -1,0 +1,96 @@
+<?php
+/* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */
+$_helper = $this->helper('aoe_scheduler/data');
+/* @var $_helper Aoe_Scheduler_Helper_Data */
+$_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
+?>
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
+</div>
+
+<div id="maincontainer">
+    <div class="grid">
+        <form method="get" action="#" id="form_scheduled_grid">
+            <table cellspacing="0" class="data" id="sheduled_crons_grid_table">
+                <tr class="headings">
+                    <th style="width: 289px;"><span class="nobr"><?php echo $this->__('Job code'); ?></span></th>
+                    <th><span class="nobr">&nbsp;</span></th>
+                </tr>
+                <tr class="filter">
+                    <th style="width: 289px;"><div class="field-100"><input type="text" name="job_code" id="sheduled_crons_grid_filter_job_code" value="<?php echo $this->getFilter(); ?>" class="input-text no-changes"></div></th>
+                    <th><div class=" no-link last">&nbsp;</div></th>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <?php if (count($_jobCodes) > 0): ?>
+
+        <div id="contentwrapper">
+            <div id="contentcolumn">
+                <div class="timeline-box">
+                    <div class="timeline-panel" style="width: <?php echo $this->getTimelinePanelWidth(); ?>px;">
+
+                        <div id="now" style="left: <?php echo $this->getNowline(); ?>px"><div class="arrow"></div></div>
+
+                        <div class="row hours">
+                            <div class="timeline">
+                                <?php for ($i = $this->getStarttime(); $i < $this->getEndtime(); $i += 60 * 60): ?>
+                                    <div class="hour"><span><?php echo $_helper->decorateTime($i, false, 'Y-m-d H:i'); ?></span></div>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+
+                        <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
+                            <?php $_schedules = $this->getSchedulesForCode($jobCode); ?>
+                            <div class="row">
+                                <div class="timeline timeline_<?php echo $jobCode; ?>">
+                                    <?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
+                                        <?php echo $this->getGanttDivAttributes($_schedule); ?>
+                                        <?php echo $this->getLayout()->createBlock('cronscheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+
+                    </div>
+                </div>
+            </div>
+            <!-- id="contentcolumn" -->
+        </div><!-- id="contentwrapper" -->
+
+        <div id="leftcolumn">
+
+            <div class="row hours">
+                <div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true, 'Y-m-d H:i'); ?>
+                    - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
+            </div>
+
+            <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
+                <?php $alias = $this->getAliasJobCodes(); ?>
+                <div class="row">
+                    <div class="configuration">
+                        <?php echo (isset($alias[$jobCode])) ? $alias[$jobCode] : $jobCode; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+        </div><!-- id="leftcolumn" -->
+
+    <?php else: ?>
+        <?php echo $this->__('No tasks found.'); ?>
+    <?php endif; ?>
+
+</div><!-- id="maincontainer" -->
+<!-- filter code javascript -->
+<script type="text/javascript">
+    function filterJobcode() {
+        jQuery('#form_scheduled_grid').submit();
+    }
+</script>
+<!-- end filter code javascript -->

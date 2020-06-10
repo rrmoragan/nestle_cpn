@@ -1,0 +1,269 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php  $_order = $this->getOrder() ?>
+<h3 class="only_mobile red"><?php echo $this->__('Artículos comprados:') ?></h3>
+<table class="data-table" id="my-orders-table" summary="<?php echo Mage::helper('core')->quoteEscape($this->__('Items Ordered')) ?>">
+    
+    <col width="18%" />
+    <col />
+    <col width="18%" />
+    <col width="18%" />
+    <col width="18%" />
+    <thead>
+        <tr>
+            <th><?php echo $this->__('SKU,') ?></th>
+            <th class="name-prod"><?php echo $this->__('Name') ?></th>
+            <th class="a-right"><?php echo $this->__('Price') ?></th>
+            <th class="a-center"><?php echo $this->__('Qty') ?></th>
+            <th class="a-right"><?php echo $this->__('Subtotal') ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+        <?php echo $this->getChildHtml('order_totals') ?>
+    </tfoot>
+        <?php $_items = $_order->getItemsCollection(); ?>
+        <?php $_index = 0; ?>
+            <?php $_count = $_items->count(); ?>
+        <?php foreach ($_items as $_item): ?>
+        <?php if ($_item->getParentItem()) continue; ?>
+        <tbody>
+            <?php echo $this->getItemHtml($_item) ?>
+            <?php if($this->helper('giftmessage/message')->getIsMessagesAvailable('order_item', $_item) && $_item->getGiftMessageId()): ?>
+            <tr class="border<?php echo ($_index++ > $_count ?' last':'') ?>" id="order-item-gift-message-<?php echo $_item->getId() ?>" style="display:none;">
+                <?php $_giftMessage=$this->helper('giftmessage/message')->getGiftMessageForEntity($_item); ?>
+                <td class="gift-message-row" colspan="7">
+                    <a href="#" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Close')) ?>" onclick="return giftMessageToogle('<?php echo $_item->getId() ?>');" class="btn-close"><?php echo $this->__('Close') ?></a>
+                    <dl class="gift-message">
+                        <dt><strong><?php echo $this->__('From:') ?></strong> <?php echo $this->escapeHtml($_giftMessage->getRecipient()) ?></dt>
+                        <dt><strong><?php echo $this->__('To:') ?></strong> <?php echo $this->escapeHtml($_giftMessage->getSender()) ?></dt>
+                        <dd><?php echo $this->helper('giftmessage/message')->getEscapedGiftMessage($_item) ?></dd>
+                    </dl>
+                </td>
+            </tr>
+            <?php endif ?>
+        </tbody>
+        <?php endforeach; ?>
+</table>
+<script type="text/javascript">decorateTable('my-orders-table', {'tbody' : ['odd', 'even'], 'tbody tr' : ['first', 'last']})</script>
+
+
+<?php if(Mage::helper('return')->isEnabled()) : ?>
+    <!-- <div id="content9" class="content credit">
+        <h3 class="subtitle"><?php echo Mage::helper('customer')->__('Cancel or return order request')?></h3>
+        <form class="box" method="post" id="upload-form" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);?>return/index/upload" enctype="multipart/form-data">
+              
+            <input type="hidden" name ="customer_name", id="customer_name" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>">
+            <input type="hidden" name ="customer_email", id="customer_email" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getEmail()?>">
+            <input type="hidden" name ="order_id_input", id="order_id_input" value="<?php echo $_order->getIncrementId()?>">
+            <input type="hidden" name ="img1_input" id="img1_input">
+            <input type="hidden" name ="img2_input" id="img2_input">
+            <input type="hidden" name ="img3_input" id="img3_input">
+
+            <div>
+
+
+                <ul>
+                    <li>
+                        <label for="cause" class="required">
+                            <?php echo $this->__('Cause') ?>
+                        </label>
+                        <div>
+                            <select name="cause" id="cause" class="required-entry">
+                                <option value="" selected disabled hidden><?php echo $this->__('Choose an option') ?></option>
+                                <option value="Cancelación"><?php echo $this->__('Cancellation') ?></option>
+                                <option value="Devolución"><?php echo $this->__('Return') ?></option>
+                            </select>
+                        </div>
+                    </li>
+
+                    <li>
+                        <label for="comments" class="required">
+                            <?php echo $this->__('Comments') ?>
+                        </label>
+                        <div>
+                            <textarea id="comments" name= "comments" rows="4" cols="50" class="required-entry" placeholder="<?php echo $this->__('Tell us more about the cancellation or return of your order (Max. 250 characters)')?>"></textarea> 
+                        </div>
+                    </li>
+                    <br>
+
+                    <li>
+                        <label for="images">
+                            <?php echo $this->__('Attach photos of your order (You can attach up to three images)') ?>
+                        </label>
+                        <div class="input-box box__input">
+                            <input type="file" name="img1" id="img1" class="doc box__file" onchange="validateImg1(this.value)" />
+                            <label id="label-img1" for="file"><?php echo $this->__('Choose file') ?><span class="box__dragndrop"> or drag it here</span></label>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="input-box box__input">
+                            <input type="file" name="img2" id="img2" class="doc box__file" onchange="validateImg2(this.value)" />
+                            <label id="label-img2" for="file"><?php echo $this->__('Choose file') ?><span class="box__dragndrop"> or drag it here</span></label>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="input-box box__input">
+                            <input type="file" name="img3" id="img3" class="doc box__file" onchange="validateImg3(this.value)" />
+                            <label id="label-img3" for="file"><?php echo $this->__('Choose file') ?><span class="box__dragndrop"> or drag it here</span></label>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <button class="button f-right"><?php echo Mage::helper('customer')->__('Submit request')?></button>
+        </form>
+    </div> -->
+<?php endif;?>
+
+
+        <script type="text/javascript">
+            //< ![CDATA[
+                var customForm = new VarienForm('upload-form');
+            //]]>
+        </script>
+
+        <script>
+
+            function validateImg1(file) {
+                var isValid = true;
+                var vp= jQuery("#img1").val();
+                var i= vp.substr(12);
+                jQuery("#img1_input").val(i);
+                var ext = file.split(".");
+                var file_size = jQuery('#img1')[0].files[0].size;
+                ext = ext[ext.length-1].toLowerCase();
+                var arrayExtensions = ["jpg" , "jpeg", "png"];
+
+
+                if (arrayExtensions.lastIndexOf(ext) == -1) {
+                    alert("<?php echo $this->__('Only images in jpeg, jpg, png format are allowed')?>");
+                    jQuery("#img1").val('');
+                    jQuery("#img1_input").val('');
+                    isValid = false;
+
+
+                }
+                else{
+                    if(file_size > 2097152){
+                        alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                        jQuery("#img1").val('');
+                        jQuery("#img1_input").val('');
+                        isValid = false;
+
+
+                    }
+                }
+
+                if(isValid)
+                {
+                    jQuery("#label-img1").text(jQuery("#img1").val());
+                }
+
+            }
+
+
+            function validateImg2(file) {
+                var isValid = true;
+                var vp= jQuery("#img2").val();
+                var i= vp.substr(12);
+                jQuery("#img2_input").val(i);
+                var ext = file.split(".");
+                var file_size = jQuery('#img2')[0].files[0].size;
+                ext = ext[ext.length-1].toLowerCase();
+                var arrayExtensions = ["jpg" , "jpeg", "png"];
+
+
+                if (arrayExtensions.lastIndexOf(ext) == -1) {
+                    alert("<?php echo $this->__('Only images in jpeg, jpg, png format are allowed')?>");
+                    jQuery("#img2").val('');
+                    jQuery("#img2_input").val('');
+                    isValid = false;
+
+
+                }
+                else{
+                    if(file_size > 2097152){
+                        alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                        jQuery("#img2").val('');
+                        jQuery("#img2_input").val('');
+                        isValid = false;
+
+
+                    }
+                }
+
+                if(isValid)
+                {
+                    jQuery("#label-img2").text(jQuery("#img2_input").val());
+                }
+
+            }
+
+
+            function validateImg3(file) {
+                var isValid = true;
+                var vp= jQuery("#img3").val();
+                var i= vp.substr(12);
+                jQuery("#img3_input").val(i);
+                var ext = file.split(".");
+                var file_size = jQuery('#img3')[0].files[0].size;
+                ext = ext[ext.length-1].toLowerCase();
+                var arrayExtensions = ["jpg" , "jpeg", "png"];
+
+
+                if (arrayExtensions.lastIndexOf(ext) == -1) {
+                    alert("<?php echo $this->__('Only images in jpeg, jpg, png format are allowed')?>");
+                    jQuery("#img3").val('');
+                    jQuery("#img3_input").val('');
+                    isValid = false;
+
+
+                }
+                else{
+                    if(file_size > 2097152){
+                        alert("<?php echo $this->__('The max file size allowed is 2 mb')?>");
+                        jQuery("#img3").val('');
+                        jQuery("#img3_input").val('');
+                        isValid = false;
+
+
+                    }
+                }
+
+                if(isValid)
+                {
+                    jQuery("#label-img3").text(jQuery("#img3_input").val());
+                }
+
+            }
+
+        </script>
+
+
+

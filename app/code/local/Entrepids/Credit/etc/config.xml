@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+@category    Entrepids
+@package     Entrepids_Credit
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <modules>
+        <Entrepids_Credit>
+            <version>0.0.1</version>
+        </Entrepids_Credit>
+    </modules>
+
+    <global>
+         <helpers>
+            <credit>
+                <class>Entrepids_Credit_Helper</class>
+            </credit>
+        </helpers>
+
+        <models>
+            <credit>
+                <class>Entrepids_Credit_Model</class>
+            </credit>
+        </models>
+
+        <resources>
+            <entrepids_credit_setup>
+                <setup>
+                    <module>Entrepids_Credit</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </entrepids_credit_setup>
+        </resources>
+
+        <template>
+            <email>
+                <entrepids_credit_template module="credit">
+                    <label>Entrepids Credit Template</label>
+                    <file>entrepids/entrepids_credit.html</file>
+                    <type>html</type>
+                </entrepids_credit_template>
+            </email>
+        </template> 
+
+        <events>
+            <admin_system_config_changed_section_entrepids_credit>
+                <observers>
+                    <upload>
+                        <type>singleton</type>
+                        <class>credit/observer</class>
+                        <method>uploadDocument</method>
+                    </upload>
+                </observers>
+            </admin_system_config_changed_section_entrepids_credit>
+        </events>
+    </global>
+
+    <frontend>
+        <routers>
+            <credit>
+                <use>standard</use>
+                <args>
+                    <module>Entrepids_Credit</module>
+                    <frontName>credit</frontName>
+                </args>
+            </credit>
+        </routers>
+
+        <layout>
+            <updates>
+                <credit>
+                    <file>credit.xml</file>
+                </credit>
+            </updates>
+        </layout>
+    </frontend>
+</config>

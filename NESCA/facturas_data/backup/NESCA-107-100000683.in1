@@ -1,0 +1,90 @@
+[Comprobante]
+idUnico=NESCA-107
+Version=3.3
+Serie=NESCA
+Folio=107
+Fecha=2019-10-01T19:51:37
+FormaPago=03
+CondicionesDePago=
+Subtotal=10960.00
+Descuento=0.00
+Moneda=MXN
+TipoCambio=1.00
+Total=9864.00
+TipoDeComprobante=I
+MetodoPago=PUE
+LugarExpedicion=11700
+Confirmacion=
+Correo=rmorales@mlg.com.mx;ymurillo@mlg.com.mx;mruiz@mlg.com.mx;fgonzalez@mlg.com.mx;aromero@mlg.com.mx
+FormatoCfdi=
+Status=
+
+[Extras]
+AfterCreateStatus=71
+ExtrasTexto01=Ventas público general
+Description=Ventas café para mi negocio
+YourReference=100000683
+ExtrasNotas=
+
+[Emisor]
+Rfc=MLG100224TC1
+Nombre=Master Loyalty Group, S.A. de C.V.
+RegimenFiscal=601
+Calle=Bosque de Duraznos 65 1002 A y B
+NoExterior=
+NoInterior=
+Colonia=Bosque de las Lomas
+Localidad=
+Referencia=
+Municipio=Miguel Hidalgo
+Estado=Ciudad de México
+Pais=México
+CodigoPostal=11700
+
+[Receptor]
+Rfc=GCO160222IE8
+Nombre=GYCSA COMERCIO S.A. DE C.V.
+ResidenciaFiscal=
+NumRegIdTrib=
+UsoCFDI=G01
+
+[Concepto1]
+ClaveProdServ=50161510
+NoIdentificacion=
+Cantidad=80
+ClaveUnidad=H87
+Unidad=Caja
+Descripcion=Endulzantes artificiales
+ValorUnitario=137.00
+Importe=10960.00
+Descuento=1096.00
+ImpuestosTraslado1Base=9864.00
+ImpuestosTraslado1Impuestos=002
+ImpuestosTraslado1TipoFactor=Tasa
+ImpuestosTraslado1TasaOCuota=0.000000
+ImpuestosTraslado1Importe=0.00
+InformacionAduaneraNumeroPedimento=
+CuentaPredialNumero=
+ConceptoTexto01=
+ConceptoTexto02=
+ConceptoTexto03=
+ConceptoTexto04=
+ConceptoTexto05=
+ConceptoTexto06=
+ConceptoTexto07=
+ConceptoTexto08=
+ConceptoTexto09=
+ConceptoTexto10=
+Aux_BU=7i5hg9lv27
+Aux_PJ=6dktzt7frg
+Aux_CT=*rfc*
+Aux_AC=ACT(40240)
+Aux_IT=1Mg_40240
+
+[Impuestos]
+TotalImpuestosRetenidos=
+TotalImpuestosTrasladados=0.00
+ImpuestosTraslado1Impuesto=002
+ImpuestosTraslado1TipoFactor=Tasa
+ImpuestosTraslado1TasaOCuota=0.000000
+ImpuestosTraslado1Importe=0.00

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+@category    Entrepids
+@package     Entrepids_MassImage
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <tabs>
+        <base translate="label" module="massimage">
+            <label>Entrepids</label>
+            <sort_order>1</sort_order>
+        </base>
+    </tabs>
+    <sections>
+        <entrepids_massimage translate="label" module="massimage">
+            <label>Product Mass Image Upload</label>
+            <tab>base</tab>
+            <sort_order>1</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+ 
+            <groups>
+                <general_settings translate="label" module="massimage">
+                    <label>General Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+ 
+                    <fields>
+                         <upload_file translate="label tooltip comment">
+                             <label>Upload ZIP</label>
+                             <comment>Only files in zip format are allowed. Other file types will not processed</comment>
+                             <!-- <tooltip>Add a tooltip that appears on hover</tooltip> -->
+                             <frontend_type>file</frontend_type>
+                             <backend_model>adminhtml/system_config_backend_file</backend_model>
+                             <upload_dir config="system/filesystem/media" scope_info="1">admin-config-uploads</upload_dir>
+                             <base_url type="media" scope_info="1">admin-config-uploads</base_url>
+                             <sort_order>1</sort_order>
+                             <show_in_default>1</show_in_default>
+                             <show_in_website>1</show_in_website>
+                             <show_in_store>1</show_in_store>
+                        </upload_file>
+
+                        <debug_mode translate="label comment">
+                            <label>Debug Mode</label>
+                            <comment>For testing or bug fixing purposes only. See 'massimages.log' in var folder</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </debug_mode>
+                    </fields>
+                </general_settings>
+            </groups>
+        </entrepids_massimage>
+    </sections>
+</config>

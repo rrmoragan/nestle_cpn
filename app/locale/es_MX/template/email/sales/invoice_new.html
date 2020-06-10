@@ -1,0 +1,160 @@
+<!--@subject {{var store.getFrontendName()}}: pedido nº {{var order.increment_id}} @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var store.getFrontendName()":"Store Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var order.increment_id":"Order Id",
+"var order.getCreatedAtFormated('long')":"Order Created At (datetime)",
+"var order.getBillingAddress().format('html')":"Billing Address",
+"var payment_html":"Payment Details",
+"var pay_message":"Payment Mesage",
+"var order.getPayment()":"Payment",
+"var order.getPayment().getMethod()":"Payment Method",
+"var order.getShippingAddress().format('html')":"Shipping Address",
+"var order.getShippingDescription()":"Shipping Description",
+"var order.getCustomerEmail()":"Customer Email",
+"layout handle=\"sales_email_order_items\" order=$order":"Order Items Grid",
+"var order.getEmailCustomerNote()":"Email Order Note"}
+@-->
+
+{{template config_path="design/email/header"}}
+<tr>
+<td height="40" bgcolor="#ef2226" style="color:#fff;font-size:18px;text-align:center;">CONFIRMACIÓN DE COMPRA </td>
+</tr>
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr></tr>
+<tr>
+<td>
+<table width="800" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+<tr>
+<td width="20" class="title_space" style="background-color:#000;">&nbsp;</td>
+<td width="10" height="40">&nbsp;</td>
+<td width="636" height="70" style="padding-right: 33px;font-size:20px;font-weight:bold;text-align:center;color:#58595b;">
+¡Tu compra y pago se han realizado exitosamente!<br />
+<span style="font-size:13px;font-weight:normal;color:#58595b;">
+Recibirás tu pedido hasta 72 hrs. hábiles en Área Metropolitana y hasta 5 días hábiles en el resto de la República</span></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" bgcolor="#f8f9f9" border="0" cellspacing="0" cellpadding="0" style="border-top:#ccc solid 1px;">
+<tr></tr>
+<tr>
+<td height="90" align="center" valign="middle">
+<table width="500" border="0" align="center" cellpadding="2" cellspacing="2">
+<tr>
+<td width="247" style="color:#787878;font-size:15px;text-align:right;">Fecha de compra: </td>
+<td width="247" style="color:#ef2226;text-align:left;"><strong>22/10/2017</strong></td>
+</tr>
+<tr>
+<td style="color:#787878;font-size:15px;text-align:right;">Número de confirmación: </td>
+<td style="color:#ef2226;text-align:left;"><strong>{{var order.increment_id}}</strong></td>
+</tr>
+<tr>
+<td style="color:#787878;font-size:15px; text-align:right;">Forma de pago: </td>
+<td style="color:#ef2226;text-align:left;"><strong>{{var payment_html}}</strong></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr></tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">
+<table width="800" border="0" align="center" cellpadding="2" cellspacing="0">
+<tr>
+<td height="30" colspan="2" valign="top" style="color:#787878;font-size:15px;text-align:right;">
+<table width="750" border="0" align="left" cellpadding="0" cellspacing="0">
+<tr>
+<td class="title_space">&nbsp;</td>
+<td height="30" style="font-size:15px;text-align:left;color:#58595b;"><strong>Descripción de compra:</strong></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+	{{layout handle="sales_email_order_items" order=$order}}
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding-bottom:10px;padding-top:10px;">
+<table width="750" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr>
+<td height="30"><span style="color:#58595b;font-size:15px;text-align:right;"><strong>
+  Te mostramos un listado de tus artículos seleccionados:</strong></span></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td height="30" bgcolor="#f8f9f9">
+<table width="580" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="175" style="color:#787878;font-family:Arial,sans-serif;text-align:left;font-size:14px;">
+    ARTÍCULO</td>
+    <td width="184" style="color:#787878;font-family:Arial,sans-serif;text-align:center;font-size:14px;">
+    SKU</td>
+    <td width="151" style="color:#787878;font-family:Arial,sans-serif;text-align:right;font-size:14px;">
+    CANTIDAD</td>
+    <td width="151" style="color:#787878;font-family:Arial,sans-serif;text-align:right;font-size:14px;">
+    PRECIO</td>
+  </tr>
+</table>
+</td>
+</tr>
+<tr>
+<td height="30">
+				{{if order.getEmailCustomerNote()}}
+				<table cellspacing="0" cellpadding="0" class="message-container" style="margin:0px auto;">
+					<tr>
+						<td>{{var order.getEmailCustomerNote()}}</td>
+					</tr>
+				</table>
+				{{/if}}
+				{{layout handle="sales_email_order_items" order=$order}}
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">&nbsp;</td>
+</tr>
+<tr>
+<td>
+<table width="750" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+<tr>
+<td width="22" class="title_space" style="background-color:#efb6b3;">&nbsp;</td>
+<td width="12" height="40">&nbsp;</td>
+<td width="716" style="font-size:20px;font-weight:bold;text-align:left;color:#58595b;">
+  Recuerda que ...</td>
+</tr>
+<tr>
+<td class="title_space">&nbsp;</td>
+<td height="40">&nbsp;</td>
+<td style="font-size:13px;text-align:left;color:#58595b;">
+<ul>
+<li>En caso de que tu pedido no sea entregado en tiempo, deberás notificarlo inmediatamente al Centro de Atención Telefónica (CAT) para resolver el caso.<br /><br /></li>
+<li>En caso de recibir algún pedido con el empaque abierto, o bien el artículo esté visiblemente dañado, no deberás firmar de recibido, ni recibir el producto, sino enviarlo de regreso con una nota y notificarlo de inmediato al CAT, 
+un día hábil de tolerancia a partir de la fecha de recepción.</li>
+</ul>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">&nbsp;</td>
+</tr>
+{{template config_path="design/email/footer_print"}}

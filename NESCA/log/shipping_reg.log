@@ -1,0 +1,623 @@
+
+:::: 2019-11-13 12:38:45 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1332
+    [add_nom] => raul
+    [add_apell] => morales
+    [add_calle] => 16 diciembre
+    [add_num] => 31
+    [add_num2] => 
+    [add_cp] => 05210
+    [add_pais] => MX
+    [add_col] => La Navidad
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 5532674845
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-13 12:38:45 :::: shipping_update()
+:::: 2019-11-13 12:38:45 :::: data_update()
+:::: 2019-11-13 12:38:45 :::: direccions()
+:::: 2019-11-13 12:38:45 :::: direccions_repair()
+:::: 2019-11-13 12:38:45 :::: select_direccions()
+:::: 2019-11-13 12:38:45 :::: select_dir( 1076 )
+:::: 2019-11-13 12:38:45 :::: select_dir( 1401 )
+:::: 2019-11-13 12:38:45 :::: select_dir( 1076 )
+:::: 2019-11-13 12:38:48 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1332
+    [add_nom] => raul
+    [add_apell] => morales
+    [add_calle] => 16 diciembre
+    [add_num] => 31
+    [add_num2] => 
+    [add_cp] => 05210
+    [add_pais] => MX
+    [add_col] => La Navidad
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 5532674845
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-13 12:38:48 :::: shipping_update()
+:::: 2019-11-13 12:38:48 :::: data_update()
+:::: 2019-11-13 12:38:48 :::: direccions()
+:::: 2019-11-13 12:38:48 :::: direccions_repair()
+:::: 2019-11-13 12:38:48 :::: select_direccions()
+:::: 2019-11-13 12:38:48 :::: select_dir( 1076 )
+:::: 2019-11-13 12:38:48 :::: select_dir( 1401 )
+:::: 2019-11-13 12:38:48 :::: select_dir( 1076 )
+:::: 2019-11-14 3:02:39 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1342
+    [add_nom] => raul
+    [add_apell] => morales
+    [add_calle] => 16 diciembre
+    [add_num] => 31
+    [add_num2] => 
+    [add_cp] => 05210
+    [add_pais] => MX
+    [add_col] => La Navidad
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 5532674845
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-14 3:02:39 :::: shipping_update()
+:::: 2019-11-14 3:02:39 :::: data_update()
+:::: 2019-11-14 3:02:39 :::: direccions()
+:::: 2019-11-14 3:02:39 :::: direccions_repair()
+:::: 2019-11-14 3:02:39 :::: select_direccions()
+:::: 2019-11-14 3:02:39 :::: select_dir( 1076 )
+:::: 2019-11-14 3:02:39 :::: select_dir( 1401 )
+:::: 2019-11-14 3:02:39 :::: select_dir( 1076 )
+:::: 2019-11-14 3:02:42 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1342
+    [add_nom] => raul
+    [add_apell] => morales
+    [add_calle] => 16 diciembre
+    [add_num] => 31
+    [add_num2] => 
+    [add_cp] => 05210
+    [add_pais] => MX
+    [add_col] => La Navidad
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 5532674845
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-14 3:02:42 :::: shipping_update()
+:::: 2019-11-14 3:02:42 :::: data_update()
+:::: 2019-11-14 3:02:42 :::: direccions()
+:::: 2019-11-14 3:02:42 :::: direccions_repair()
+:::: 2019-11-14 3:02:42 :::: select_direccions()
+:::: 2019-11-14 3:02:42 :::: select_dir( 1076 )
+:::: 2019-11-14 3:02:42 :::: select_dir( 1401 )
+:::: 2019-11-14 3:02:42 :::: select_dir( 1076 )
+:::: 2019-11-15 14:45:01 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => Georgina
+    [add_apell] => Villaseñor
+    [add_calle] => Prol. Pino Suarez 
+    [add_num] => 485
+    [add_num2] => 
+    [add_cp] => 45140
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => 
+    [add_person] => Georgina Karey Medina 
+    [add_ref] => Es en Cremeria La Bonita, a un lado de Banorte Mercado del mar 
+)
+
+:::: 2019-11-15 14:45:01 :::: shipping_update()
+:::: 2019-11-15 14:45:01 :::: data_update()
+:::: 2019-11-15 14:45:01 :::: direccions()
+:::: 2019-11-15 14:45:01 :::: direccions_repair()
+:::: 2019-11-15 14:45:01 :::: select_direccions()
+:::: 2019-11-15 14:45:01 :::: select_dir( 1437 )
+:::: 2019-11-15 14:45:01 :::: select_dir( 1438 )
+:::: 2019-11-15 14:45:01 :::: actualizando direccion de usuario ==> 1437 ==> campo ==> city ==> valor ==> [Zapopan] ==> table ==> customer_address_entity_varchar
+:::: 2019-11-15 14:45:01 :::: UPDATE customer_address_entity_varchar set value = 'Zapopan' where value_id = 20315 
+
+:::: 2019-11-15 14:45:01 :::: actualizando direccion de usuario ==> 1437 ==> campo ==> postcode ==> valor ==> [45158] ==> table ==> customer_address_entity_varchar
+:::: 2019-11-15 14:45:01 :::: UPDATE customer_address_entity_varchar set value = '45158' where value_id = 20313 
+
+:::: 2019-11-15 14:45:01 :::: actualizando direccion de usuario ==> 1437 ==> campo ==> telephone ==> valor ==> [3310234971] ==> table ==> customer_address_entity_varchar
+:::: 2019-11-15 14:45:01 :::: UPDATE customer_address_entity_varchar set value = '3310234971' where value_id = 20318 
+
+:::: 2019-11-15 14:45:01 :::: actualizando direccion de usuario ==> 1437 ==> campo ==> street ==> valor ==> [BOULEVARD DEL RODEO] ==> table ==> customer_address_entity_text
+:::: 2019-11-15 14:45:01 :::: UPDATE customer_address_entity_text set value = 'BOULEVARD DEL RODEO' where value_id = 1556 
+
+:::: 2019-11-15 14:45:01 :::: select_dir( 1437 )
+:::: 2019-11-15 14:52:34 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => GERORGINA
+    [add_apell] => VILLASEÑOR GAVILANES
+    [add_calle] => BOULEVARD DEL RODEO
+    [add_num] => 155
+    [add_num2] => 185
+    [add_cp] => 45158
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => SN
+    [add_person] => GEORGINA KAREY MEDINA
+    [add_ref] => 
+)
+
+:::: 2019-11-15 14:52:34 :::: shipping_update()
+:::: 2019-11-15 14:52:34 :::: data_update()
+:::: 2019-11-15 14:52:34 :::: direccions()
+:::: 2019-11-15 14:52:34 :::: direccions_repair()
+:::: 2019-11-15 14:52:34 :::: select_direccions()
+:::: 2019-11-15 14:52:34 :::: select_dir( 1437 )
+:::: 2019-11-15 14:52:34 :::: select_dir( 1438 )
+:::: 2019-11-15 14:52:34 :::: select_dir( 1437 )
+:::: 2019-11-15 14:57:33 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => Georgina
+    [add_apell] => Villaseñor
+    [add_calle] => Prol. Pino Suarez 
+    [add_num] => 485
+    [add_num2] => 
+    [add_cp] => 45140
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => 
+    [add_person] => Georgina Karey Medina 
+    [add_ref] => Es Cremeria La Bonita, a un lado de Banco Banorte en el mercado del mar
+)
+
+:::: 2019-11-15 14:57:33 :::: shipping_update()
+:::: 2019-11-15 14:57:33 :::: data_update()
+:::: 2019-11-15 14:57:33 :::: direccions()
+:::: 2019-11-15 14:57:33 :::: direccions_repair()
+:::: 2019-11-15 14:57:33 :::: select_direccions()
+:::: 2019-11-15 14:57:33 :::: select_dir( 1437 )
+:::: 2019-11-15 14:57:33 :::: select_dir( 1438 )
+:::: 2019-11-15 14:57:33 :::: select_dir( 1437 )
+:::: 2019-11-15 14:57:54 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => Georgina
+    [add_apell] => Villaseñor
+    [add_calle] => Prol. Pino Suarez 
+    [add_num] => 485
+    [add_num2] => 
+    [add_cp] => 45140
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => 
+    [add_person] => Georgina Karey Medina 
+    [add_ref] => Es Cremeria La Bonita, a un lado de Banco Banorte en el mercado del mar
+)
+
+:::: 2019-11-15 14:57:54 :::: shipping_update()
+:::: 2019-11-15 14:57:54 :::: data_update()
+:::: 2019-11-15 14:57:54 :::: direccions()
+:::: 2019-11-15 14:57:54 :::: direccions_repair()
+:::: 2019-11-15 14:57:54 :::: select_direccions()
+:::: 2019-11-15 14:57:54 :::: select_dir( 1437 )
+:::: 2019-11-15 14:57:54 :::: select_dir( 1438 )
+:::: 2019-11-15 14:57:54 :::: select_dir( 1437 )
+:::: 2019-11-15 17:47:13 :::: data ==> Array
+(
+    [uid] => 855
+    [add_email] => ricardogallardorivera@gmail.com
+    [add_id] => 1370
+    [add_nom] => RICARDO ALBERTO
+    [add_apell] => GALLARDO RIVERA
+    [add_calle] => CAMILO FLAMARION
+    [add_num] => 611
+    [add_num2] => sn
+    [add_cp] => 38470
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => Jaral del Progreso
+    [add_estado] => 495
+    [add_tel] => 4111355092
+    [add_tel2] => SN
+    [add_person] => EDGAR EMMANUEL GALLARDO RIVERA / MARIO RIVERA VAZQUEZ
+    [add_ref] => 
+)
+
+:::: 2019-11-15 17:47:13 :::: shipping_update()
+:::: 2019-11-15 17:48:00 :::: data ==> Array
+(
+    [uid] => 855
+    [add_email] => ricardogallardorivera@gmail.com
+    [add_id] => 1370
+    [add_nom] => RICARDO ALBERTO
+    [add_apell] => GALLARDO RIVERA
+    [add_calle] => CAMILO FLAMARION
+    [add_num] => 611
+    [add_num2] => sn
+    [add_cp] => 38470
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => Jaral del Progreso
+    [add_estado] => 495
+    [add_tel] => 4111355092
+    [add_tel2] => SN
+    [add_person] => EDGAR EMMANUEL GALLARDO RIVERA / MARIO RIVERA VAZQUEZ
+    [add_ref] => 
+)
+
+:::: 2019-11-15 17:48:00 :::: shipping_update()
+:::: 2019-11-16 12:30:35 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => Georgina
+    [add_apell] => Villaseñor
+    [add_calle] => Prol. Pino Suarez
+    [add_num] => 485
+    [add_num2] => 
+    [add_cp] => 45140
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => 
+    [add_person] => Georgina Karey Medina
+    [add_ref] => Es en Cremeria La Bonita, a un lado del Banco Banorte del Mercado del Mar de Zapopan
+)
+
+:::: 2019-11-16 12:30:35 :::: shipping_update()
+:::: 2019-11-16 12:30:35 :::: data_update()
+:::: 2019-11-16 12:30:35 :::: direccions()
+:::: 2019-11-16 12:30:35 :::: direccions_repair()
+:::: 2019-11-16 12:30:35 :::: select_direccions()
+:::: 2019-11-16 12:30:35 :::: select_dir( 1437 )
+:::: 2019-11-16 12:30:36 :::: select_dir( 1438 )
+:::: 2019-11-16 12:30:36 :::: select_dir( 1437 )
+:::: 2019-11-16 12:30:56 :::: data ==> Array
+(
+    [uid] => 800
+    [add_email] => GINA_VILLASENOR@HOTMAIL.COM
+    [add_id] => 1364
+    [add_nom] => Georgina
+    [add_apell] => Villaseñor
+    [add_calle] => Prol. Pino Suarez
+    [add_num] => 485
+    [add_num2] => 
+    [add_cp] => 45140
+    [add_pais] => MX
+    [add_col] => El Vigía
+    [add_deleg] => Zapopan
+    [add_estado] => 498
+    [add_tel] => 3310234971
+    [add_tel2] => 
+    [add_person] => Georgina Karey Medina
+    [add_ref] => Es en Cremeria La Bonita, a un lado del Banco Banorte del Mercado del Mar de Zapopan
+)
+
+:::: 2019-11-16 12:30:56 :::: shipping_update()
+:::: 2019-11-16 12:30:56 :::: data_update()
+:::: 2019-11-16 12:30:56 :::: direccions()
+:::: 2019-11-16 12:30:56 :::: direccions_repair()
+:::: 2019-11-16 12:30:56 :::: select_direccions()
+:::: 2019-11-16 12:30:56 :::: select_dir( 1437 )
+:::: 2019-11-16 12:30:57 :::: select_dir( 1438 )
+:::: 2019-11-16 12:30:57 :::: select_dir( 1437 )
+:::: 2019-11-17 19:16:54 :::: data ==> Array
+(
+    [uid] => 857
+    [add_email] => orlando.guerrero.mendoza@gmail.com
+    [add_id] => 1380
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => 
+    [add_estado] => 
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-17 19:16:54 :::: shipping_update()
+:::: 2019-11-17 19:17:22 :::: data ==> Array
+(
+    [uid] => 857
+    [add_email] => orlando.guerrero.mendoza@gmail.com
+    [add_id] => 1380
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => 
+    [add_estado] => 
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-17 19:17:22 :::: shipping_update()
+:::: 2019-11-17 19:18:38 :::: data ==> Array
+(
+    [uid] => 857
+    [add_email] => orlando.guerrero.mendoza@gmail.com
+    [add_id] => 1380
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => 
+    [add_estado] => 
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-17 19:18:38 :::: shipping_update()
+:::: 2019-11-20 11:50:35 :::: data ==> Array
+(
+    [uid] => 683
+    [add_email] => finanzas@la-cc.com.mx
+    [add_id] => 1412
+    [add_nom] => Marco
+    [add_apell] => Hernandez
+    [add_calle] => Montes Urales
+    [add_num] => 774
+    [add_num2] => 1
+    [add_cp] => 11000
+    [add_pais] => MX
+    [add_col] => Lomas de Chapultepec I Sección
+    [add_deleg] => Miguel Hidalgo
+    [add_estado] => 485
+    [add_tel] => 5524549168
+    [add_tel2] => 602
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-20 11:50:35 :::: shipping_update()
+:::: 2019-11-20 11:50:35 :::: data_update()
+:::: 2019-11-20 11:50:35 :::: direccions()
+:::: 2019-11-20 11:50:35 :::: direccions_repair()
+:::: 2019-11-20 11:50:35 :::: select_direccions()
+:::: 2019-11-20 11:50:35 :::: select_dir( 1200 )
+:::: 2019-11-20 11:50:35 :::: select_dir( 1201 )
+:::: 2019-11-20 11:50:35 :::: select_dir( 1202 )
+:::: 2019-11-20 11:50:35 :::: select_dir( 1200 )
+:::: 2019-11-20 11:50:42 :::: data ==> Array
+(
+    [uid] => 683
+    [add_email] => finanzas@la-cc.com.mx
+    [add_id] => 1412
+    [add_nom] => Marco
+    [add_apell] => Hernandez
+    [add_calle] => Montes Urales
+    [add_num] => 774
+    [add_num2] => 1
+    [add_cp] => 11000
+    [add_pais] => MX
+    [add_col] => Lomas de Chapultepec I Sección
+    [add_deleg] => Miguel Hidalgo
+    [add_estado] => 485
+    [add_tel] => 5524549168
+    [add_tel2] => 602
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-20 11:50:42 :::: shipping_update()
+:::: 2019-11-20 11:50:42 :::: data_update()
+:::: 2019-11-20 11:50:42 :::: direccions()
+:::: 2019-11-20 11:50:42 :::: direccions_repair()
+:::: 2019-11-20 11:50:42 :::: select_direccions()
+:::: 2019-11-20 11:50:42 :::: select_dir( 1200 )
+:::: 2019-11-20 11:50:42 :::: select_dir( 1201 )
+:::: 2019-11-20 11:50:42 :::: select_dir( 1202 )
+:::: 2019-11-20 11:50:42 :::: select_dir( 1200 )
+:::: 2019-11-20 15:49:52 :::: data ==> Array
+(
+    [uid] => 529
+    [add_email] => abby12flores@gmail.com
+    [add_id] => 1416
+    [add_nom] => MARIO
+    [add_apell] => CADENA RAMIREZ
+    [add_calle] => BULEVAR CUAUHTEMOC
+    [add_num] => 48
+    [add_num2] => 48
+    [add_cp] => 56600
+    [add_pais] => MX
+    [add_col] => Bosques de Chalco II
+    [add_deleg] => Chalco
+    [add_estado] => 499
+    [add_tel] => 5532510577
+    [add_tel2] => 
+    [add_person] => CUALQUIERA
+    [add_ref] => 
+)
+
+:::: 2019-11-20 15:49:52 :::: shipping_update()
+:::: 2019-11-20 15:49:52 :::: data_update()
+:::: 2019-11-20 15:49:52 :::: direccions()
+:::: 2019-11-20 15:49:52 :::: direccions_repair()
+:::: 2019-11-20 15:49:52 :::: select_direccions()
+:::: 2019-11-20 15:49:52 :::: select_dir( 912 )
+:::: 2019-11-20 15:49:52 :::: select_dir( 913 )
+:::: 2019-11-20 15:49:52 :::: select_dir( 914 )
+:::: 2019-11-20 15:49:52 :::: select_dir( 971 )
+:::: 2019-11-20 15:49:52 :::: select_dir( 912 )
+:::: 2019-11-20 15:49:56 :::: data ==> Array
+(
+    [uid] => 529
+    [add_email] => abby12flores@gmail.com
+    [add_id] => 1416
+    [add_nom] => MARIO
+    [add_apell] => CADENA RAMIREZ
+    [add_calle] => BULEVAR CUAUHTEMOC
+    [add_num] => 48
+    [add_num2] => 48
+    [add_cp] => 56600
+    [add_pais] => MX
+    [add_col] => Bosques de Chalco II
+    [add_deleg] => Chalco
+    [add_estado] => 499
+    [add_tel] => 5532510577
+    [add_tel2] => 
+    [add_person] => CUALQUIERA
+    [add_ref] => 
+)
+
+:::: 2019-11-20 15:49:56 :::: shipping_update()
+:::: 2019-11-20 15:49:56 :::: data_update()
+:::: 2019-11-20 15:49:56 :::: direccions()
+:::: 2019-11-20 15:49:56 :::: direccions_repair()
+:::: 2019-11-20 15:49:56 :::: select_direccions()
+:::: 2019-11-20 15:49:56 :::: select_dir( 912 )
+:::: 2019-11-20 15:49:56 :::: select_dir( 913 )
+:::: 2019-11-20 15:49:56 :::: select_dir( 914 )
+:::: 2019-11-20 15:49:56 :::: select_dir( 971 )
+:::: 2019-11-20 15:49:56 :::: select_dir( 912 )
+:::: 2019-11-20 17:52:06 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1422
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-20 17:52:06 :::: shipping_update()
+:::: 2019-11-20 17:52:38 :::: data ==> Array
+(
+    [uid] => 620
+    [add_email] => rmorales@mlg.com.mx
+    [add_id] => 1422
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => Cuajimalpa de Morelos
+    [add_estado] => 485
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-20 17:52:38 :::: shipping_update()
+:::: 2019-11-22 10:06:42 :::: data ==> Array
+(
+    [uid] => 590
+    [add_email] => sandragonzalez@zya.mx
+    [add_id] => 1436
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => 
+    [add_estado] => 485
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-22 10:06:42 :::: shipping_update()
+:::: 2019-11-22 10:07:15 :::: data ==> Array
+(
+    [uid] => 590
+    [add_email] => sandragonzalez@zya.mx
+    [add_id] => 1436
+    [add_nom] => 
+    [add_apell] => 
+    [add_calle] => 
+    [add_num] => 
+    [add_num2] => 
+    [add_cp] => 
+    [add_pais] => MX
+    [add_col] => 
+    [add_deleg] => 
+    [add_estado] => 485
+    [add_tel] => 
+    [add_tel2] => 
+    [add_person] => 
+    [add_ref] => 
+)
+
+:::: 2019-11-22 10:07:15 :::: shipping_update()

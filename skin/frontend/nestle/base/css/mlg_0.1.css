@@ -1,0 +1,12 @@
+/* ============================================ *
+* codigo vendedor 
+* ============================================ */
+.ccv{}
+.ccv .ccv_form{display: block;padding-bottom: 20px;}
+.ccv h2{font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif;font-size: 15px;color: black;font-weight: normal;margin: 0 0 10px;}
+.ccv .ccv_input{display: inline-block;width: 80%;}
+.ccv .ccv_input .input-text{width: 95%;display: block;margin: 0;}
+.ccv .cvv_upgrade, .ccv .cvv_save{width: 15%;display: inline-block;min-height: 45px;vertical-align: bottom;}
+.ccv .cvv_upgrade img{display: block;height: 25px;vertical-align: middle;margin-top: 6px;}
+.ccv .cvv_save{background: url(../images/elements/btn_input.png) 0 5px no-repeat;background-size: auto;background-size: 82%;width: 54px;height: 50px;float: right;}
+.ccv .ccv_err{color: #DF280A;}

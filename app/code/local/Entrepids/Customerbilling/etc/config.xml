@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Entrepids_Customerbilling>
+            <version>0.1.0</version>
+        </Entrepids_Customerbilling>
+    </modules>	
+    <global>	
+        <customerbilling>
+                <class>Entrepids_Customerbilling_Model</class>
+        </customerbilling>	
+        <events>
+            <customer_save_before>
+                <observers>
+                    <Entrepids_Customerbilling>
+                        <type>singleton</type>
+                        <class>Entrepids_Customerbilling_Model_Observer</class>
+                        <method>updateCustomerBilling</method>
+                    </Entrepids_Customerbilling>
+                </observers>
+            </customer_save_before>
+            
+            <customer_register_success>
+                <observers>
+                    <Entrepids_Customerbilling>
+                        <type>singleton</type>
+                        <class>Entrepids_Customerbilling_Model_Observer</class>
+                        <method>updateCustomerBilling</method>
+                    </Entrepids_Customerbilling>
+                </observers>
+            </customer_register_success>            
+            
+        </events>	
+    </global>	
+</config>

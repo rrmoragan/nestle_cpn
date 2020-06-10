@@ -1,0 +1,92 @@
+<!--@subject {{var store.getFrontendName()}}: Pedido nº {{var order.increment_id}} actualizado @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+
+
+"var order.increment_id":"Order Id",
+"var order.getStatusLabel()":"Order Status",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var payment_html":"Payment Details",
+"var comment":"Order Comment",
+"var store.getFrontendName()":"Store Name"}
+@-->
+
+{{template config_path="design/email/header"}}
+<tr>
+<td height="40" bgcolor="#ef2226" style="color:#fff;  font-size:18px; text-align:center;">
+VALIDACIÓN DE PAGO</td>
+</tr>
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td height="25">
+<table width="800" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+<tr>
+<td width="20" class="title_space" style="background-color:#000;">&nbsp;</td>
+<td width="10" height="40">&nbsp;</td>
+<td width="636" height="70" style="padding-right: 33px;font-size:20px; font-weight:bold;text-align:center;color:#58595b;">
+
+<p>El status de tu orden de compra es: {{var order.getStatusLabel()}}</p>
+
+</td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" bgcolor="#f8f9f9" border="0" cellspacing="0" cellpadding="0" style="border-top:#ccc solid 1px;">
+<tr>
+<td height="100" align="center" valign="middle"><table width="500" border="0" align="center" cellpadding="2" cellspacing="2">
+<!-- <tr>
+<td width="247" style="color:#787878;font-size:15px;text-align:right;">Fecha de compra: </td>
+<td width="247" style="color:#ef2226;font-size:15px;text-align:left;"><strong>{{var fecha}}</strong></td>
+</tr> -->
+<tr>
+<td style="color:#787878;font-size:15px;text-align:right;">Número de confirmación: </td>
+<td style="color:#ef2226;font-size:15px;text-align:left;"><strong>{{var order.increment_id}}</strong></td>
+</tr>
+<tr>
+<td style="color:#787878;font-size:15px;text-align:right;">Forma de pago: </td>
+<td style="color:#ef2226;font-size:15px;text-align:left;"><strong>{{var payment_html}}</strong></td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">
+  {{if order.getStatusLabel() == 'Pagado' }}
+  <table width="750" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+  <tr>
+    <td width="22" class="title_space" style="background-color:#efb6b3;">&nbsp;</td>
+    <td width="12" height="40">&nbsp;</td>
+    <td width="716" style="font-size:20px;font-weight:bold;text-align:left;color:#58595b;"> Recuerda que...</td>
+  </tr>
+  <tr>
+    <td class="title_space">&nbsp;</td>
+    <td height="40">&nbsp;</td>
+    <td style="font-size:13px;text-align:left;color:#58595b;">
+      <ul>
+	<li>Una vez confirmado tu pago, el tiempo de entrega es de máximo 72 hrs hábiles en el Área metropolitana y de 3 a 7 días hábiles en el interior de la República.<br /><br /></li>
+        <li>En caso de que tu pedido no sea entregado en tiempo, deberás notificarlo inmediatamente al Centro de Atención Telefónica (CAT) para resolver el caso.<br /><br /></li>
+        <li>En caso de recibir algún pedido con el empaque abierto, o bien el artículo esté visiblemente dañado, no deberás firmar de recibido, ni recibir el producto, sino enviarlo de regreso con una nota y notificarlo de inmediato al CAT, 
+        un día hábil de tolerancia a partir de la fecha de recepción.</li>
+      </ul>
+    </td>
+  </tr>
+  </table>
+  {{/if}}
+</td>
+</tr>
+<tr>
+<td style="border-top:#ccc solid 1px;">&nbsp;</td>
+</tr>
+{{template config_path="design/email/footer"}}

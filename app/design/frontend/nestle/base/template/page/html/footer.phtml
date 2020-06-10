@@ -1,0 +1,129 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * detect_logged
+ */
+
+$is_logged = Mage::helper('customer')->isLoggedIn();
+$is_logged_class = 'nologgued';
+
+if( $is_logged ){ $is_logged_class = 'loggued'; }
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * notification_shadow
+ */
+
+$cart_notification = true;
+$image_logo = $this->getUrl('').'skin/frontend/nestle/base/images/logo_temporal1.png';
+if( $image_logo != '' ){
+    $image_logo = '<img src="'.$image_logo.'" />';
+}
+
+
+?>
+
+<!-- este es el footer --><?php
+if($cart_notification){ ?>
+    <div id="add2cart_notification_shadow" class="on">
+        <div id="add2cart_notification_content">
+            <div class="add2cart_notification_button_close popupCloseButton">X</div>
+            <p id="add2cart_notification_image" class="image"><?php echo $image_logo; ?></p>
+            <p id="add2cart_notification_message" class="message"><?php echo $this->__('Added article'); ?></p>
+            <div id="add2cart_notification_buttons">
+                <a class="button cart-link" href="<?php echo $this->getUrl('checkout/cart'); ?>" id="add2cart_notification_button_view">
+                    <?php echo $this->__('View Shopping Cart'); ?>
+                </a>
+                <!-- <a class="button cart-link add2cart_notification_button_close">
+                    <?php echo $this->__('Continue Shopping'); ?>
+                </a> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- cart_notification -->
+    <script type="text/javascript">
+        $j(document).ready(function () {
+            $j('#add2cart_notification_shadow').on('click',function(e){
+                if (e.target === this){
+                    $j('#add2cart_notification_shadow').toggle();
+                }
+            });
+
+            <?php if(isset($_GET['position']) && !empty($_GET['position'])): ?>
+                $j(window).scrollTop(<?php echo $_GET['position'] ?>);
+            <?php endif ?>
+
+            $j('.add2cart_notification_button_close').on('click',function(e){
+                e.preventDefault();
+                $j('#add2cart_notification_shadow').hide();
+            })
+            $j('.add2cart_notification_button_close').on('click',function(e){
+                e.preventDefault();
+                $j('#add2cart_notification_shadow').hide();
+            })
+        });
+        
+        var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        var url = window.location.href;
+        if(isIE11 && window.location.search.indexOf("add_to_cart=true") > 0){
+            url = url.split('?add_to_cart')[0];
+            $j('#add2cart_notification_shadow').show();
+        }else if(!isIE11 && (url.includes('?add_to_cart') || url.includes('&add_to_cart')) ){
+            url = url.split('?add_to_cart')[0];
+            $j('#add2cart_notification_shadow').show();
+        }
+        
+        window.history.pushState({}, document.title, url );
+
+        if( $('notifi_cart_text') != null ){
+        	$('add2cart_notification_message').innerHTML = $('notifi_cart_text').innerHTML;
+        }
+        if( $('notifi_cart_button') != null ){
+        	$('add2cart_notification_button_view').innerText = $('notifi_cart_button').innerText;
+        }
+
+        if( $('notifi_cart_image') != null ){
+        	var im = $('notifi_cart_image').innerText;
+        		im = '<img src="' + im + '">';
+        	$('add2cart_notification_image').innerHTML = im;
+        }
+
+    </script>
+
+    <?php } ?>
+
+<div class="footer-container">
+    <div class="footer">
+        <!--<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('footer_payment')->toHtml(); ?> -->
+		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('footer_links')->toHtml(); ?> 
+        <!--<address class="copyright"><?php echo $this->getCopyright() ?></address>-->
+    </div>
+</div>

@@ -1,0 +1,355 @@
+<?php
+
+if( !defined('PG_VER') ){
+
+	include('basics.php');
+	include('querys.php');
+
+	if( !defined('FORCE_UTF8') ){ include('forceUTF8.php'); define('FORCE_UTF8',true); }
+	if( !defined('LOG_M') ){ define('LOG_M',true); include('logs.php'); }
+
+	define('PG_VER','0.1');
+	define('OPENPAY_ID_COMERCIO','myhbbepw14sfvxyylolr');
+	define('OPENPAY_PUBLIC','pk_9110baef11ef4beabf619f7a8279dee8');
+	define('OPENPAY_PRIVATE','sk_094e464a249f470b9eba5cdc9a7664c6');
+	define('OPENPAY_DIR','/var/www/magento/NESCA/openpay_sales/');
+	define('OPENPAY_REPORT','/var/www/magento/NESCA/openpay_report');
+	define('OPENPAY_REPORT_URL','/mlg_openpayreport_link.url');
+	define('PROGRAM','CPMN');
+
+	class openpay_mlg{
+
+		public $data = null;
+
+		public function list_sales_order(){
+			$s = "SELECT
+				sfo.entity_id,
+				sfo.increment_id,
+				sfo.status,
+				sfo.customer_email,
+				ce.entity_id as customer_id,
+				sfop.openpay_payment_id,
+				cev.value as openpay_user_id,
+				ov.status as openpay_status
+
+				from sales_flat_order as sfo
+				left join sales_flat_order_payment as sfop on sfop.parent_id=sfo.entity_id
+				left join customer_entity as ce on ce.email = sfo.customer_email
+				left join customer_entity_varchar as cev on cev.entity_id = ce.entity_id
+				left join eav_attribute as ea on ea.attribute_id = cev.attribute_id
+				left join openpay_validate as ov on ov.sales_order = sfo.increment_id
+				where 
+				ea.attribute_code like 'openpay_user_id'
+				order by sfo.increment_id DESC;
+				";
+			$a = query($s);
+			if($a==null){
+				return false;
+			}
+
+			foreach ($a as $et => $r) {
+				if($r['openpay_user_id']==''){ unset( $a[ $et ] ); }
+			}
+
+			$this->data = $a;
+			return true;
+		}
+
+		public function list_curl(){
+			if( $this->data==null ){
+				$this->list_sales_order();
+			}
+			if( $this->data==null ){ return false; }
+
+			$a = null;
+			foreach ($this->data as $et => $r) {
+				if( $r['openpay_user_id']=='' ){ continue; }
+				if( $r['openpay_payment_id']=='' ){ continue; }
+				if( $r['openpay_status']=='cancelled' &&  $r['status']=='canceled' ){ continue; }
+				if( $r['openpay_status']=='completed' &&  ( $r['status']=='canceled' || $r['status']=='pagado' ) ){ continue; }
+
+				$s = "\ncurl https://api.openpay.mx/v1/".OPENPAY_ID_COMERCIO."/customers/".$r['openpay_user_id']."/charges/".$r['openpay_payment_id']." -u sk_094e464a249f470b9eba5cdc9a7664c6: > ".OPENPAY_DIR.$r['increment_id'].'.sales_order';
+				$a[] = $s;
+			}
+
+			$this->data = $a;
+			return true;
+		}
+
+		public function process_files(){
+			$_dir = getcwd();
+			chdir(OPENPAY_DIR);
+			$dir = opendir('.');
+
+			$i = 0;
+			while ($file = readdir($dir)){
+				if( is_dir($file) ){ continue; }
+
+				if( $this->magento_data_openpay( $this->file_to_sales( $file ) ) ){
+					continue;
+				}
+
+				$fp = fopen($file, 'r');
+				if( !$fp ) { tt('error file open ==> '.$file); continue; }
+
+			    while (false !== ($string = fgets($fp))) {
+			    	$this->magento_data_openpay_update( $this->file_to_sales($file), fixUTF8($string) );
+			        //$obj = json_decode($string);
+			        //print_r( $obj );
+			    }
+			    $i++;
+			}
+			opendir( $_dir );
+			echo "\narchivos procesados ==> ".$i;
+			echo "\n";
+
+			return true;
+		}
+
+		public function file_to_sales($file=''){
+			if($file==''){ return ''; }
+
+			$a = explode(".sales", $file);
+			if( !isset( $a[1] ) ){ return ''; }
+			if( $a[1] == '_order' ){ return $a[0]; }
+			return '';
+		}
+		public function magento_data_openpay( $sales = '' ){
+			if($sales==''){ return false; }
+
+			$s = "SELECT * from openpay_validate where sales_order like '$sales' and status IN( 'canceles', 'pagado' )";
+			$a = query( $s );
+			if($a==null){ return false; }
+
+			return true;
+		}
+		public function is_exist_data_openpay( $sales='' ){
+			if($sales==''){ return 0; }
+
+			$s = "SELECT * from openpay_validate where sales_order like '$sales'";	
+			$a = query( $s );
+			if($a==null){ return 0; }
+
+			return $a[0];
+		}
+		public function magento_data_openpay_update( $sales='',$str_json='' ){
+			if($sales==''){ return false; }
+			if($str_json==''){ return false; }
+
+			$obj = json_decode($str_json);
+
+			$status = 'in_progress';
+			if( isset( $obj->status ) ){
+				$status = $obj->status;
+			}
+
+			$reg = $this->is_exist_data_openpay( $sales );
+			$id = 0;
+			if( $reg ){ $id = $reg['id']; }
+
+			/* si existe ==> update */
+			if( $id ){
+				tt( "actualizando ".$sales );
+				$s = "UPDATE openpay_validate set status = '$status', seguimiento = '$str_json' where id = $id";
+				query($s);
+
+				$s = "SELECT * from sales_flat_order where increment_id like '$sales'";
+				$osales = query( $s );
+				if( $osales==null ){ return false; }
+				$osales = $osales[0];
+
+				switch( $osales['status'] ){
+					case 'canceled': break;
+					case 'pagado': break;
+					default:
+						$st = 'pending';
+						if( $status == 'cancelled' ){ $st = 'canceled'; }
+						if( $status == 'completed' ){ $st = 'pagado'; }
+
+						$s = "UPDATE sales_flat_order set status = '$st' where entity_id = ".$osales['entity_id'];
+						query($s);
+						$s = "UPDATE sales_flat_order_grid set status = '$st' where entity_id = ".$osales['entity_id'];
+						query($s);
+						break;
+				}
+
+				return true;
+			}
+
+			/* si no existe ==> crea */
+
+			tt( "creando ".$sales );
+
+			$s = "SELECT customer_email from sales_flat_order where increment_id like '$sales'";
+			$email = query($s);
+			if( $email != null ){
+				$email = $email[0]['customer_email'];
+			}
+
+			$s = "INSERT into openpay_validate values( null, '$sales', '$email', '$status', '$str_json' )";
+			$id = query($s);
+			if( $id ){ return true; }
+
+			return false;
+		}
+
+		public function report(){
+			$this->list_sales_order();
+			if( $this->data == null ){ return false; }
+
+			$c = null;
+			foreach ($this->data as $et => $r) {
+
+				$s = "SELECT * from openpay_validate where sales_order like '".$r['increment_id']."'";
+				$b = query( $s );
+				if($b==null){ continue; }
+				$b = $b[0]['seguimiento'];
+				$obj = json_decode($b);
+
+				/* nombre de usuario */
+				$s = "SELECT value as name from customer_entity_varchar where entity_id = ".$r['customer_id']." and attribute_id IN( 5,7 )";
+				$user = query($s);
+				if( $user == null ){
+					$user = '';
+					if( isset( $obj->card->holder_name ) ){
+						$user = $obj->card->holder_name;
+					}
+				}else{
+					$user = $user[0]['name'].' '.$user[0]['name'];
+				}
+
+				$a = null;
+				$st = 'Pendiente';
+				if( $r['openpay_status'] == 'cancelled' ){ $st = 'Rechazada'; }
+				if( $r['openpay_status'] == 'completed' ){ $st = 'Exitosa'; }
+
+				$card = 'otra';		if( isset( $obj->card->brand ) ){ 		$card 		= $obj->card->brand; }
+				$card_type = '';	if( isset( $obj->card->type ) ){ 		$card_type 	= $obj->card->type; }
+				$monto = 0;			if( isset( $obj->amount ) ){ 			$monto 		= $obj->amount; }
+				$error = '';		if( isset( $obj->error_message ) ){ 	$error 		= $obj->error_message; }
+				$date = '';			if( isset( $obj->operation_date ) ){ 	$date 		= $obj->operation_date; }
+				$method = '';		if( isset( $obj->method ) ){ 			$method 	= $obj->method; }
+
+				$bank_name = '';
+				$number = '';
+				switch ( $method ) {
+					case 'bank_account':
+						if( isset( $obj->payment_method->bank ) ){
+							$bank_name 	= $obj->payment_method->bank;
+						}
+						if( isset( $obj->payment_method->type ) ){
+							$number 	= $obj->payment_method->type;
+						}
+						break;
+					case 'store':
+						$bank_name = 'store';
+						if( isset( $obj->payment_method->type ) ){
+							$number 	= $obj->payment_method->type;
+						}
+						break;
+					case 'card':
+						if( isset( $obj->card->bank_name ) ){
+							$bank_name 	= $obj->card->bank_name;
+						}
+						if( isset( $obj->card->card_number ) ){
+							$number 	= $obj->card->card_number;
+						}
+						break;
+				}
+
+				if( $st=='Pendiente' ){ $number = ''; }
+
+				if( $method == 'bank_account' ){ $method = 'Transferencia Bancaria'; }
+				if( $method == 'card' ){ $method = 'Tarjeta de Crédito'; }
+				if( $method == 'store' ){ $method = 'Tienda de Conveniencia'; }
+				if( $card_type == 'credit' ){ $card_type = 'Crédito'; }
+				if( $card_type == 'debit' ){ $card_type = 'Débito'; }
+
+				$b = explode('T', $date);
+				$bc = explode('-', $b[1]);
+				$date = $b[0].' '.$bc[0];
+
+				$a['employeeid'] 	= $r['customer_id'];
+				$a['sales_order'] 	= $r['increment_id'];
+				$a['description'] 	= PROGRAM.' - Compra Pago con '.$method;
+				$a['status'] 		= $st;
+				$a['name'] 			= $user;
+				$a['name_card'] 	= ( isset( $obj->card->holder_name )?$obj->card->holder_name:'' );
+				$a['email'] 		= $r['customer_email'];
+				$a['card'] 			= $card;
+				$a['monto'] 		= sprintf("%0.2f", $monto);
+				$a['rechazo'] 		= $error;
+				$a['type_card'] 	= $card_type;
+				$a['bank'] 			= $bank_name;
+				$a['number_card'] 	= $number;
+				$a['date'] 			= $date;
+
+				$c[] = $a;
+			}
+
+			$this->data = $c;
+
+			log_data('/var/www/magento/NESCA/log/mlg_openpay_report','report_generated');
+
+			return true;
+
+			/*
+			Employeeid			id user
+			Idcanasta			id sales order
+			Descripción			CPMN - Compra Pago con Tarjeta de Crédito
+								CPMN - Compra Pago Transferencia Bancaria
+								CPMN - Compra Pago en Tienda de Conveniencia
+			Estatus				Rechazadas,Exitosas
+			Nombre				nombre y apellido de usuario
+			Email 				email usuario
+			Marca 				visa,mastercard,amex,other
+			Monto 				$monto
+			Razón de rechazo 	
+			Tipo de tarjeta 	Débito,Crédito
+			Nombre del banco 	
+			Número de tarjeta 	
+			Fecha 				2018-04-12 11:22:00
+			*/
+		}
+
+		public function report_cab(){
+			$a = array(
+				'Employeeid',
+				'Idcanasta',
+				'Descripción',
+				'Estatus',
+				'Nombre compra',
+				'Nombre tarjeta',
+				'Email',
+				'Marca',
+				'Monto',
+				'Razón de rechazo',
+				'Tipo de tarjeta',
+				'Nombre del banco', 	
+				'Número de tarjeta', 	
+				'Fecha'
+			);
+
+			return $a;
+		}
+
+		public function report_name(){
+			$s = PROGRAM.'-openpay-'.time().'.csv';
+
+			return $s;
+		}
+
+		/*
+		CREATE TABLE `nestle_me_114`.`openpay_validate` (
+		  `id` INT NOT NULL AUTO_INCREMENT,
+		  `sales_order` VARCHAR(45) NULL,
+		  `email` VARCHAR(45) NULL,
+		  `status` VARCHAR(64) NULL,
+		  `seguimiento` TEXT NULL,
+		  PRIMARY KEY (`id`))
+		COMMENT = 'validaciones openpay';
+
+		*/
+	}
+}
+?>

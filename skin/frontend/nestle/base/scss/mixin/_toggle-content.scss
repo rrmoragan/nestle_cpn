@@ -1,0 +1,189 @@
+//
+// Magento Enterprise Edition
+//
+// NOTICE OF LICENSE
+//
+// This source file is subject to the Magento Enterprise Edition End User License Agreement
+// that is bundled with this package in the file LICENSE_EE.txt.
+// It is also available through the world-wide-web at this URL:
+// http://www.magento.com/license/enterprise-edition
+// If you did not receive a copy of the license and are unable to
+// obtain it through the world-wide-web, please send an email
+// to license@magento.com so we can send you a copy immediately.
+//
+// DISCLAIMER
+//
+// Do not edit or add to this file if you wish to upgrade Magento to newer
+// versions in the future. If you wish to customize Magento for your
+// needs please refer to http://www.magento.com for more information.
+//
+// @category    design
+// @package     rwd_default
+// @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+// @license http://www.magento.com/license/enterprise-edition
+//
+
+@mixin tabs() {
+    .toggle-tabs {
+        display: block;
+        width: 100%;
+        position: relative;
+        border: none;
+        background-color: #f0efef;
+
+        li {
+            float: left;
+            border-right: 5px solid #f0efef;
+            border-left: 1px solid transparent;
+            > span {
+                @include not-selectable;
+                display: inline-block;
+                padding: 0 $trim;
+                height: 40px;
+                line-height: 40px;
+                cursor: pointer;
+                text-transform: uppercase;
+                font-size: $f-size-xs;
+                position: relative;
+                bottom: 0;
+                color: white;
+                font-family: $gotham-book;
+                background-color: $bg-dark-red;
+                transition: .5s;
+            }
+        }
+
+        li.current {
+            > span {
+                background-color: $bg-red;
+                z-index: 5;
+            }
+        }
+
+        li.current span,
+        li:hover span {
+            color: white;
+            background-color: $bg-red;
+        }
+
+        li:first-child {
+            border-left: none;
+        }
+
+        &:after {
+            @include clearfix;
+        }
+    }
+
+    > dl {
+        width: 100%;
+
+        > dt {
+            display: none;
+        }
+
+        > dd {
+            width: 95%;
+            display: none;
+            padding: 20px 2.5%;
+            border: none;
+        }
+
+        > dd.current {
+            display: block;
+        }
+    }
+}
+
+@mixin accordionDtBase($arrow-direction: 'down', $border-color: $c-module-border) {
+    @include h4;
+    @include not-selectable;
+    font-weight: normal;
+    margin-bottom: 0px;
+    padding: 7px 0;
+    border: none;
+    position: relative;
+    background: none;
+    font-family: $gotham-medium;
+    font-size: 16px;
+    color: $bg-dark-red;
+
+    &:after {
+        @include triangle(#{$arrow-direction}, 7px, $c-action);
+        right: 15px;
+        top: 43%;
+        margin-top: -3px;
+    }
+
+    &:hover {
+        background-color: $c-module-background-hover;
+    }
+}
+
+@mixin accordion() {
+    .toggle-tabs {
+        display: none;
+    }
+
+    > dl {
+        > dt {
+            @include accordionDtBase;
+            display: block;
+        }
+
+        > dd {
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        > dd:last-child {
+            border: none;
+        }
+    }
+}
+
+@mixin accordionCollapse() {
+    > dl {
+        > dt {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom-width: 0;
+
+            &:hover {
+                color: $c-action;
+            }
+            &:after {
+                @include triangle(right, 7px, $c-action);
+            }
+            &.last {
+                border-bottom-width: 1px;
+            }
+        }
+
+        > dd {
+            display: none;
+            padding: 0 15px 15px;
+        }
+    }
+
+    &.accordion-open {
+        > dl {
+            > dt {
+                &.current {
+                    border-bottom-width: 1px;
+                }
+
+                &.current:after {
+                    @include triangle(down, 7px, $c-action);
+                    right: 15px;
+                    top: 45%;
+                    margin-top: -3px;
+                }
+            }
+
+            > dd.current {
+                display: block;
+            }
+        }
+    }
+}

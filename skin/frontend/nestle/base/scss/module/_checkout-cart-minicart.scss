@@ -1,0 +1,483 @@
+//
+// Magento Enterprise Edition
+//
+// NOTICE OF LICENSE
+//
+// This source file is subject to the Magento Enterprise Edition End User License Agreement
+// that is bundled with this package in the file LICENSE_EE.txt.
+// It is also available through the world-wide-web at this URL:
+// http://www.magento.com/license/enterprise-edition
+// If you did not receive a copy of the license and are unable to
+// obtain it through the world-wide-web, please send an email
+// to license@magento.com so we can send you a copy immediately.
+//
+// DISCLAIMER
+//
+// Do not edit or add to this file if you wish to upgrade Magento to newer
+// versions in the future. If you wish to customize Magento for your
+// needs please refer to http://www.magento.com for more information.
+//
+// @category    design
+// @package     rwd_default
+// @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+// @license http://www.magento.com/license/enterprise-edition
+//
+
+/* ============================================ *
+ * Checkout - Mini cart
+ * ============================================ */
+
+.header-minicart {
+    display: inline-block;
+    @include bp(min-width, $bp-medium + 1) {
+        display: inline-block;
+        position: absolute;
+        top: 19px;
+        right: -48px;
+    }
+    @include bp(max-width, $bp-medium) {
+        display: block;
+    }
+
+    .minicart-message {
+        display: block;
+        padding: $box-spacing;
+    }
+
+    .empty {
+        padding: $box-spacing;
+        text-align: center;
+    }
+
+    .minicart-wrapper {
+        @include loadingOverlay();
+        clear: both;
+        position: relative;
+        h3.cart-title {
+            font-family: $gotham-medium;
+            color: black;
+            text-transform: none;
+            font-size: 14px;
+            padding: 0 20px;
+        }
+    }
+
+    .block-cart {
+        display: none;
+    }
+    .block-subtitle {
+        color: #50A4CF;
+        font-family: $f-stack-special;
+        font-size: 10px;
+        font-weight: bold;
+        line-height: 1.4;
+        padding: 5px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 0px;
+
+        .close {
+            width: 40px;
+            float: right;
+            display: block;
+            color: $c-text-gray-cl;
+            text-decoration: none;
+            font-weight: normal;
+            font-size: 30px;
+            position: absolute;
+            top: -5px;
+            right: $box-spacing - 13px;
+            font-family: $gotham-book;
+        }
+    }
+    .mini-products-list {
+        padding: 10px $box-spacing 0;
+        max-height: 400px;
+        overflow: hidden;
+        li {
+            padding: 10px 0 20px;
+            border-bottom: 1px solid #DDDDDD;
+            position: relative;
+
+            &.last {
+                border: none;
+            }
+            img {
+                float: left;
+                max-width: 100px;
+            }
+            .product-image {
+                width: 30%;
+                img {
+                    width: 100%;
+                    height: auto;
+                    float: left;
+                    max-width: 100px;
+                }
+                @include bp(max-width, $bp-large) {
+                    max-width: 100px;
+                }
+            }
+
+            .product-details {
+                position: relative;
+                width: 68%;
+                float: right;
+                margin: 0;
+            }
+        }
+    }
+
+    .product-details {
+        .product-name {
+            padding-top: 0px;
+            font-weight: bold;
+
+            a {
+                color: black;
+            }
+        }
+    }
+
+    .info-wrapper {
+        margin-bottom: 0.5em;
+
+        th {
+            text-transform: none;
+            padding-right: $gap;
+            float: left;
+            color: black;
+            line-height: 30px;
+        }
+        td {
+            color: $c-text-primary;
+            clear: right;
+            float: left;
+            .price {
+                color: black;
+                font-size: 13px;
+            }
+        }
+
+        .qty-wrapper {
+            td {
+                height: 30px;
+                line-height: 30px;
+                width: 68%;
+                input {
+                    background: $c-gray;
+                    border-radius: 3px;
+                }
+            }
+        }
+
+        .qty {
+            padding-left: 4px;
+            padding-right: 4px;
+            margin-right: 2px;
+            width: 4.5em;
+            text-align: center;
+            height: 30px;
+        }
+
+        .quantity-button {
+            opacity: 0;
+            background: #dddddd;
+            font-size: 10px;
+            color: #636363;
+            &[disabled] {
+                cursor: default;
+            }
+
+            &.visible {
+                opacity: 1;
+            }
+        }
+    }
+
+    .btn-edit {
+        display: none;
+    }
+    .remove {
+        position: absolute;
+        bottom: 10px;
+        right: 0;
+    }
+    .remove:before {
+        content: "";
+        width: 20px;
+        height: 23px;
+        background: url(../images/elements/ico_delete.png) 0 0 no-repeat;
+        background-size: 20px auto;
+        float: left;
+    }
+
+    .subtotal {
+        background-color: $c-gray;
+        height: 45px;
+        font-size: 14px;
+        line-height: 45px;
+        width: 100%;
+        text-align: center;
+        color: $bg-dark-red;
+        font-family: $gotham-medium;
+
+        .label {
+            color: $bg-dark-red;
+            text-transform: uppercase;
+            display: block;
+            width: auto;
+            display: inline;
+            font-family: $gotham-medium;
+        }
+        .price {
+            color: $bg-dark-red;
+            font-size: 18px;
+            width: auto;
+            display: inline;
+        }
+    }
+
+    .minicart-actions {
+        padding: $box-spacing;
+        margin-top: 0px;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+
+        .checkout-button {
+            height: 35px;
+            border-radius: 5px;
+            border: 1px solid $bg-red;
+            line-height: 35px;
+            background: $bg-red;
+            padding: 0;
+            width: 100%;
+            transition: .5s;
+        }
+        .checkout-button:hover {
+            background: $bg-dark-red;
+        }
+
+        .cart-link {
+            line-height: 35px;
+            text-transform: uppercase;
+            font-size: $f-size-s;
+            width: 48%;
+            float: left;
+            height: 35px;
+            border-radius: 5px;
+            border: 1px solid $bg-red;
+            transition: .5s;
+        }
+        .cart-link:hover {
+            text-decoration: none;
+            border-color: $bg-dark-red;
+            color: $bg-dark-red;
+            opacity: .7;
+        }
+
+        .paypal-logo {
+            .paypal-or {
+                line-height: 1.6;
+            }
+        }
+    }
+
+    #minicart-error-message {
+        text-align: center;
+        color: red;
+        display: none;
+    }
+
+    #minicart-success-message {
+        text-align: center;
+        color: green;
+        display: none;
+    }
+
+    //hide jcarousel controls until carousel is properly integrated with design
+    .jcarousel-control-prev,
+    .jcarousel-control-next {
+        display: none;
+    }
+    .label {
+        display: none;
+    }
+    .skip-cart {
+        .icon {
+            background-size: 145px auto !important;
+            width: 32px;
+            height: 32px;
+            background: url('../images/elements/sprite.png') -18px -50px no-repeat;
+        }
+    }
+}
+
+@include bp(max-width, $bp-medium) {
+    .header-minicart {
+        .skip-cart {
+            .icon {
+                width: 36px;
+                background-position: -54px -50px;
+            }
+        }
+    }
+}
+
+.header-minicart.skip-active .block-cart,
+.block-cart.skip-active {
+    display: block;
+}
+
+@include bp(min-width, $bp-medium + 1) {
+    .checkout-types.minicart {
+        width: 48%;
+        float: right;
+        text-align: center;
+    }
+    .header-minicart.skip-active .block-cart,
+    .block-cart.skip-active {
+        background: white;
+    }
+}
+
+@include bp(max-width, $bp-xsmall) {
+    .header-minicart a.skip-cart {
+        z-index: 1;
+    }
+}
+
+@include bp(max-width, $bp-medium) {
+    .header-minicart {
+        .subtotal {
+            .label {
+                color: $c-text;
+            }
+        }
+        .minicart-wrapper {
+            &:before {
+                background-color: #EDEDED;
+            }
+        }
+
+        .quantity-button {
+            float: none;
+        }
+
+        .header-minicart .block-cart {
+            padding: $trim-small;
+        }
+
+        .header-minicart .block-subtitle {
+            padding-top: $trim-small + 44px;
+        }
+        .header-minicart.skip-active .block-cart,
+        .block-cart.skip-active {
+            background: white;
+        }
+
+        .minicart-actions {
+            padding-bottom: 33px;
+            .checkout-types.minicart {
+                width: 48%;
+                float: right;
+                li {
+                    display: inline-block;
+                    width: 100%;
+                    .paypal-logo {
+                        > a {
+                            display: inline;
+                        }
+
+                        .bml_button {
+                            display: inline-block;
+                            vertical-align: top;
+                        }
+
+                        .paypal-or {
+                            width: auto;
+                            float: none;
+                            display: inline;
+                            margin: 0 10px 5px 10px;
+                            line-height: 40px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include bp(max-width, 478px) {
+    .header-minicart {
+        .minicart-actions {
+            .cart-link {
+                right: auto;
+                left: 0;
+                text-align: center;
+                display: block;
+                position: relative;
+                width: 100%;
+            }
+
+            .checkout-types.minicart {
+                width: 100%;
+                li {
+                    .paypal-logo {
+                        .paypal-or,
+                        .paypal-button {
+                            width: 100%;
+                            display: block;
+                            margin-left: 0;
+                        }
+
+                        .paypal-or {
+                            line-height: 1.6;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include bp(max-width, $bp-small) {
+    .header-minicart {
+        .minicart-actions {
+            .checkout-button {
+                width: 100%;
+            }
+        }
+    }
+}
+
+
+.remove2cart_confirm_shadow{
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+    bottom: 0; 
+    background-color: rgba(0,0,0,0.7);
+    z-index:10000;
+    display: none
+}
+.remove2cart_confirm_content{
+    width: 40%;
+    max-width: 700px;
+    background: #FFF;
+    border: 3px solid #e1261c;
+    padding: 3em 2em;
+    transform: translateY(-30%);
+    transform: translateX(-50%);
+    text-align: center;
+    position: fixed;
+    left: 50%;
+    top: 40%;
+    border-radius: 5px;
+}
+
+.remove2cart_confirm_buttons{  
+    margin-top: 1em;
+}

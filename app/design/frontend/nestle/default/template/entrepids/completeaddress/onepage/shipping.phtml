@@ -1,0 +1,476 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_enterprise
+ * @copyright Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?>
+<?php
+    $is_3a = Mage::helper('entrepids_customer')->getCustomerProfileAAA();
+
+    $has_address = $this->customerHasAddresses();
+    $select_label = 'Select a shipping address from your address book or enter a new address.';
+    $shipping_new_address_form_style ="";
+    
+    if($is_3a){
+        $select_label = 'Select a shipping address from your address book.';
+
+        if($has_address == 0){
+            $select_label = 'No tienes direcciones disponibles para envios, usa la direccion de facturacion o contacta a su administrador.'; 
+        }
+
+        $shipping_new_address_form_style .= "height:0;overflow:hidden;";
+    }else{
+        if($has_address != 0){
+            $shipping_new_address_form_style ="display:none";
+        }
+    }
+?>
+<!-- form shippng htm -->
+<form action="" id="co-shipping-form">
+    <ul class="form-list">
+        <?php /*
+         <li class="control" >
+            <input type="checkbox" name="shipping[same_as_billing]" 
+                id="shipping:same_as_billing" value="1" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Use Billing Address')) ?>" onclick="shipping.setSameAsBilling(this.checked)" class="checkbox" /><label for="shipping:same_as_billing"><?php echo $this->__('Use Billing Address') ?></label>
+        </li>
+        */ ?>
+    <?php if ($has_address): ?>
+       <li class="wide test">
+           <label for="shipping-address-select"><?php echo $this->__($select_label) ?></label>
+           <div class="input-box">
+               <?php echo $this->getAddressesHtmlSelect('shipping') ?>
+           </div>
+       </li>
+    <?php else: ?>
+        <?php if ($is_3a): ?>
+            <li class="wide">
+                <label><?php echo $this->__($select_label) ?></label>
+                <input type="hidden" name="shipping_address_id" id="shipping-address-select" value="" />
+            </li>
+        <?php endif ?>
+    <?php endif ?>
+        <li id="shipping-new-address-form" style="<?php echo $shipping_new_address_form_style; ?>" class="scaffold-form">
+            <div class="fieldset">
+                <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+                <input type="hidden" name="shipping[address_id]" value="<?php echo $this->getAddress()->getId() ?>" id="shipping:address_id" />
+				<input type="hidden" name="shipping[is_billing]" value="0" id="shipping:is_billing"/>
+                <ul>
+                    <!-- nombre y apellido -->
+                    <li class="fields">
+					<?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getAddress())->setFieldIdFormat('shipping:%s')->setFieldNameFormat('shipping[%s]')->setFieldParams('onchange="shipping.setSameAsBilling(false)"')->toHtml() ?></li>
+                    <?php /*
+                    <li class="fields">
+                        <div class="fields">
+                            <label for="shipping:company"><?php //echo $this->__('Company') ?></label>
+                            <div class="input-box">
+                                <input type="text" id="shipping:company" name="shipping[company]" value="<?php //echo $this->escapeHtml($this->getAddress()->getCompany()) ?>" title="<?php //echo Mage::helper('core')->quoteEscape($this->__('Company')) ?>" class="input-text <?php //echo $this->helper('customer/address')->getAttributeValidationClass('company') ?>" onchange="shipping.setSameAsBilling(false);" />
+                            </div>
+                        </div>
+                    </li>
+                    */ ?>
+            <?php $_streetValidationClass = $this->helper('customer/address')->getAttributeValidationClass('street'); ?>
+                    <!-- calle -->
+                    <?php $calle = trim( $this->escapeHtml($this->getAddress()->getStreet(1)) ); ?>
+                    <li class="wide">
+                        <label for="shipping:street" class="required"><em>*</em><?php echo $this->__('Street') ?></label>
+                        <div class="input-box">
+                            <input 
+							type="text" 
+							title="<?php echo Mage::helper('core')->quoteEscape($this->__('Address')); ?>" 
+                            name="shipping[street][]" 
+                            id="shipping:street" 
+                            value="<?php echo $calle; ?>" 
+                            class="input-text <?php echo $_streetValidationClass ?>"  />
+                        </div>
+                    </li>
+            <?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+                    <!-- numero exterior e interior -->
+					<li class="fields">
+						<div class="field c-left">
+							<label for="shipping:num_ext" class="required"><em>*</em>NUMERO EXTERIOR</label>
+							<div class="input-box">
+								<input type="text" title="Numero Exterior" name="shipping[num_ext]" id="shipping:num_ext" 
+									value="<?php echo $this->escapeHtml($this->getAddress()->getNumExt()) ?>" 
+									class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('num_ext') ?>" />
+							</div>
+						</div>
+						<div class="field c-right">
+							<label for="shipping:num_int">NUMERO INTERIOR</label>
+							<div class="input-box">
+								<input type="text" title="Numero Interior" name="shipping[num_int]" id="shipping:num_int" 
+									value="<?php echo $this->escapeHtml($this->getAddress()->getNumInt()) ?>" 
+									class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('num_int') ?>" />
+							</div>
+						</div>
+					</li>
+            <?php for ($_i = 2, $_n = $this->helper('customer/address')->getStreetLines(); $_i <= $_n; $_i++): ?>
+                    <li class="wide no-display">
+                        <label for="shipping:street<?php echo $_i ?>"><?php echo $this->__('Address') ?> <?php echo $_i ?></label>
+                        <div class="input-box">
+                            <input type="text" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Street Address %s', $_i)) ?>" 
+                            name="shipping[street][]" 
+                            id="shipping:street<?php echo $_i ?>" 
+                            value="<?php echo $this->escapeHtml($this->getAddress()->getStreet($_i)); ?>" 
+                            class="input-text a <?php echo $_streetValidationClass ?>" />
+                        </div>
+                    </li>
+            <?php endfor; ?>
+                    <?php if ($this->helper('customer/address')->isVatAttributeVisible()) : ?>
+                    <li class="wide">
+                        <label for="shipping:vat_id"><?php echo $this->__('VAT Number'); ?></label>
+                        <div class="input-box">
+                            <input type="text" id="shipping:vat_id" name="shipping[vat_id]" value="<?php echo $this->escapeHtml($this->getAddress()->getVatId()); ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('VAT Number')); ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('vat_id') ?>" />
+                        </div>
+                    </li>
+                    <?php endif; ?>
+                    <!-- codigo postal -->
+                    <li class="fields">
+                        <div class="field c-left">
+                            <label for="shipping:postcode" class="required"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
+                            <div class="input-box">
+                                <input type="text" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Zip/Postal Code')) ?>" 
+                                	name="shipping[postcode]" id="shipping:postcode" 
+                                	value="<?php 
+                                    if( $calle == '' ){
+                                        echo '';
+                                    }else{
+                                        $cp = $this->escapeHtml( $this->getAddress()->getPostcode() );
+                                        echo ( !empty( $cp ) && $cp != '99999' )? $cp : ''; 
+                                    }
+                                    ?>" 
+                                	class="input-text validate-zip-international <?php echo $this->helper('customer/address')->getAttributeValidationClass('postcode') ?>" 
+                                    onchange="shipping.setSameAsBilling(false);" />
+                                <span id="finding-cp-shipping" class="please-wait" style="display:none;"><img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Finding location...')) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Finding Location...')) ?>" class="v-middle" /> <?php echo $this->__('Finding Location...') ?></span>
+                            </div>
+                        </div>
+                        <!-- pais -->
+                        <div class="field c-right">
+                            <label for="shipping:country_id" class="required"><em>*</em><?php echo $this->__('Country') ?></label>
+                            <div class="input-box">
+                                <?php echo $this->getCountryHtmlSelect('shipping') ?>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- colonia -->
+                    <li class="fields">
+                        <div class="field">
+                            <?php
+                            $add = null;
+                            foreach ($this->getCustomer()->getAddresses() as $et => $r) {
+                                $add = $r->getData();
+                                break;
+                            }
+                            if( !isset( $add['neighborhood'] ) ){ $add['neighborhood']=''; }
+                            ?>
+                            <label for="shipping:neighborhood" class="required"><em>*</em><?php echo $this->__('Neighborhood') ?></label>
+                            <div class="input-box">
+                                <select id="shipping:neighborhood_id" name="shipping[neighborhood_id]" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Neighborhood')) ?>" class="validate-select" style="display:none;">
+                                    <option value=""><?php echo $this->__('Please select a Neighborhood') ?></option>
+                                </select>
+                                <input 
+                                    type="text" 
+                                    id="shipping:neighborhood" 
+                                    name="shipping[neighborhood]" 
+                                    value="<?php if( $calle ){ echo $add['neighborhood']; } ?>"  
+                                    title="<?php echo Mage::helper('core')->quoteEscape($this->__('Neighborhood')) ?>" 
+                                    class="input-text required-entry" 
+                                    style="" />
+                            </div>
+                        </div>
+                        <!-- ciudad -->
+                        <div class="field c-left">
+                            <label for="shipping:city" class="required"><em>*</em><?php echo $this->__('City') ?></label>
+                            <div class="input-box">
+                                <input type="text" title="<?php echo Mage::helper('core')->quoteEscape($this->__('City')) ?>" name="shipping[city]" value="<?php echo $this->escapeHtml($this->getAddress()->getCity()) ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('city') ?>" id="shipping:city" onchange="shipping.setSameAsBilling(false);" />
+                            </div>
+                        </div>
+                        <!-- estado -->
+                        <div class="field c-right">
+                            <label for="shipping:region" class="required"><em>*</em><?php echo $this->__('State/Province') ?></label>
+                            <div class="input-box">
+                                <select id="shipping:region_id" name="shipping[region_id]" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="validate-select">
+                                    <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                                </select>
+                                <script type="text/javascript">
+                                //<![CDATA[
+                                    $('shipping:region_id').setAttribute('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+                                //]]>
+                                </script>
+                                <input type="text" id="shipping:region" name="shipping[region]" 
+                                value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('State/Province')) ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                            </div>
+                        </div>
+                    </li>
+                    <div class="cont_full">
+                        <!-- telefono -->
+                        <li class="fields c-left phone">
+                            <div class="field">
+                                <label for="shipping:telephone" class="required"><em>*</em><?php echo $this->__('Telephone') ?></label>
+                                <div class="input-box">
+                                    <input type="tel" name="shipping[telephone]" value="<?php echo $this->escapeHtml($this->getAddress()->getTelephone()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Telephone')) ?>" class="input-text validate-length minimum-length-1 maximum-length-10 <?php echo $this->helper('customer/address')->getAttributeValidationClass('telephone') ?>" id="shipping:telephone" onchange="shipping.setSameAsBilling(false);" />
+                                </div>
+                            </div>
+                            <?php /*
+                            <div class="field">
+                                <label for="shipping:fax"><?php //echo $this->__('Fax') ?></label>
+                                <div class="input-box">
+                                    <input type="tel" name="shipping[fax]" 
+                                    value="<?php //echo $this->escapeHtml($this->getAddress()->getFax()) ?>" title="<?php //echo Mage::helper('core')->quoteEscape($this->__('Fax')) ?>" class="input-text <?php //echo $this->helper('customer/address')->getAttributeValidationClass('fax') ?>" id="shipping:fax" onchange="shipping.setSameAsBilling(false);" />
+                                </div>
+                            </div>
+                            */ ?>
+                        </li>
+                        <!-- telefono extension -->
+                        <li class="fields c-right phone">
+                            <div class="field">
+                                <label for="shipping:telephone_extension"><?php echo $this->__('Extensión telefónica') ?></label>
+                                <div class="input-box">
+                                    <input type="text" name="shipping[telephone_extension]" 
+                                    	value="<?php echo $this->escapeHtml($this->getAddress()->getTelephoneExtension()) ?>" 
+                                    	title="<?php echo Mage::helper('core')->quoteEscape($this->__('Extensión telefónica')) ?>" 
+                                    	class="input-text  <?php echo $this->helper('customer/address')->getAttributeValidationClass('telephone_extension') ?>" 
+                                    	id="shipping:telephone_extension" />
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                    <!-- persona autorizada a recibir la mercancia -->
+                    <li class="fields c-left">
+                        <div class="field">
+                            <label for="shipping:authorized_person"><?php echo $this->__('Autorizo que lo reciba') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="shipping[authorized_person]" 
+                                	value="<?php echo $this->escapeHtml($this->getAddress()->getAuthorizedPerson()) ?>" 
+                                	title="<?php echo Mage::helper('core')->quoteEscape($this->__('Autorizo que lo reciba')) ?>" 
+                                	class="input-text  <?php echo $this->helper('customer/address')->getAttributeValidationClass('authorized_person') ?>" 
+                                	id="shipping:authorized_person" />
+                            </div>
+                        </div>
+                    </li>
+                    <!-- referencia direccion -->
+                    <li class="fields c-right">
+                        <div class="field">
+                            <label for="shipping:address_references"><?php echo $this->__('Address References') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="shipping[address_references]" 
+                                	value="<?php echo $this->escapeHtml($this->getAddress()->getAddressReferences()) ?>" 
+                                	title="<?php echo Mage::helper('core')->quoteEscape($this->__('Address References')) ?>" 
+                                	class="input-text  <?php echo $this->helper('customer/address')->getAttributeValidationClass('address_references') ?>" 
+                                	id="shipping:address_references" />
+                            </div>
+                        </div>
+                    </li>
+
+                        <?php $addressAttributes = $this->getChild('customer_form_shipping_address_user_defined_attributes');?>
+                    <?php if ($addressAttributes): ?>
+                        <?php $addressAttributes->setEntity($this->getAddress())->setEntityType('customer_address');?>
+                        <?php $addressAttributes->setFieldIdFormat('shipping:%1$s')->setFieldNameFormat('shipping[%1$s]');?>
+                        <?php echo $addressAttributes->setExcludeFileAttributes(true)->setShowContainer(false)->toHtml()?>
+                    <?php endif;?>
+                <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                    <li class="control">
+                        <input type="checkbox" name="shipping[save_in_address_book]" value="1" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Save in address book')) ?>" id="shipping:save_in_address_book" onchange="shipping.setSameAsBilling(false);"<?php if ($this->getAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="shipping:save_in_address_book"><?php echo $this->__('Save in address book') ?></label></li>
+                <?php else:?>
+                    <li class="no-display"><input type="hidden" name="shipping[save_in_address_book]" value="1" /></li>
+                <?php endif;?>
+                </ul>
+            </div>
+        </li>
+    </ul>
+    <div class="buttons-set" id="shipping-buttons-container">
+        <p class="back-link"><a href="#" onclick="checkout.back(); return false;"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+        <button type="button" class="button" 
+            title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue')) ?>" 
+            onclick="shipping.save(); shipping_reg()"><span><span><?php echo $this->__('Continue') ?></span></span></button>
+        <span id="shipping-please-wait" class="please-wait" style="display:none;">
+            <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('core')->quoteEscape($this->__('Loading next step...')) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Loading next step...')) ?>" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+        </span>
+    </div>
+</form>
+<script type="text/javascript">
+    var is_3a = '<?php echo Mage::helper('entrepids_customer')->getCustomerProfileAAA(); ?>';
+//<![CDATA[
+    var typingShip; //Variable para contabilizar el tiempo de escritura del usuario
+    function changeShippingPostcode(){
+        clearTimeout(typingShip);//Termino de escribir
+        var zipcode = $('shipping:postcode').getValue();
+        if( (!Validation.get('IsEmpty').test(zipcode) &&  /(^\d{5}$)/.test(zipcode))){
+            $('finding-cp-shipping').setStyle({ display:'inline-block' });
+            var zipcodeURL = '<?php echo $this->getUrl('completeaddress/index/findAddress/') ?>zipcode/' + zipcode;
+            //console.log(zipcodeURL);
+            new Ajax.Request(zipcodeURL, {
+                method: 'get',
+                onSuccess: function(transport){
+                    if(typeof transport.responseJSON!=='undefined' && transport.responseJSON.status === true && transport.responseJSON.results > 0){
+                        var json = transport.responseJSON;
+                        $('shipping:country_id').setValue('MX');
+                        shippingRegionUpdater.update();
+                        $('shipping:region_id').setValue(json.data[0].region_id);
+                        $('shipping:city').setValue(json.data[0].municipality);
+                        $('shipping:neighborhood_id').select('option').invoke('remove');
+                        for(i=0;i<json.data.length;i++){
+                            var opt = document.createElement('option');
+                            opt.text = json.data[i].neighborhood;
+                            opt.value = json.data[i].neighborhood;
+                            $('shipping:neighborhood_id').options.add(opt);
+                        }
+                        $('shipping:neighborhood_id').setStyle({ display:'block' });
+                        $('shipping:neighborhood').setStyle({ display:'none' });
+                        $('finding-cp-shipping').setStyle({ display:'none' });
+                        selectedShipNeighborhoodId();
+                    }else{
+                        $('shipping:neighborhood_id').setStyle({ display:'none' });
+                        $('shipping:neighborhood').setStyle({ display:'block' });
+                        $('finding-cp-shipping').setStyle({ display:'none' });
+                    }
+                },
+                onException: function(){
+                    $('finding-cp-shipping').setStyle({ display:'none' });
+                }
+            });
+        }else{
+            $('shipping:neighborhood_id').setStyle({ display:'none' });
+            $('shipping:neighborhood').setStyle({ display:'block' });
+            $('shipping:neighborhood').setValue('');
+        }
+    }
+    
+    function checkEndTypingShipping(){
+        clearTimeout(typingShip);
+        typingShip = setTimeout(changeShippingPostcode, 700);
+    }
+    
+    function checkStartTypingShipping(){
+        clearTimeout(changeShippingPostcode);
+    }
+    function selectedShipNeighborhoodId(){
+        var neig = $('shipping:neighborhood_id').getValue();
+        if(neig.length>0){
+            $('shipping:neighborhood').setValue(neig);
+        }else{
+            $('shipping:neighborhood').setValue('');
+        }
+    }
+    Event.observe('shipping:neighborhood_id', 'change', selectedShipNeighborhoodId);
+    Event.observe('shipping:postcode', 'change', changeShippingPostcode);
+    Event.observe('shipping:postcode', 'keyup', checkEndTypingShipping);
+    Event.observe('shipping:postcode', 'keydown', checkStartTypingShipping);
+    
+    if($('shipping-address-select')){
+        Event.observe('shipping-address-select','change',function(){
+            if(!$('shipping-address-select').value){
+                $('shipping:firstname').value='';
+				$('shipping:lastname').value='';
+				$('shipping:street').value='';
+				$('shipping:num_ext').value='';
+				$('shipping:num_int').value='';
+				$('shipping:postcode').value='';
+				$('shipping:telephone').value='';
+				$('shipping:telephone_extension').value='';
+				$('shipping:authorized_person').value='';
+				$('shipping:address_references').value='';
+				changeShippingPostcode();
+            }
+        });
+    }
+    
+    var shipping = new Shipping('co-shipping-form', '<?php echo $this->getUrl('checkout/onepage/getAddress') ?>address/', '<?php echo $this->getUrl('checkout/onepage/saveShipping') ?>',
+        '<?php echo $this->getUrl('checkout/onepage/shippingMethod') ?>');
+    var shippingForm = new VarienForm('co-shipping-form');
+    shippingForm.extraChildParams = ' onchange="shipping.setSameAsBilling(false);"';
+    //shippingForm.setElementsRelation('shipping:country_id', 'shipping:region', '<?php echo $this->getUrl('directory/json/childRegion') ?>', '<?php echo Mage::helper('core')->jsQuoteEscape($this->__('Select State/Province...')) ?>');
+   
+    //$('shipping-address-select') && shipping.newAddress(!$('shipping-address-select').value);
+
+    var shippingRegionUpdater = new RegionUpdater('shipping:country_id', 'shipping:region', 'shipping:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'shipping:postcode');
+
+    <?php if($is_3a && $this->customerHasAddresses() == 0): ?>
+        //Simulate event action function 
+        function fireEvent(element,event){
+            if (document.createEventObject){
+                // dispatch for IE
+                var evt = document.createEventObject();
+                return element.fireEvent('on'+event,evt)
+            }else{
+                // dispatch for firefox + others
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent(event, true, true ); // event type,bubbling,cancelable
+                return !element.dispatchEvent(evt);
+            }
+        }
+
+        $('shipping:same_as_billing').on('change',function(){
+            if(this.checked){
+                $('shipping-buttons-container').show()
+            }else{
+                $('shipping-buttons-container').hide()
+            }
+        });
+
+        //fireEvent($('shipping:same_as_billing'),'change');
+    <?php endif ?>
+    function shipping_reg(){
+        var d = {
+            'uid': <?php 
+            if(Mage::getSingleton('customer/session')->isLoggedIn()) {
+                 $customerData = Mage::getSingleton('customer/session')->getCustomer();
+                  echo $customerData->getId();
+             } ?>,
+            'add_email': $('billing:email').value,             /* id direccion */
+            'add_id': $('shipping:address_id').value,       /* id direccion */
+            'add_nom': $('shipping:firstname').value,       /* nombre */
+            'add_apell': $('shipping:lastname').value,      /* apellido */
+            'add_calle': $('shipping:street').value,        /* calle */
+            'add_num': $('shipping:num_ext').value,         /* numero */
+            'add_num2': $('shipping:num_int').value,        /* numero interior */
+            'add_cp': $('shipping:postcode').value,         /* codigo postal */
+            'add_pais': $('shipping:country_id').value,     /* pais */
+            'add_col': $('shipping:neighborhood').value,    /* colonia */
+            'add_deleg': $('shipping:city').value,          /* delegacion */
+            'add_estado': $('shipping:region_id').value,    /* estado de la republica */
+            'add_tel': $('shipping:telephone').value,       /* telefono */
+            'add_tel2': $('shipping:telephone_extension').value,    /* telefono extension */
+            'add_person': $('shipping:authorized_person').value,    /* persona autorizada para recibir mercancia */
+            'add_ref': $('shipping:address_references').value       /* referencia direccion */
+        };
+
+        <?php /* new Ajax.Request( "<?php echo $this->getUrl('module/controller/action') ?>", { */ ?>
+        new Ajax.Request( "<?php
+            $sn = $_SERVER['SERVER_NAME'].'/';
+            if( $sn == 'localhost/' ){
+                $sn = $sn.'cafe/';
+            }
+            $sn = $_SERVER['REQUEST_SCHEME'].( $_SERVER['REQUEST_SCHEME']=='http'?'s':'' ).'://'.$sn.'NESCA/shipping.reg.php';
+
+            echo $sn;
+            ?>", {
+            method: 'post',
+            parameters: d,
+            onComplete: function( transport ){
+                console.log( transport.responseText );
+            }
+        } );
+
+    }
+//]]>
+</script>

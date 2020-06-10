@@ -1,0 +1,116 @@
+<!--@subject Gracias por el interés en nuestros producto @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url"}@-->
+
+<!--@styles
+@-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-Strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+<title></title>
+</head>
+<body style="margin:0;">
+
+{{var non_inline_styles}}
+
+<!-- HEADER -->  
+<!--table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+    <td height="30" align="center" valign="middle"><span style="font-family:Verdana;"><font size="1"><font color="#808080">
+    Si usted no visualiza bien este mensaje, haga </font></font><span style="font-size:10px;"><strong>
+    <a href="#!webview!#"><span style="color:#666; text-decoration:none;">clic aqu&iacute;</span></a></strong></span></span>
+    <font face="Verdana" size="1">&nbsp;</font></td>
+    </tr>
+    </tbody>
+</table-->
+
+<table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td colspan="2">
+    <a href="{{store url=''}}" target="_blank">
+    <img src="{{media url='email/top.jpg'}}" width="600" height="180" style="display:block; border:0px;" alt="Cafe para mi Negocio"/>
+    </a></td>
+  </tr>
+  <tr>
+    <td colspan="2" bgcolor="#FFFFFF"><table width="540" border="0" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="272" style="font-family:'Oswald Regular',Arial,sans-serif;font-size:28px; color:#eb1a24;text-align:left;">Agendar Cita</td>
+        <td width="268" align="right" valign="top">
+			<a href="{{store url=''}}" target="_blank">
+				<img src="{{media url='email/logo.jpg'}}" width="150" height="70" />
+			</a>
+		</td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td colspan="2" bgcolor="#FFFFFF"><img src="{{media url='email/line.jpg'}}" width="600" height="15" style="display:block; border:0px;" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" bgcolor="#FFFFFF"><table width="540" border="0" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="font-family:'Oswald Regular',Arial,sans-serif;font-size:20px; color:#eb1a24;text-align:left;">
+        Hola <span style="color:#3d3d3d;">{{var firstname}} {{var lastname}}</span></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td height="170" colspan="2" bgcolor="#FFFFFF" style="font-family:Arial;font-size:17px;color:#000000;text-align:center;padding:10px;">
+      <span style="color:#eb1a24;">
+      Tu solicitud est&aacute; siendo atendida. </span>En breve ser&aacute;s <br />
+      contactado por uno de <strong>nuestros especialistas</strong>, quien<br />
+      te indicar&aacute; los pasos a seguir.
+      </td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="{{media url='email/logos.jpg'}}" width="600" height="69" style="display:block; border:0px;" alt="Marcas participantes"/></td>
+  </tr>
+  <tr>
+    <td height="60" colspan="2" valign="middle" bgcolor="#EF2226" style="font-family:'Oswald Regular',Arial,sans-serif;font-size:14px;color:#fff;text-align:center;">
+    <strong>&iquest;TIENES DUDAS?</strong><br />
+    <span style="font-size:12px;">Comun&iacute;cate de la CDMX (01-55) 1250-2317 o escribenos a: 
+    <a href="mailto:dudas@cafeparaminegocio.com.mx" target="_blank" style="color:#FFF;">dudas@cafeparaminegocio.com.mx</a></span></td>
+  </tr>
+</table>
+<div align="center">
+    <table border="0" cellpadding="0" style="border-collapse:collapse;" width="600">
+    <tr>
+    <td style="color:#808080;line-height:10px;font-family:verdana;font-size:10px;text-decoration:none;-webkit-text-size-adjust: none;">
+    <div align="center" style="-webkit-text-size-adjust: none;">
+    <font color="#808080"><font face="Verdana" size="1"><br />
+    Para asegurar la entrega de nuestros e-mail en su correo, por favor<br>
+    agregue</font><span style="text-decoration: none"> </span>
+    <span style="font-family: Verdana; font-size: 10px">dudas@cafeparaminegocio.com.mx</span>
+    </font><font face="Verdana" size="1"><font color="#808080">a su libreta de direcciones de correo.</font></font>
+    <br /><br />
+</div>
+    </td>
+    </tr>
+  </table>
+</div>
+    
+    <div align="center" style="padding-bottom:10px;">
+    <table border="0" cellpadding="0" style="border-collapse: collapse;" width="600">
+    <tbody>
+    <tr>
+    <td height="30" style="color:#808080;line-height: 10px;font-family:verdana;font-size:10px;text-decoration:none;-webkit-text-size-adjust:none;">
+    <div align="center" style="-webkit-text-size-adjust: none;">
+    <font color="#808080">Este correo electr&oacute;nico ha sido enviado a {{var customer_email}}</font></div>
+    </td></tr>
+    <tr><td>
+    <hr color="#FFF" size="1" /></td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+<!-- FIN SECCION ANTI SPAM -->
+</body>
+</html>

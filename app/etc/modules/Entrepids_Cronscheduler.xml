@@ -1,0 +1,12 @@
+<?xml version="1.0"?> 
+<config> 
+    <modules> 
+        <Entrepids_Cronscheduler>
+        	<active>true</active>
+        	<codePool>community</codePool>
+        </Entrepids_Cronscheduler>
+        <depends>
+            <Aoe_Scheduler />
+        </depends>
+    </modules> 
+</config>

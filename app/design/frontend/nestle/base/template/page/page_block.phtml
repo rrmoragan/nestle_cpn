@@ -1,0 +1,97 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?><!DOCTYPE html>
+
+<!--[if lt IE 7 ]> <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head><?php
+    echo $this->getChildHtml('head');
+?></head>
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<?php echo $this->getChildHtml('after_body_start') ?>
+<div class="wrapper">
+    <?php echo $this->getChildHtml('global_notices') ?>
+    <div class="page"><?php 
+        echo $this->getChildHtml('header');
+
+        echo $this->getChildHtml('category_banner');
+
+        echo $this->getChildHtml('footer_before');
+        echo $this->getChildHtml('footer');
+        echo $this->getChildHtml('global_cookie_notice');
+        echo $this->getChildHtml('before_body_end');
+    ?></div>
+</div>
+<?php echo $this->getAbsoluteFooter() ?>
+<style>
+    
+</style>
+</body>
+</html><?php
+
+/*
+<div class="category-main">
+    <div class="parallax parallax-second" id="quienessomos">
+        <div class="leaves">
+            <div class="leaves-02" data-parallax="{&quot;y&quot;: 100, &quot;from-scroll&quot;: 300}">
+                <h3>&iquest;qui&eacute;nes somos?</h3>
+                <p>Somos expertos en brindar <br />soluciones personalizadas <br />para negocios, con productos <br />y marcas l&iacute;deres de caf&eacute;.</p>
+            </div>
+            <div class="ventajas">
+                <h2>&iquest;Qu&eacute; nos distingue?</h2>
+                <div class="pasos paso1" data-parallax="{&quot;y&quot;: -80, &quot;from-scroll&quot;: 100}"><span>Brindamos la mejor <br />soluci&oacute;n de caf&eacute; en 3 clics.</span></div>
+                <div class="pasos paso2"><span>Entregamos a toda la rep&uacute;blica mexicana.</span></div>
+                <div class="pasos paso3" data-parallax="{&quot;y&quot;: -60, &quot;from-scroll&quot;: 100}"><span>Sin m&iacute;nimo de compra.</span></div>
+                <div class="pasos paso4" data-parallax="{&quot;y&quot;: -40, &quot;from-scroll&quot;: 100}"><span>Elige el m&eacute;todo de pago que m&aacute;s te convenga.</span></div>
+                <button class="button-white button-slide-gral" onclick="location.href='soluciones-para-ti.html'">Encuentra tu soluci&oacute;n</button> 
+                <img class="top-photo" src="{{media url="wysiwyg/top-photo_1.png"}}" />
+                <img class="bottom-photo" src="{{media url="wysiwyg/bottom-photo_1.png"}}" data-parallax="{&quot;x&quot;: -30}" />
+            </div>
+        </div>
+    </div>
+    <div class="parallax parallax-third">
+        <div class="container-fluid slide-content">
+            <p class="title-03">Cada taza de caf&eacute; es diferente: algunas despiertan, otras acompa&ntilde;an largas pl&aacute;ticas y otras se disfrutan hasta la &uacute;ltima gota.</p>
+            <p class="title-04">Entendemos esto mejor que nadie y por eso queremos que cada uno de tus clientes reciba la taza que desea gracias a nuestras soluciones personalizadas para tu negocio.</p>
+            <p class="title-05">Te aseguramos que cada soluci&oacute;n tendr&aacute; s&oacute;lo los productos y el servicio de la m&aacute;s alta calidad.</p>
+            <button class="button-slide" onclick="location.href='nuestros-productos.html'">Conoce m&aacute;s</button>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+*/
+
+?>

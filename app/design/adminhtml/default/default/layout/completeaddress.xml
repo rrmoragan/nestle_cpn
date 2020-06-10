@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Nestle
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<layout>
+    <adminhtml_customer_edit>
+        <reference name="js">
+            <block type="adminhtml/template" template="customer/edit/completeaddress_js.phtml" name="customer.edit.completeaddress.js" as="customer_edit_completeaddress_js"></block>
+        </reference>
+    </adminhtml_customer_edit>
+</layout>

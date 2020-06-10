@@ -1,0 +1,65 @@
+/* ==== GRID ===== */
+
+.custom_grid {
+    .col2 {
+        width: 50%;
+        float: left;
+    }
+    .col2-p {
+        width: 48%;
+    }
+    .col3 {
+        width: 33.3%
+    }
+    .col3-m {
+        width: 29%;
+        margin-right: 6.5%;
+        float: left;
+    }
+    .col4 {
+        width: 25%;
+        float: left;
+    }
+    .col6 {
+        width: 16.3%;
+    }
+    .c-p85 {
+        width: 85%;
+    }
+    .c-p75 {
+        width: 75%;
+    }
+    .c-p15 {
+        padding: 0 15px;
+    }
+    @include bp(max-width, $bp-xlarge) {
+        .col6 {
+            width: 15.5%;
+        }
+        .col6.phone {
+            width: 18%;
+        }
+    }
+    @include bp(max-width, $bp-large) {
+        .col6 {
+            width: 19%;
+        }
+        .col6.phone {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 599px) {
+        .col2,
+        .col3,
+        .col3-m,
+        .col4,
+        .col5,
+        .col6,
+        .c-p85,
+        .c-p75 {
+            width: 100%;
+            float: left; 
+        }
+    }
+}

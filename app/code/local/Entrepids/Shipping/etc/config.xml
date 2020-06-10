@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Entrepids_Shipping>
+            <version>1.0.0</version>
+        </Entrepids_Shipping>
+    </modules>
+
+    
+    <global>
+            <models>
+                    <shipping>
+                            <rewrite>
+                                    <carrier_tablerate>Entrepids_Shipping_Model_Carrier_Tablerate</carrier_tablerate>
+                            </rewrite>
+                            <rewrite>
+                                    <carrier_freeshipping>Entrepids_Shipping_Model_Carrier_Freeshipping</carrier_freeshipping>
+                            </rewrite>
+                    </shipping>
+            </models>
+    </global>
+    
+</config>

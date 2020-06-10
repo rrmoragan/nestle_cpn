@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Product
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_Product>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Entrepids_Product>
+    </modules>
+</config>

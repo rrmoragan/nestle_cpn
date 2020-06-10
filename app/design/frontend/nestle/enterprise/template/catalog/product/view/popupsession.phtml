@@ -1,0 +1,103 @@
+<?php
+/**
+* @category   Entrepids
+* @package    Entrepids_Product
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+?>
+
+<div id="know-more-about-product-label" style="display: none;">Regístrate para conocer más de este producto</span></div>
+<div id="know-more-about-product-content" style="display:none;z-index:10;left: 0;right: 0;top: 0;position: fixed;bottom: 0; background-color: rgba(0,0,0,0.7);">
+    <div id="know-more-about-product-form">
+        <div class="close" id="closepopup"></div>
+        <form id="form-quick-access" action="<?php echo $this->getUrl('nestle/prospects/signin')?>" method="post">
+            <div class="cont-form">
+                <div class="col-l">
+                    <?php echo $this->getBlockHtml('formkey'); ?>  
+                    <ul class="form-list">
+                        <h2 class="title_popup">Regístrate</h2>
+                        <li class="fields">
+                            <label for="firstname" class="required"><em>*</em><?php echo $this->__('Nombre(s)') ?></label>
+                            <div class="input-box">
+                                <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" name="firstname" id="firstname" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Name')) ?>" class="input-text required-entry validate-latin-names" placeholder="<?= $this->__('Nombre(s)') ?>"  />
+                            </div>
+                        </li>
+                        <li class="fields">
+                            <label for="lastname" class="required"><em>*</em><?php echo $this->__('Apellido(s)') ?></label>
+                            <div class="input-box">
+                                <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" name="lastname" id="lastname" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Surname')) ?>" class="input-text required-entry validate-latin-names" placeholder="<?= $this->__('Apellido(s)') ?>" />
+                            </div>
+                        </li>
+                        <li class="fields">
+                            <label for="email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+                            <div class="input-box">
+                                <input type="email" autocapitalize="off" autocorrect="off" spellcheck="false" name="email" id="email" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Email Address')) ?>" class="input-text required-entry validate-email" placeholder="<?= $this->__('Email Address') ?>"  />
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="submit" title="Enviar" id="btn-prospect" class="button btn-black">Enviar</button>
+                </div>
+                <div class="col-l">
+                    <img src="<?php echo $this->getSkinUrl('images/fast_reg_img.jpg')?>" alt="" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="know-more-about-product-response" style="display:none;left: 0;right: 0;top: 0;position: fixed;bottom: 0;z-index: 10;background-color: rgba(0,0,0,0.7);">
+    <div id="know-more-about-product-response-content" style=" ">
+        <span class="know-more-about-product-response-close">x</span>
+        <label id="know-more-about-product-response-message"></label>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //< ![CDATA[
+        var formQuickAccess = new VarienForm('form-quick-access');
+
+        $('know-more-about-product-label').observe('click',function(e){
+            $('know-more-about-product-content').toggle();
+        });
+
+        $('know-more-about-product-content').observe('click',function(e){
+            var ele = Event.element(e);
+
+            if(ele.id == 'know-more-about-product-content' || ele.id == 'closepopup'){
+                $('form-quick-access').reset();
+                formQuickAccess.validator.reset();
+                $('know-more-about-product-content').toggle();
+            }
+        });
+
+        $('know-more-about-product-response').observe('click',function(e){
+            $('know-more-about-product-response').toggle();
+        });
+
+        $('form-quick-access').observe('submit', function(e){
+        e.stop();
+        if(formQuickAccess.validator.validate()){
+            $('btn-prospect').setAttribute('disabled','disabled');
+            new Ajax.Request('/nestle/prospects/signin', {
+                parameters: $('form-quick-access').serialize(true),
+                onSuccess: function(transport) {
+                    var response = transport.responseJSON;
+                    if(response.done == true){
+                        $('form-quick-access').reset();
+                        $('know-more-about-product-content').toggle();
+                    }
+
+                    $('know-more-about-product-response').toggle();
+                    $('know-more-about-product-response-message').update(response.message);
+
+                    $('btn-prospect').removeAttribute('disabled');
+                },
+                onFailure: function() { 
+                    $('btn-prospect').removeAttribute('disabled');
+                    alert('Something went wrong...'); 
+                }
+            });
+        }
+    })
+    //]]>
+</script>

@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Pago en Banco</title>
+
+        <link href="<?php echo $this->getSkinUrl('css/stores/pago_banco.css');?>" rel="stylesheet" type="text/css">
+
+    </head>
+
+    <body>
+        <div class="margen">
+            <iframe id="pdf" src="<?php echo $this->getPdfUrl() ?>" style="width:100%; height:850px; visibility: visible !important; opacity: 1 !important;" frameborder="0"></iframe>    
+
+            <div class="buttons">        
+                <a href="<?php echo $this->getBaseUrl();?>">Sigue comprando</a>
+            </div>
+        </div>
+
+    </body>
+</html>

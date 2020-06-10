@@ -1,0 +1,92 @@
+<!--@subject Gracias por el interés en nuestros producto @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url"}
+@-->
+
+<!--@styles
+@-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    </head>
+    <body>
+        {{var non_inline_styles}}
+        <!-- Begin wrapper table -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" id="background-table">
+            <tr>
+                <td valign="top" class="container-td" align="center">
+                    <table cellpadding="0" cellspacing="0" border="0" class="container-table">
+                        <tr>
+                            <td>
+                                <table cellpadding="0" cellspacing="0" border="0" class="logo-container">
+                                    <tr>
+                                        <td class="logo">
+                                            <header>
+                                                <a href="{{store url=''}}">
+                                                    <img alt="Nescafe, Dolce Gusto, Nestle" src="{{media url='email/logo/default/heading.jpg'}}" border="0"/> 
+                                                </a>
+                                            </header>
+                                            <!-- <a href="{{store url=""}}">
+                                                <img
+                                                    {{if logo_width}}
+                                                    width="{{var logo_width}}"
+                                                    {{else}}
+                                                    width="165"
+                                                    {{/if}}
+        
+                                                    {{if logo_height}}
+                                                    height="{{var logo_height}}"
+                                                    {{else}}
+                                                    height="48"
+                                                    {{/if}}
+        
+                                                    src="{{var logo_url}}"
+                                                    alt="{{var logo_alt}}"
+                                                    border="0"/>
+                                            </a> -->
+                                        </td>
+                                        <td class="banner">
+                                            <a href="{{store url=''}}"> 
+                                                <img class="banner" alt="Bienvenido" src="{{skin url='images/emails/bienvenido.jpg'}}" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" class="top-content">
+                                <!-- Begin Content -->
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td class="action-content">
+                                            <p>Gracias por registrarte en caf&eacute; para mi negocio, recibimos la solicitud
+                                                para el producto {{var product_name}}, en breve serás contactado por un agente para indicarte los pasos a seguir.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="footer">
+                            <footer>
+                                <ul>
+                                    <li class="phone"><img src="{{skin url='images/emails/phone-icon.png'}}"/><a href="tel:01800555555">01800 55 55 55</a></li>
+                                    <li class="mail"><img src="{{skin url='images/emails/mail-icon.png'}}"/><a href="mailto:">servicioaclientes@nestle.com</a></li>
+                                    <li class="terms"><a href="{{store direct_url='terminos_condiciones/'}}">T&eacute;rminos y condiciones</a></li>
+                                </ul>
+                            </footer>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <!-- End wrapper table -->
+    </body>
+</html>

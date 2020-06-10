@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!--
+@category    Entrepids
+@package     Entrepids_StockAlert
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <modules>
+        <Entrepids_StockAlert>
+            <version>0.0.1</version>
+        </Entrepids_StockAlert>
+    </modules>
+
+    <global>
+         <helpers>
+            <stockalert>
+                <class>Entrepids_StockAlert_Helper</class>
+            </stockalert>
+        </helpers>
+
+        <models>
+            <stockalert>
+                <class>Entrepids_StockAlert_Model</class>
+            </stockalert>
+        </models>
+
+        <events>
+            <cataloginventory_stock_item_save_commit_after>
+                <observers>
+                    <entrepids_stockalert>
+                        <class>stockalert/observer</class>
+                        <method>catalogInventorySave</method>
+                    </entrepids_stockalert>
+                </observers>
+            </cataloginventory_stock_item_save_commit_after>
+
+            <sales_model_service_quote_submit_before>
+                <observers>
+                    <entrepids_stockalert>
+                        <class>stockalert/observer</class>
+                        <method>subtractQuoteInventory</method>
+                    </entrepids_stockalert>
+                </observers>
+            </sales_model_service_quote_submit_before>
+
+            <sales_model_service_quote_submit_failure>
+                <observers>
+                    <entrepids_stockalert>
+                        <class>stockalert/observer</class>
+                        <method>revertQuoteInventory</method>
+                    </entrepids_stockalert>
+                </observers>
+            </sales_model_service_quote_submit_failure>
+
+            <sales_order_item_cancel>
+                <observers>
+                    <entrepids_stockalert>
+                        <class>stockalert/observer</class>
+                        <method>cancelOrderItem</method>
+                    </entrepids_stockalert>
+                </observers>
+            </sales_order_item_cancel>
+
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <entrepids_stockalert>
+                        <class>stockalert/observer</class>
+                        <method>refundOrderInventory</method>
+                    </entrepids_stockalert>
+                </observers>
+            </sales_order_creditmemo_save_after>
+        </events>
+
+        <template>
+            <email>
+                <entrepids_stockalert_template module="credit">
+                    <label>Entrepids Stock Alert Template</label>
+                    <file>entrepids/entrepids_stock_alert.html</file>
+                    <type>html</type>
+                </entrepids_stockalert_template>
+            </email>
+        </template> 
+    </global>
+</config>

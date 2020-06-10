@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_Maintenance
+* @author     miguel.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <tabs>
+        <nestle translate="label" module="coffeesolutions">
+            <label>Nestlé</label>
+            <sort_order>150</sort_order>
+        </nestle>
+    </tabs>
+    <sections>        
+        <coffeesolution module="coffeesolutions">
+            <label>Soluciones de Café</label>
+            <tab>nestle</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1500</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                <solution translate="label">
+                    <label>Configurar Soluciones</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <category translate="label">
+                            <label>Categoría principal de las Soluciones de Café</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>coffeesolutions/system_config_source_categories</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment><![CDATA[Selecciona la categoría principal de las soluciones de café. Solo se muestran categorías raíz o subcategorías de primer nivel.]]></comment>
+                        </category>
+                        
+                        <solutiondays translate="label">
+                            <label>Número de días para los que se calcula la solución</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>required-entry validate-digits</validate>
+                            <comment><![CDATA[Especifíque el número de días para el cual se recomienda la cantidad de prodctos para cada solución de Café.]]></comment>
+                        </solutiondays>
+                        
+                        <!-- <attributeset translate="label">
+                            <label>Set de atributos de la Maquinas</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>coffeesolutions/system_config_source_attributesets</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment><![CDATA[Selecciona el set de atributos que tendrán las máquinas de las soluciones de café.]]></comment>
+                        </attributeset> -->
+                    </fields>
+                </solution>
+            </groups>
+        </coffeesolution>
+    </sections>
+</config>

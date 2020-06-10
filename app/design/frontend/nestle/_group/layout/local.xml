@@ -1,0 +1,392 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="after_body_start">
+            <block type="turpentine/notices" template="turpentine/notices.phtml" name="turpentine_notices" />
+        </reference>
+        
+        <!--<reference name="header">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <sales_quote_save_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                    </flush_events>
+                    <method>esi</method>
+                    <scope>page</scope>
+                    <cacheType>per-client</cacheType>
+                    <registry_keys>
+                        <current_category/>
+                    </registry_keys>
+                </params>
+            </action>
+        </reference>
+        
+        <reference name="minicart_head">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <sales_quote_save_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                        <checkout_cart_save_after/>
+                        <checkout_cart_product_add_after/>
+                        <sales_quote_remove_item/>
+                        <checkout_onepage_controller_success_action/>
+                    </flush_events>
+                    <method>esi</method>
+                    <scope>page</scope>
+                    <cacheType>per-client</cacheType>
+                    <registry_keys>
+                        <current_category/>
+                    </registry_keys>
+                </params>
+            </action>
+        </reference>-->
+        
+        <reference name="minicart_head">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                </params>
+            </action>
+            <action method="setCacheLifetime"/>
+        </reference>
+        
+        
+        <reference name="customer_form_mini_login">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                </params>
+            </action>
+        </reference>
+        
+        <reference name="customer_form_mini_login_mobile">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                </params>
+            </action>
+            <action method="setCacheLifetime"/>
+        </reference>
+        
+        <!--<reference name="customer_form_mini_login">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <sales_quote_save_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                    </flush_events>
+                    <method>esi</method>
+                    <scope>page</scope>
+                    <cacheType>per-client</cacheType>
+                    <registry_keys>
+                        <current_category/>
+                    </registry_keys>
+                </params>
+            </action>
+        </reference>
+
+        <reference name="customer_form_mini_login_mobile">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <sales_quote_save_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                    </flush_events>
+                    <method>esi</method>
+                    <scope>page</scope>
+                    <cacheType>per-client</cacheType>
+                    <registry_keys>
+                        <current_category/>
+                    </registry_keys>
+                </params>
+            </action>
+        </reference>-->
+        
+        
+        <!-- This block is inside of the header block on mage EE, so it could
+        be commented out for EE stores for a small performance increase -->
+        <reference name="cart_sidebar">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <sales_quote_save_after/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+        
+        
+        
+        <reference name="cart_sidebar">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                </params>
+            </action>
+            <action method="setCacheLifetime"/>
+        </reference>
+        
+        <reference name="catalog.compare.sidebar">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <catalog_product_compare_add_product/>
+                        <catalog_product_compare_remove_product/>
+                        <catalog_product_compare_item_collection_clear/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+        <reference name="right.reports.product.viewed">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <catalog_controller_product_view/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+        <reference name="right.reports.product.compared">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <catalog_product_compare_add_product/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+        <reference name="right.poll">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <poll_vote_add/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+        <reference name="global_messages">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                    <flush_events>
+                        <core_session_abstract_add_message/>
+                        <sales_quote_save_after/>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                    </flush_events>
+                    <only_cache_if>no_text</only_cache_if>
+                </params>
+            </action>
+        </reference>
+        <reference name="messages">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <ttl>0</ttl>
+                    <flush_events>
+                        <core_session_abstract_add_message/>
+                        <sales_quote_save_after/>
+                        <wishlist_item_save_after/>
+                        <wishlist_item_delete_after/>
+                        <customer_login/>
+                        <customer_logged_out/>
+                        <customer_logged_in/>
+                    </flush_events>
+                    <only_cache_if>no_text</only_cache_if>
+                </params>
+            </action>
+        </reference>
+
+        <reference name="footer">
+            <action method="setEsiOptions">
+                <params>
+                    <!-- this is the default but we specifically set it so
+                    it actually gets picked up -->
+                    <access>public</access>
+                </params>
+            </action>
+        </reference>
+    </default>
+
+    <!-- Blocks only visible when logged in -->
+
+    <customer_logged_in>
+        <reference name="sale.reorder.sidebar">
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                    <flush_events>
+                        <sales_quote_save_after/>
+                        <checkout_onepage_controller_success_action/>
+                    </flush_events>
+                </params>
+            </action>
+        </reference>
+    </customer_logged_in>
+
+    <!-- Catalog -->
+
+    <catalog_product_compare_index>
+        <turpentine_cache_flag value="0"/>
+    </catalog_product_compare_index>
+
+
+    <!-- Checkout -->
+
+    <!-- We cache the checkout cart page on a per-client basis -->
+    <checkout_cart_index>
+        <turpentine_cache_flag value="0"/>
+    </checkout_cart_index>
+
+    <!-- We never cache anything in the checkout funnel -->
+    <checkout_onepage_index>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_index>
+
+    <checkout_onepage_progress>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_progress>
+    <checkout_onepage_progress_billing>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_progress_billing>
+    <checkout_onepage_progress_shipping>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_progress_shipping>
+    <checkout_onepage_progress_shipping_method>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_progress_shipping_method>
+    <checkout_onepage_progress_payment>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_progress_payment>
+
+
+    <checkout_onepage_paymentmethod>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_paymentmethod>
+
+    
+    <checkout_onepage_getadditional>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_getadditional>
+    <checkout_onepage_savebilling>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_savebilling>
+    <checkout_onepage_saveshipping>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_saveshipping>
+    <checkout_onepage_saveshippingmethod>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_saveshippingmethod>
+    <checkout_onepage_savepayment>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_savepayment>
+    <checkout_onepage_saveorder>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_saveorder>
+    
+    <checkout_onepage_shippingmethod>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_shippingmethod>
+
+    <checkout_onepage_additional>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_additional>
+
+    <checkout_onepage_review>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_review>
+
+    <checkout_onepage_success>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_success>
+
+    <checkout_onepage_failure>
+        <turpentine_cache_flag value="0"/>
+    </checkout_onepage_failure>
+
+
+    <mercadopago_pay_index>
+        <turpentine_cache_flag value="0"/>
+    </mercadopago_pay_index>
+    <!-- End Checkout -->
+
+    <!-- Customer Account -->
+    <customer_account>
+        <turpentine_cache_flag value="0"/>
+    </customer_account>
+
+    <customer_account_login>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_login>
+
+    <customer_account_logoutsuccess>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_logoutsuccess>
+
+    <customer_account_create>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_create>
+
+    <customer_account_forgotpassword>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_forgotpassword>
+
+    <customer_account_resetpassword>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_resetpassword>
+
+    <customer_account_confirmation>
+        <turpentine_cache_flag value="0"/>
+    </customer_account_confirmation>
+
+    <newsletter_manage_index>
+        <turpentine_cache_flag value="0"/>
+    </newsletter_manage_index>
+
+    <credit_index_index>
+        <turpentine_cache_flag value="0"/>
+    </credit_index_index>
+
+    <credit_index_success>
+        <turpentine_cache_flag value="0"/>
+    </credit_index_success>
+
+    <credit_index_fail>
+        <turpentine_cache_flag value="0"/>
+    </credit_index_fail>
+</layout>

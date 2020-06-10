@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Entrepids_Newsletter>
+            <version>1.0.0</version>
+        </Entrepids_Newsletter>
+    </modules>
+    
+    <global>
+        <models>
+            <entrepids_newsletter>
+                <class>Entrepids_Newsletter_Model</class>
+                <!--
+                need to create our own resource, can't just
+                use core_resource
+                -->
+                <resourceModel>entrepids_newsletter_resource</resourceModel>
+            </entrepids_newsletter>
+            <entrepids_newsletter_resource>
+                <class>Entrepids_Newsletter_Model_Resource</class>
+                <entities>
+                    <subscriptions>
+                        <table>news_subscriptions</table>
+                    </subscriptions>
+                    <catalog>
+                        <table>entrepids_newsletter</table>
+                    </catalog>
+                </entities>
+            </entrepids_newsletter_resource>
+            
+            <newsletter>
+				<rewrite>
+					<queue>Entrepids_Newsletter_Model_Queue</queue>
+				</rewrite>
+            </newsletter>
+            
+            
+        </models>
+        
+        <blocks>
+            
+            <entrepids_newsletter>
+                <class>Entrepids_Newsletter_Block</class>
+            </entrepids_newsletter>
+            
+                        <customer>
+				<rewrite>
+					<newsletter>Entrepids_Newsletter_Block_Customer_Newsletter</newsletter>
+				</rewrite>
+                        </customer>
+                         <adminhtml>
+				<rewrite>
+					<newsletter_queue_edit_form>Entrepids_Newsletter_Block_Queue_Edit_Form</newsletter_queue_edit_form>
+				</rewrite>
+                         </adminhtml>	
+        </blocks>
+          
+        <helpers>
+            <entrepids_newsletter>
+                <class>Entrepids_Newsletter_Helper</class>
+            </entrepids_newsletter>
+        </helpers>
+        <resources>
+            <entrepidsn_setup>
+               <setup>
+                   <module>Entrepids_Newsletter</module>
+                   <class>Entrepids_Newsletter_Model_Resource_Setup</class>
+               </setup>
+           </entrepidsn_setup>
+        </resources> 
+    </global>
+    
+    <frontend>
+            <routers>
+                    <newsletter>
+                            <args>
+                                    <modules>
+                                            <entrepids_newsletter before="Mage_Newsletter">Entrepids_Newsletter</entrepids_newsletter>
+                                    </modules>
+                            </args>
+                    </newsletter>
+            </routers>
+    </frontend>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <entrepids_newsletter_grid before="Mage_Adminhtml">Entrepids_Newsletter_Adminhtml</entrepids_newsletter_grid>
+                        <entrepids_newsletter before="Mage_Adminhtml">Entrepids_Newsletter</entrepids_newsletter>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
+</config>
+    

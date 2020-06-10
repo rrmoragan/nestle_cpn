@@ -1,0 +1,151 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+
+/**
+ * Grouped product data template
+ *
+ * @see Mage_Catalog_Block_Product_View_Media
+ * @see Mage_Catalog_Block_Product_View_Type_Grouped
+ */
+/**
+ * Modify:: rmorales@mlg.com.mx
+ */
+?>
+<?php $this->setPreconfiguredValue(); ?>
+<?php $_product = $this->getProduct(); ?>
+<?php $_associatedProducts = $this->getAssociatedProducts(); ?>
+<?php $_hasAssociatedProducts = count($_associatedProducts) > 0; ?>
+<?php
+	$_product_config_precio = 0;
+	$_product_config_precio_elem = 0;
+	$_product_config_max_elems = $_product->configurable_max_prods;
+	$_product_config_precio_formated = '';
+	//$_product_config_precio_formated = '$ '.number_format($_product_config_precio, 2, '.', ',');
+	$_product_config_precio_formated = $_product_config_precio;
+
+    $opcions = null;
+    $lopc = $_product->_data['configurable_opcion'];
+    
+    if( $lopc!='' ){ $opcions = json_decode( $lopc ); }
+
+?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+<div class="grouped-items-table-wrapper">
+    <!-- productos configurables formulario 2 -->
+    <?php 
+        $nn = 0;
+        if( $opcions!=null ){
+
+            $grouped_add = 0;
+            if( isset( $GLOBALS['xlprod']['this_product'] ) ){
+                if( $GLOBALS['xlprod']['this_product'] == $_product->getSku() ){
+                    $grouped_add = 1;
+                }
+            }
+
+            foreach ($_associatedProducts as $_item){
+                $nn += (int)$_item->_data['stock_item']->_data['qty'];
+                if( $grouped_add ){
+                    $GLOBALS['xlprod'][ $_product->getSku() ]['sku_group'][ $_item->getSku() ] = 1;
+                }
+            }
+
+            $GLOBALS['ln_prods_max'] = $nn;
+
+            if( isset( $opcions->data->py_min ) ){
+                if( $opcions->data->py_min > $nn ){
+                    $_hasAssociatedProducts = 0;
+                }else{
+                    
+                }
+            }
+        }
+    ?>
+    <table class="data-table grouped-items-table" id="super-product-table">
+        <col />
+        <col />
+        <col />
+        <tbody>
+        <?php if ($_hasAssociatedProducts): ?>
+        <?php foreach ($_associatedProducts as $_item): ?>
+            <?php $_finalPriceInclTax = $this->helper('tax')->getPrice($_item, $_item->getFinalPrice(), true) ?>
+            <tr>
+                <td class='image'>
+                    <img class="thumbnail"
+                         src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->constrainOnly(true)->resize(105, 80); ?>"
+                         alt="<?php echo $this->escapeHtml($this->getImageLabel()) ?>"
+                         title="<?php echo $this->escapeHtml($this->getImageLabel()); ?>" />
+                </td>
+                <td class="name">
+                    <p class="name-wrapper">
+                        <?php echo $this->escapeHtml($_item->getName()) ?>
+                    </p>
+                    <?php if ($_product->isSaleable()): ?>
+                    <div class="qty-wrapper">
+                        <?php if ($_item->isSaleable()) : ?>
+                            <?php //echo print_r( $_item->_data['stock_item']->_data['qty'] ); ?>
+                            <div class="opcions">
+                                <label for="super_group_<?php echo $_item->getId() ?>" class="qty-label"><?php echo $this->__('Quantity'); ?></label>
+                            </div>
+                            <div class="opcions">
+                                <span class="prod_decr" onclick="prod_decr( 'super_group_<?php echo $_item->getId() ?>' )"></span>
+                                <div class="count">
+                                    <input id="super_group_<?php echo $_item->getId() ?>" 
+                                    type="text" pattern="\d*(\.\d+)?" 
+                                    name="super_group[<?php echo $_item->getId() ?>]" 
+                                    maxlength="12" 
+                                    value="<?php echo $_item->getQty() * 1 ?>" 
+                                    title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" 
+                                    class="input-text qty t_super_group" 
+                                    dat_max='<?php echo (int)$_item->_data['stock_item']->_data['qty']; ?>' />
+                                </div>
+                                <span class="prod_incr" onclick="prod_incr( 'super_group_<?php echo $_item->getId() ?>' )"></span>
+                            </div>
+                        <?php else: ?>
+                            <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                </td>
+                <?php if ($this->getCanShowProductPrice($_product)): ?>
+                <td class="a-right">
+                    <?php if ($this->getCanShowProductPrice($_item)): ?>
+						<?php $s = $this->getPriceHtml($_item, true); if( $s ){ echo "$s <div class=\"by_pieces\">"."por pieza"."</div>"; } ?>
+						<?php echo $this->getTierPriceHtml($_item) ?>
+                    <?php endif; ?>
+                </td>
+                <?php endif; ?>
+            </tr>
+        <?php endforeach; ?>
+        <?php else: ?>
+           <tr>
+               <td colspan="<?php if ($_product->isSaleable()): ?>4<?php else : ?>3<?php endif; ?>"><?php echo $this->__('No options of this product are available.') ?></td>
+           </tr>
+        <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">decorateTable('super-product-table')</script>

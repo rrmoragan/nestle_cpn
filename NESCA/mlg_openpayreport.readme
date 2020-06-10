@@ -1,0 +1,10 @@
+# files pertenecientes al modulo Mlg_OpenpayReport
+
+app/etc/modules/Mlg_OpenpayReport.xml
+app/code/local/Mlg/OpenpayReport/etc/config.xml
+app/code/local/Mlg/OpenpayReport/etc/adminhtml.xml
+app/code/local/Mlg/OpenpayReport/Helper/Data.php
+app/code/local/Mlg/OpenpayReport/controllers/Adminhtml/OpenpayReportController.php
+app/code/local/Mlg/OpenpayReport/Block/Report/Product/Opyreport.php
+app/code/local/Mlg/OpenpayReport/Block/Report/Product/Opyreport/Grid.php
+app/code/local/Mlg/OpenpayReport/Model/Resource/Openpay/Sold/Collection.php

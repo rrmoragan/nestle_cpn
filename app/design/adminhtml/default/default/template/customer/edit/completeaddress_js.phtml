@@ -1,0 +1,100 @@
+<?php
+
+?>
+<script type="text/javascript">
+    //<![CDATA[
+    var typing; //Variable para contabilizar el tiempo de escritura del usuario
+    var last_zipcode = ''; 
+    
+    //Simulate event action function 
+    function fireEvent(element,event){
+        if (document.createEventObject){
+            // dispatch for IE
+            var evt = document.createEventObject();
+            return element.fireEvent('on'+event,evt)
+        }else{
+            // dispatch for firefox + others
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent(event, true, true ); // event type,bubbling,cancelable
+            return !element.dispatchEvent(evt);
+        }
+    }
+
+    function changePostcode(event) {
+        clearTimeout(typing);//Termino de escribir
+        var element = event.element();
+        var zipcode = element.value;
+        var string_main = element.id.replace('postcode','');
+        
+        if(!$(string_main+'neighborhood_id')){
+            $(string_main+'neighborhood').up().insert('<select id="'+string_main+'neighborhood_id"></select>');
+        }
+
+        if ((!Validation.get('IsEmpty').test(zipcode) && /(^\d{5}$)/.test(zipcode))) {
+            if(last_zipcode != zipcode){
+                last_zipcode = zipcode;
+            }else{
+                return;
+            }
+            var zipcodeURL = '<?php echo $this->getUrl('/completeaddress/findAddress/') ?>zipcode/' + zipcode;
+            console.log(zipcodeURL)
+            new Ajax.Request(zipcodeURL, {
+                method: 'get',
+                onSuccess: function (transport) {
+                    if (typeof transport.responseJSON !== 'undefined' && transport.responseJSON.status === true && transport.responseJSON.results > 0) {
+                        var json = transport.responseJSON;
+                        $(string_main+'country_id').setValue('MX');
+                        $(string_main+'region_id').setValue(json.data[0].region_id);
+                        $(string_main+'city').setValue(json.data[0].municipality);
+                        $(string_main+'neighborhood_id').select('option').invoke('remove');
+                        for (i = 0; i < json.data.length; i++) {
+                            var opt = document.createElement('option');
+                            opt.text = json.data[i].neighborhood;
+                            opt.value = json.data[i].neighborhood;
+                            $(string_main+'neighborhood_id').options.add(opt);
+                        }
+                        $(string_main+'neighborhood_id').setStyle({display: 'block'});
+                        $(string_main+'neighborhood').setStyle({display: 'none'});
+                        fireEvent($(string_main+'neighborhood_id'),'change');
+                    } else {
+                        $(string_main+'neighborhood_id').setStyle({display: 'none'});
+                        $(string_main+'neighborhood').setStyle({display: 'block'});
+                        $(string_main+'neighborhood').setValue(''); 
+                    }
+                },
+                onException: function () {}
+            });
+        }else {
+            $(string_main+'neighborhood_id').setStyle({display: 'none'});
+            $(string_main+'neighborhood').setStyle({display: 'block'});
+            $(string_main+'neighborhood').setValue(''); 
+        } 
+    }
+
+    function checkEndTyping(event) {
+        clearTimeout(typing);
+        typing = setTimeout(changePostcode(event), 700);
+    }
+
+    function checkStartTyping() {
+        clearTimeout(typing);
+    }
+
+    function selectedNeighborhoodId(event) {
+        var element = event.element();
+        var string_main = element.id.replace('neighborhood_id','');
+        var neig = element.value;
+        if (neig.length > 0) {
+            $(string_main+'neighborhood').setValue(neig);
+        } else {
+            $(string_main+'neighborhood').setValue('');
+        }
+    } 
+
+    $('customer_info_tabs_addresses_content').on('change','[id$=neighborhood_id]',selectedNeighborhoodId);
+
+    $('customer_info_tabs_addresses_content').on('change','[id$=postcode]',changePostcode);
+    $('customer_info_tabs_addresses_content').on('keyup','[id$=postcode]',checkEndTyping);
+    $('customer_info_tabs_addresses_content').on('keydown','[id$=postcode]',checkStartTyping);
+//]]>
+</script>

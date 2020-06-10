@@ -1,0 +1,266 @@
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
+
+input:focus, button:focus {
+  outline: 0px; }
+
+#html-body,
+#page-login {
+  font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+  #html-body p,
+  #page-login p {
+    font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+  #html-body a,
+  #page-login a {
+    color: #e1261c; }
+  #html-body h1,
+  #html-body h2,
+  #html-body h3,
+  #html-body h4,
+  #page-login h1,
+  #page-login h2,
+  #page-login h3,
+  #page-login h4 {
+    font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif;
+    color: #e1261c; }
+  #html-body button,
+  #page-login button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; }
+  #html-body button,
+  #html-body .form-button,
+  #page-login button,
+  #page-login .form-button {
+    border: none;
+    padding: 5px 7px;
+    background: #e1261c;
+    color: #fff;
+    font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center !important;
+    white-space: nowrap;
+    border-radius: 5px; }
+  #html-body button.add span,
+  #page-login button.add span {
+    background-image: none;
+    padding-left: 5px; }
+  #html-body button.add:before,
+  #page-login button.add:before {
+    content: '+';
+    width: 15px;
+    height: 15px;
+    color: #e1261c;
+    background: white;
+    font-size: 14px;
+    font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif;
+    border-radius: 7px;
+    float: left;
+    line-height: 15px; }
+
+#html-body {
+  /* ====== MENU ====== */ }
+  #html-body .header {
+    background: white;
+    font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+    #html-body .header .logo {
+      margin: 15px 20px; }
+    #html-body .header .secundary_logo {
+      float: left;
+      width: 28%; }
+      #html-body .header .secundary_logo .logo_dolce {
+        width: 50px;
+        height: auto;
+        float: left;
+        margin: 10px; }
+      #html-body .header .secundary_logo .logo_prof {
+        width: 100px;
+        height: auto;
+        float: left;
+        margin: 10px 15px; }
+    #html-body .header .logo-txt {
+      display: block;
+      float: left;
+      width: 200px;
+      min-width: 100px;
+      font-size: 20px;
+      text-transform: uppercase;
+      color: black;
+      text-indent: -9999%;
+      margin: 0 15px; }
+      #html-body .header .logo-txt img {
+        width: 100%;
+        height: auto;
+        margin: 10px 15px; }
+    #html-body .header .header-top {
+      border-color: #aa1616; }
+    #html-body .header .header-right .super {
+      color: black; }
+  #html-body .content-header-floating {
+    background: #aa1616;
+    border-bottom: 1px solid #aa1616;
+    opacity: 1; }
+    #html-body .content-header-floating .head-dashboard,
+    #html-body .content-header-floating h3 {
+      color: white;
+      font-weight: normal;
+      font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif; }
+  #html-body #page-help-link {
+    color: white;
+    text-decoration: underline; }
+  #html-body .nav-bar {
+    border: 0;
+    background: #e1261c; }
+    #html-body .nav-bar #nav li {
+      background: transparent; }
+    #html-body .nav-bar #nav li.active {
+      background: #aa1616; }
+      #html-body .nav-bar #nav li.active a {
+        font-weight: normal;
+        font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif; }
+      #html-body .nav-bar #nav li.active ul li a {
+        font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+    #html-body .nav-bar #nav li.over a {
+      background: #aa1616;
+      color: white; }
+    #html-body .nav-bar #nav ul {
+      border: none; }
+      #html-body .nav-bar #nav ul li a {
+        background: #aa1616;
+        color: white; }
+
+#html-body dl.accordion dt,
+#html-body .entry-edit .entry-edit-head {
+  background: #aa1616; }
+#html-body .switcher {
+  background: #f4f3f3; }
+#html-body .nowrap span {
+  color: #e1261c !important; }
+#html-body .grid table {
+  border-color: #e4e2e3; }
+#html-body .grid tr.filter {
+  background: #e4e2e3; }
+#html-body .grid tr.headings th {
+  border-color: #f9f9f9 #e4e2e3 #f9f9f9 #f9f9f9; }
+#html-body .entry-edit .entry-edit-head h4,
+#html-body .entry-edit .entry-edit-head a {
+  color: white;
+  font-weight: normal;
+  font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif; }
+#html-body ul.config-tabs dt {
+  background: #dcdada;
+  border-color: #7d7d7d;
+  color: black; }
+#html-body ul.tabs {
+  background: #f4f3f3; }
+  #html-body ul.tabs span {
+    background: #f4f3f3;
+    color: black; }
+    #html-body ul.tabs span:hover {
+      color: #e1261c; }
+#html-body .switcher {
+  border-color: #dcdada; }
+#html-body .columns {
+  background: none; }
+#html-body .form-list td.scope-label {
+  color: #7d7d7d; }
+
+#page-login .cont-logo {
+  display: table;
+  width: 100%; }
+  #page-login .cont-logo .logo {
+    margin: 10px 0; }
+#page-login .login-container {
+  background: none;
+  padding: 0; }
+  #page-login .login-container .legal {
+    background: #aa1616;
+    color: white;
+    border-radius: 0 0 10px 10px; }
+  #page-login .login-container .validation-advice {
+    color: #f0c54a !important;
+    font-weight: normal !important; }
+#page-login .login-form {
+  background: #e1261c;
+  border-radius: 10px 10px 0 0; }
+  #page-login .login-form h2 {
+    color: white;
+    font-family: "Gotham-Medium", "Trebuchet MS", Arial, sans-serif;
+    font-weight: normal; }
+  #page-login .login-form label,
+  #page-login .login-form a {
+    color: white;
+    font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif; }
+#page-login .login-box .bottom {
+  background: none; }
+#page-login .form-button {
+  border: none;
+  padding: 7px 15px;
+  background: black;
+  color: #fff;
+  font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif;
+  font-weight: normal;
+  font-size: 11px;
+  font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center !important;
+  white-space: nowrap;
+  border-radius: 5px; }
+#page-login .input-text {
+  background: #e4e2e3;
+  border-radius: 5px;
+  border: none;
+  color: #494949;
+  font-family: "Gotham-Book", "Trebuchet MS", Arial, sans-serif;
+  font-size: 14px;
+  height: 25px; }
+
+@font-face {
+  font-family: 'Gotham-Black';
+  src: url("../typo/gotham/Gotham-Black/Gotham-Black.eot");
+  src: url("../typo/gotham/Gotham-Black/Gotham-Black.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-Black/Gotham-Black.woff") format("woff"), url("../typo/gotham/Gotham-Black/Gotham-Black.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-BlackItalic';
+  src: url("../typo/gotham/Gotham-BlackItalic/Gotham-BlackItalic.eot");
+  src: url("../typo/gotham/Gotham-BlackItalic/Gotham-BlackItalic.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-BlackItalic/Gotham-BlackItalic.woff") format("woff"), url("../typo/gotham/Gotham-BlackItalic/Gotham-BlackItalic.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-Bold';
+  src: url("../typo/gotham/Gotham-Bold/Gotham-Bold.eot");
+  src: url("../typo/gotham/Gotham-Bold/Gotham-Bold.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-Bold/Gotham-Bold.woff") format("woff"), url("../typo/gotham/Gotham-Bold/Gotham-Bold.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-BoldItalic';
+  src: url("../typo/gotham/Gotham-BoldItalic/Gotham-BoldItalic.eot");
+  src: url("../typo/gotham/Gotham-BoldItalic/Gotham-BoldItalic.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-BoldItalic/Gotham-BoldItalic.woff") format("woff"), url("../typo/gotham/GGotham-BoldItalic/Gotham-BoldItalic.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-Book';
+  src: url("../typo/gotham/Gotham-Book/Gotham-Book.eot");
+  src: url("../typo/gotham/Gotham-Book/Gotham-Book.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-Book/Gotham-Book.woff") format("woff"), url("../typo/gotham/Gotham-Book/Gotham-Book.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-BookItalic';
+  src: url("../typo/gotham/Gotham-BookItalic/Gotham-BookItalic.eot");
+  src: url("../typo/gotham/Gotham-BookItalic/Gotham-BookItalic.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-BookItalic/Gotham-BookItalic.woff") format("woff"), url("../typo/gotham/Gotham-BookItalic/Gotham-BookItalic.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-Medium';
+  src: url("../typo/gotham/Gotham-Medium/Gotham-Medium.eot");
+  src: url("../typo/gotham/Gotham-Medium/Gotham-Medium.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-Medium/Gotham-Medium.woff") format("woff"), url("../typo/gotham/Gotham-Medium/Gotham-Medium.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Gotham-MediumItalic';
+  src: url("../typo/gotham/Gotham-MediumItalic/Gotham-MediumItalic.eot");
+  src: url("../typo/gotham/Gotham-MediumItalic/Gotham-MediumItalic.eot?#iefix") format("embedded-opentype"), url("../typo/gotham/Gotham-MediumItalic/Gotham-MediumItalic.woff") format("woff"), url("../typo/gotham/Gotham-MediumItalic/Gotham-MediumItalic.ttf") format("truetype"); }
+@font-face {
+  font-family: 'helvetica-neue-bold';
+  src: url("../typo/helvetica/Helvetica-Neue-Bold/Helvetica Neue Bold.eot");
+  src: url("../typo/helvetica/Helvetica-Neue-Bold/Helvetica Neue Bold.eot?#iefix") format("embedded-opentype"), url("../typo/helvetica/Helvetica-Neue-Bold/Helvetica Neue Bold.woff2") format("woff2"), url("../typo/helvetica/Helvetica-Neue-Bold/Helvetica Neue Bold.woff") format("woff"), url("../typo/helvetica/Helvetica-Neue-Bold/Helvetica Neue Bold.svg#Helvetica Neue Bold") format("svg");
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: normal;
+  unicode-range: U+0-10FFFF; }
+
+/*# sourceMappingURL=styles.css.map */

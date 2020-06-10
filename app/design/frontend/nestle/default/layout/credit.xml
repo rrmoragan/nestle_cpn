@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<credit_index_index>
+		<update handle="customer_account"/>
+    	<reference name="my.account.wrapper">
+			<block type="core/template" name="credit" template="credit/credit.phtml" />
+		</reference>
+	</credit_index_index>
+
+	<credit_index_success>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="core/template" name="credit_success" template="credit/success.phtml" />
+		</reference>
+	</credit_index_success>
+
+	<credit_index_fail>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="core/template" name="credit_fail" template="credit/fail.phtml" />
+		</reference>
+	</credit_index_fail>
+</layout>

@@ -1,0 +1,219 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * messageDiasFactura
+ */
+
+$messageDiasFactura = true;
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * accessPaymentMethod
+ */
+
+$accesPaymentMethod = true;
+$is_user_aaa = false;
+
+    $group_id = Mage::getSingleton('customer/session')->getCustomerGroupId();
+    $group = Mage::getModel('customer/group')->load($group_id);
+    if( $group->getCode() == 'Clientes AAA' ){
+        $is_user_aaa = true;
+        $messageDiasFactura = false;        
+    }
+
+$message_confirmation_billi = true;
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * notify_payment
+ */
+
+$notify_payment = true;
+
+?><?php
+/*
+ * modif: rmorales@mlg.com.mx
+ * ga google analytics
+ */
+
+$ga_data = false;
+
+?>
+
+<!-- check on off bill -->
+<div class="page-title"><h1><?php echo $this->__('Checkout') ?></h1></div>
+
+<script type="text/javascript" src="<?php echo $this->getJsUrl('varien/accordion.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/opcheckout.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/opcheckout_rwd.js') ?>"></script>
+
+<ol class="opc opc-firststep-<?php echo $this->getActiveStep() ?>" id="checkoutSteps">
+<?php if($customer = Mage::getSingleton('customer/session')->isLoggedIn()) { ?>
+    <li class="control"><?php
+        ?><label for=""><?php echo $this->__("Emisor factura") ?></label><br /><?php
+        ?><input type="checkbox" name="is_bill" value="" title="" id="is_bill" onchange="hideBillingStep()" class="checkbox" /><?php
+        ?><label for=""><?php echo $this->__("I do not require an invoice") ?></label><br /><?php
+        if( $messageDiasFactura ){
+        ?><label for="" id="is_bill_checked" class="xanim"><?php echo $this->__("Confirmacion") ?></label><?php
+        }
+    ?></li>
+<?php } ?>
+<?php $i=0; foreach($this->getSteps() as $_stepId => $_stepInfo): ?>
+<?php if (!$this->getChild($_stepId) || !$this->getChild($_stepId)->isShow()): continue; endif; $i++ ?>
+    <li id="opc-<?php echo $_stepId ?>" class="section<?php echo !empty($_stepInfo['allow'])?' allow':'' ?><?php echo !empty($_stepInfo['complete'])?' saved':'' ?>">
+        <?php 
+            $id = ' id="'.$_stepId.'"';
+            if($_stepId == "billing"){ $id = ' id="entrepids-'.$_stepId.'"'; }
+        ?>
+        <div class="step-title" <?php echo $id; ?> >
+            <span class="number"><?php echo $i ?></span>
+            <h2><?php echo $_stepInfo['label'] ?></h2>
+            <a href="#"><?php echo $this->__('Edit') ?></a>
+        </div>
+        <div id="checkout-step-<?php echo $_stepId ?>" class="step a-item" style="display:none;">
+            <?php echo $this->getChildHtml($_stepId) ?>
+        </div>
+    </li>
+<?php endforeach ?>
+</ol>
+
+<?php if( $notify_payment ){ ?><!-- notificacion_pago_completado notificacion -->
+    <div class="config_popup block" id="message_payment_method" style="display: none;">
+        <div class="message_popup" id="popup_message">
+            <div class="close" id="message_payment_method_close">X</div>
+            <div class="data">
+                <div class="title"><?php echo $this->__("Seleccionar esta forma de pago"); ?></div>
+                <div class="form"><?php echo $this->__("Revisa tu correo"); ?></div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+
+<script type="text/javascript">//<![CDATA[
+    var accordion = new Accordion('checkoutSteps', '.step-title', true);
+    <?php if($this->getActiveStep()): ?>
+        accordion.openSection('opc-<?php echo $this->getActiveStep() ?>');
+        /*console.log( 'seccion active ==> opc-<?php echo $this->getActiveStep() ?>' );*/
+    <?php endif ?>
+    var checkout_data = {
+        progress: '<?php echo $this->getUrl('checkout/onepage/progress') ?>',
+        review: '<?php echo $this->getUrl('checkout/onepage/review') ?>',
+        saveMethod: '<?php echo $this->getUrl('checkout/onepage/saveMethod') ?>',
+        failure: '<?php echo $this->getUrl('checkout/cart') ?>'};
+    var checkout = new Checkout(accordion, checkout_data );
+
+    //]]>
+</script>
+<?php if( $messageDiasFactura ){ ?><!-- message dias factura -->
+    <script type="text/javascript">
+        //<![CDATA[
+        $('is_bill').observe( 'change', function(){
+            if( $('is_bill').checked == true ){
+                $('is_bill_checked').addClassName('visible');
+                $('is_bill_checked').show();
+            }else{
+                $('is_bill_checked').removeClassName('visible');
+            }
+        } );
+        //]]>
+    </script><?php } ?>
+
+<?php if( $ga_data ){ ?><!-- ga_data -->
+    <script type="text/javascript">
+    function ga_all_checkout(){
+        var d = $$('.lckf_');
+        var id = '';
+        var iid = '';
+        for( i=0; i<d.length; i++ ){
+            id = d[i].id;
+
+            var ga_id = id+'_ga_id';
+            var ga_name = id+'_ga_name';
+            var ga_categortia = id+'_ga_categortia';
+            var ga_marca = id+'_ga_marca';
+            var ga_precio = id+'_ga_precio';
+            var ga_qty = id+'_ga_qty';
+
+            ga('ec:addProduct', {
+              'id': ga_id,
+              'name': ga_name,
+              'category': ga_categortia,
+              'brand': ga_marca,
+              'variant':  '',
+              'price': ga_precio,
+              'quantity': ga_qty
+            });
+
+            /*console.log( ga_name + ' ==> ' + ga_qty );*/
+        }
+
+        var checkout_type = $('payment-progress-opcheckout').value;
+
+        ga('ec:setAction','checkout', {
+            'step': 2,             
+            'option': checkout_type
+        });
+        ga('send', 'pageview');
+
+        /*console.log( ga_name + ' ==> ' + ga_qty );*/
+
+        return true;
+    }
+    function list_checkuot_save(){
+        //console.log( $('ga_payment_type') );
+
+        var lpcf = {};
+        var n = $$('.lcheckout_finish').length;
+
+        for( i=0; i<n; i++ ){
+            var dd = $$('.lcheckout_finish')[ i ].attributes;
+            lpcf[ dd.data_sku.value ] = 1;
+        }
+
+        // recorriendo todos los sku
+        for( var key in lpcf ){
+            var k = '';
+            var gad = {};
+
+            gad[ 'id' ] = key
+            k = 'lckf_'+key+'__ga_name';   gad[ 'name' ] = $(k).value;
+            k = 'lckf_'+key+'__ga_precio'; gad[ 'price' ] = $(k).value;
+            k = 'lckf_'+key+'__ga_qty';    gad[ 'quantity' ] = $(k).value;
+
+            ga('ec:addProduct', gad);
+            /*console.log(gad);*/
+        }
+
+        ga( 'ec:setAction','checkout', { 'step': 2, 'option': $('ga_payment_type').value } );
+        /*console.log( $('ga_payment_type').value );*/
+
+        return true;
+    }
+    </script><?php } ?>

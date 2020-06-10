@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Entrepids
+* @package    Entrepids_ScheduleAppointment
+* @author     fabian.perez@entrepids.com
+* @website    http://www.entrepids.com
+*/
+-->
+<config>
+    <modules>
+        <Entrepids_ScheduleAppointment>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Entrepids_ScheduleAppointment>
+    </modules>
+</config>

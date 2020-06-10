@@ -1,0 +1,438 @@
+//
+// Magento Enterprise Edition
+//
+// NOTICE OF LICENSE
+//
+// This source file is subject to the Magento Enterprise Edition End User License Agreement
+// that is bundled with this package in the file LICENSE_EE.txt.
+// It is also available through the world-wide-web at this URL:
+// http://www.magento.com/license/enterprise-edition
+// If you did not receive a copy of the license and are unable to
+// obtain it through the world-wide-web, please send an email
+// to license@magento.com so we can send you a copy immediately.
+//
+// DISCLAIMER
+//
+// Do not edit or add to this file if you wish to upgrade Magento to newer
+// versions in the future. If you wish to customize Magento for your
+// needs please refer to http://www.magento.com for more information.
+//
+// @category    design
+// @package     rwd_default
+// @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+// @license http://www.magento.com/license/enterprise-edition
+//
+
+/* ============================================ *
+ * Nav - Skip Link
+ * ============================================ */
+
+.skip-nav {
+    width: 40%;
+
+    &:not(.skip-active):hover {
+        text-decoration: none;
+        color: white;
+        .icon {
+            background-position: -50px+4px ($toolbar-icon-padding-offset/2);
+        }
+    }
+}
+
+.skip-nav .label {
+    display: inline;
+    color: white;
+}
+
+.skip-nav .icon {
+    @extend .icon-sprite;
+    background-position: 0+4px ($toolbar-icon-padding-offset/2);
+}
+
+// ---------------------------------------------
+
+@include bp(min-width, 500px) {
+
+    .skip-nav {
+        width: 25%;
+    }
+
+}
+
+// ---------------------------------------------
+
+@include bp(min-width, $bp-medium + 1) {
+
+    .skip-nav {
+        display: none;
+    }
+
+}
+
+/* ============================================ *
+ * Nav - Skip Content
+ * ============================================ */
+
+@include bp(max-width, $bp-medium) {
+
+    #header-nav {
+        padding: 5px 0;
+    }
+
+}
+
+// ---------------------------------------------
+
+@include bp(min-width, $bp-medium + 1) {
+
+    #header-nav {
+        display: block; /* Force visibility */
+        background: $bg-dark-red;
+        position: relative;
+        #nav {
+            max-width: $max-container-width;
+            margin: 0 auto;
+        }
+    }
+
+}
+
+/* ============================================ *
+ * Nav Primary
+ * ============================================ */
+
+@include bp(min-width, $bp-medium + 1) {
+    .nav-primary {
+        display: table;
+        margin: 0 auto;
+    }
+
+}
+
+/* ============================================ *
+ * General Navigation Styles
+ * ============================================ */
+
+$nav-primary-height: 30px;
+
+.nav-primary {
+    a {
+        text-decoration: none;
+        position: relative;
+        display: block;
+        color: $c-text;
+        line-height: $nav-primary-height;
+        font-family: $f-stack-special;
+    }
+
+    li {
+        height: 70px;
+        a {
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+    }
+}
+
+// Show sub-menus when JS adds the appropriate classes
+.nav-primary .menu-active > ul.level0,
+.nav-primary li.level0 li.sub-menu-active > ul {
+    display: block;
+}
+
+.nav-primary li.level0 > a {
+    text-transform: uppercase;
+    color: white;
+    font-family: $gotham-bold;
+    font-weight: normal;
+    line-height: 70px;
+}
+
+/* ============================================ *
+ * Small Viewports - Accordion Style Menu
+ * ============================================ */
+
+@include bp(max-width, $bp-medium) {
+
+    .nav-primary {
+
+        // Increase clickable area of anchors for small viewports
+        a.level0,
+        a {
+            line-height: $nav-primary-height + 5px;
+        }
+
+        // Hide all sub-menus
+        li.level0 ul {
+            display: none;
+            position: relative;
+            z-index: 99;
+            background: $bg-red;
+        }
+
+        // Indent sub-menus
+        li.level0 li {
+            padding: 0 0 0 25px;
+            height: auto;
+        }
+
+        li.level1 a {
+            padding: 0;
+            color: white;
+            font-family: $gotham-book;
+            text-transform: uppercase;
+            border: none;
+        }
+        li.level1 a:hover {
+            background-color: $bg-red;  
+        }
+
+        li.level1.view-all {
+            display: none;
+        }
+        li.parent > a:after {
+            @include triangle(right, 5px, #ccc);
+            top: 50%;
+            left: 10px;
+            right: auto;
+            margin-top: -5px;
+        }
+
+        // Menu active states
+        li.parent.sub-menu-active > a:after,
+        li.parent.menu-active > a:after {
+            @include triangle(down, 5px, #ccc);
+            top: 50%;
+            left: 10px;
+            right: auto;
+            margin-top: -5px;
+        }
+
+        li.menu-active > a,
+        li.sub-menu-active > a {
+            color: white;;
+        }
+    }
+}
+
+/* ============================================ *
+ * Large Viewports - Dropdown Menu
+ * ============================================ */
+
+@include bp(min-width, $bp-medium + 1) {
+
+    .nav-primary {
+        
+        a.level0 {
+            padding: 0 25px;
+        }
+        li {
+            width: 399px;
+            text-align: center;
+            -webkit-transition: background-color 500ms;
+            -moz-transition: background-color 500ms;
+            -o-transition: background-color 500ms;
+            transition: background-color 500ms;
+        }
+
+        li.level0,
+        a.level0 {
+            display: inline-block;
+        }
+
+        li:last-child > a {
+            border-bottom: none;
+        }
+        li.level0:hover {
+            background-color: $bg-red;
+        }
+        a:hover,
+        li:hover > a {
+        color: white;
+        }
+
+        .menu-active {
+            z-index: 200;
+        }
+
+        /* Default styles for 1+ drop-down menus */
+        li.level0 ul {
+            @include menu;
+            border: none;
+            background: $bg-red;
+            position: absolute;
+            left: 0;
+            top: 70px;
+            z-index: 10;
+            width: 100%;
+            padding-left: $box-spacing;
+            padding-right: $box-spacing;
+            display: none; /* Hide until displayed. */
+            height: 50px;
+            -webkit-transition: display 500ms;
+            -moz-transition: display 500ms;
+            -o-transition: display 500ms;
+            transition: display 500ms;
+        }
+
+        /* Level 2+ */
+        li.level1 ul {
+            left: 60px;
+            top: 15px;
+        }
+
+        /* Class for js to add briefly to evaluate element positioning. */
+        li.level0 ul.level0.position-test {
+            display: block;
+        }
+
+        /* Correct menus that will hang off the page (class added by js) */
+        li.level0 ul.level0.spill {
+            right: 0;
+            left: auto;
+
+            // Sub-menu drop down to the left
+            li.level1 ul {
+                left: auto;
+                right: 50px;
+                top: 20px;
+            }
+            li.level1.view-all {
+                display: none;
+            }
+            li.level1 {
+                list-style: none;
+                display: inline-block;
+                /*width: 14%;*/
+                margin-left: 0%;
+
+                a {
+                    font-family: $gotham-book;
+                    text-transform: uppercase;
+                    line-height: 50px;
+                    color: white;
+                }
+                a::before {
+                    content: '\00a0';
+                    width: 30px;
+                    height: 40px;
+                    display: inline-block;
+                    vertical-align: middle;
+                    background-image: url("../images/elements/sprite-submenu.png");
+                    background-size: 156px;
+                    background-repeat: no-repeat;
+                    margin-right: 5px;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+            }
+            li.level1.nav-2-1 {
+                a::before {
+                    background-position: -85px 0;
+                    width: 44px;
+                }
+            }
+            li.level1.nav-2-3 {
+                a::before {
+                    background-position: -128px 0;
+                }
+            }
+        }
+
+        /* Level 1+ */
+        li.level0 li.parent > a {
+
+            &:after {
+                @include triangle(right, 4px, #ccc);
+                right: 5px;
+                top: 50%;
+                margin-top: -3px;
+            }
+        }
+    }
+}
+.nav-primary {
+    li.level0 ul.level0.spill {
+        li.level1 {
+            width: 14%;
+            margin: 0;
+        }
+    }
+}
+
+@include bp(max-width, $bp-xlarge) {
+    .nav-primary {
+        li.level0 ul.level0.spill {
+            li.level1 {
+                width: auto;
+                margin: 0 20px;
+            }
+        }
+    }
+}
+
+.nav-primary li.menu-active {
+    > ul {
+        display: block;
+    }
+}
+
+
+/*===============DDUX Entrepids Style nav ===================*/
+
+@include bp(max-width, $bp-medium){
+    nav{
+        .nav-primary{
+            .level0.nav-2{
+                .level0{
+                    li.nav-2-1{
+                        a.level1{
+                            height: 40px;
+                            display: inline-block;
+                        &:before{
+                            content: "\00a0";
+                            background-image: url('../images/elements/sprite-submenu.png');
+                            width: 37px;
+                            height: 30px;
+                            background-size: 144px;
+                            display: inline-block;
+                            background-position: -80px 0px;
+                            }
+                        }
+                    }
+                    li.nav-2-2{
+                        a.level1{
+                            height: 40px;
+                            display: inline-block;
+                        &:before{
+                            content: "\00a0";
+                            background-image: url('../images/elements/sprite-submenu.png');
+                            width: 30px;
+                            height: 30px;
+                            background-size: 157px;
+                            display: inline-block;
+                            background-position: -3px 0px;
+                            }
+                        }
+                    }
+                    li.nav-2-3{
+                        a.level1{
+                            height: 40px;
+                            display: inline-block;
+                        &:before{
+                            content: "\00a0";
+                            background-image: url('../images/elements/sprite-submenu.png');
+                            width: 32px;
+                            height: 31px;
+                            background-size: 151px;
+                            display: inline-block;
+                            background-position: -125px 0px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

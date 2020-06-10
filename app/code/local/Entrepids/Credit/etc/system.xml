@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+@category    Entrepids
+@package     Entrepids_Credit
+@author      Francisco Espinosa <francisco.espinosa@entrepids.com>
+@copyright   Copyright (c) 2018 Entrepids México S. de R.L de C.V
+@license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+-->
+<config>
+    <tabs>
+        <base translate="label" module="credit">
+            <label>Entrepids</label>
+            <sort_order>1</sort_order>
+        </base>
+    </tabs>
+    <sections>
+        <entrepids_credit translate="label" module="credit">
+            <label>Nestle Customer AAA Credit</label>
+            <tab>base</tab>
+            <sort_order>1</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+ 
+            <groups>
+                <settings translate="label" module="credit">
+                    <label>Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+ 
+                    <fields>
+                         <enabled translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </enabled>
+
+                        <minimum_amount translate="label">
+                            <backend_model>credit/amount</backend_model>
+                            <label>Minimum historical purchase amount for credit</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </minimum_amount>
+
+                        <emails translate="label">
+                            <label>Emails that will receive credit requests (separated by commas)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </emails>
+
+                        <upload_file translate="label tooltip comment">
+                             <label>Upload credit application document</label>
+                             <comment>Only PDF or Word (.doc, .docx) are allowed. The name of the document should not contain points or will be ignored.</comment>
+                             <!-- <tooltip>Add a tooltip that appears on hover</tooltip> -->
+                             <frontend_type>file</frontend_type>
+                             <backend_model>adminhtml/system_config_backend_file</backend_model>
+                             <upload_dir config="system/filesystem/media" scope_info="1">nestle-credit-doc</upload_dir>
+                             <base_url type="media" scope_info="1">nestle-credit-doc</base_url>
+                             <sort_order>4</sort_order>
+                             <show_in_default>1</show_in_default>
+                             <show_in_website>1</show_in_website>
+                             <show_in_store>1</show_in_store>
+                        </upload_file>
+                    </fields>
+                </settings>
+            </groups>
+        </entrepids_credit>
+    </sections>
+</config>

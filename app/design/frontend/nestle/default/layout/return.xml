@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<return_index_success>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="core/template" name="return_success" template="return/success.phtml" />
+		</reference>
+	</return_index_success>
+
+	<return_index_fail>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+			<block type="core/template" name="return_fail" template="return/fail.phtml" />
+		</reference>
+	</return_index_fail>
+</layout>

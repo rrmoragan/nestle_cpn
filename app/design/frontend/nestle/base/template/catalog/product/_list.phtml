@@ -1,0 +1,672 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition End User License Agreement
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magento.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category	design
+ * @package	 rwd_default
+ * @copyright Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license http://www.magento.com/license/enterprise-edition
+ */
+?><?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+ /* @var $this Mage_Catalog_Block_Product_List */
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * popup view logo 
+ * 
+ */
+
+$popup_logo = true;
+    $popup_logo_html = '';
+    if( $popup_logo ){
+        $logo_img_url = $this->getSkinUrl('images/logo_temporal1.png');
+        $logo_title = $this->getLogoAlt();
+
+        $popup_logo_html = '<div class="popup_logo"><img src="'.$logo_img_url.'" alt="'.$logo_title.'" title="'.$logo_title.'" /></div>';
+    }
+
+?><?php
+/**
+ * rmorales@mlg.com.mx
+ * mensage proxy
+ * 
+ */
+
+$message_proxy = true;
+
+    $proxy_message = Mage::helper('core')->quoteEscape($this->__('Proxy Message'));
+    $proxy_message_question = Mage::helper('core')->quoteEscape($this->__('Proxy Message Question'));
+    $proxy_message_click = Mage::helper('core')->quoteEscape($this->__('Proxy Message Click'));
+    $proxy_title = Mage::helper('core')->quoteEscape($this->__('Proxy Message Title'));
+    $proxy_message_a = Mage::helper('core')->quoteEscape($this->__('Proxy Message A'));
+    $proxy_message_b = Mage::helper('core')->quoteEscape($this->__('Proxy Message B'));
+    $enterado = Mage::helper('core')->quoteEscape($this->__('Enterado'));
+
+    $session_id = $_SESSION['core']['visitor_data']['session_id'];
+    $url = parse_url( $_SERVER['REQUEST_URI'] );
+    $url = $url['path'];
+
+    if( !isset( $_SESSION['ccurl'] ) ){
+        $message_proxy_status = 0;
+
+        $_SESSION['ccurl'] = $url;
+        $_SESSION['nccurl'] = 0;
+    }else{
+        if( $url == $_SESSION['ccurl'] ){
+            $_SESSION['nccurl']++;
+        }else{
+            $_SESSION['ccurl'] = $url;
+            $_SESSION['nccurl'] = 0;
+        }
+    }
+
+?><!-- gneral_product_list --><?php
+/*
+ * boton me interesa
+ * copy's
+ *	  caso 1:	 usuario logueado
+ *	  caso 2:	 usuario anonimo
+ */
+
+$cntrl_me_interesa = 1;
+
+	$meinteresa   = 'Me interesa';
+	$meinteresa_a = 'Te notificaremos por correo electr&oacute;nico cuando este art&iacute;culo se encuentre disponible.';
+	$meinteresa_b = 'Proporciona un correo electr&oacute;nico para avisarte cuando tengamos stock del producto.';
+	$is_login = Mage::getSingleton('customer/session')->isLoggedIn();
+
+?>
+<?php
+	$_productCollection=$this->getLoadedProductCollection();
+	$_productCollection->clear();
+	$_productCollection->addAttributeToSort('name', Varien_Data_Collection::SORT_ORDER_ASC);
+
+	$_helper = $this->helper('catalog/output');
+?>
+<?php
+/* listado productos google analitycs */
+	$lga = null;
+/* detect page HOME */
+	$is_home = 'detalle';
+	if( Mage::getBlockSingleton('page/html_header')->getIsHomePage() ){
+		$is_home = 'recomendados';
+	}
+
+?>
+<?php if(!$_productCollection->count()): ?>
+<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+<div class="category-products">
+	<?php echo $this->getToolbarHtml() ?>
+	<?php // List mode ?>
+	<?php if($this->getMode()!='grid'): ?>
+	<?php $_iterator = 0; ?>
+	<ol class="products-list" id="products-list">
+	<?php foreach ($_productCollection as $_product): ?><?php 
+
+		$p_sku = Mage::getModel('catalog/product')->load( $_product->getId() )->getSku();
+		$p_id  = $_product->getId();
+		$p_url = $_product->getProductUrl();
+
+		?><li class="item<?php if( ++$_iterator == sizeof($_productCollection) ): ?> last<?php endif; ?>">
+			<a href="<?php echo $p_url; ?>"></a>
+			<?php // Product Image ?>
+			<a href="<?php echo $p_url; ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+				<?php /* Based on the native RWD styling, product images are displayed at a max of ~400px wide when viewed on a
+						one column page layout with four product columns from a 1280px viewport. For bandwidth reasons,
+						we are going to serve a 300px image, as it will look fine at 400px and most of the times, the image
+						will be displayed at a smaller size (eg, if two column are being used or viewport is smaller than 1280px).
+						This $_imgSize value could even be decreased further, based on the page layout
+						(one column, two column, three column) and number of product columns. */ ?>
+				<?php $_imgSize = 400; ?>
+				<img id="product-collection-image-<?php echo $p_id ?>"
+					 src="<?php echo $this->helper('catalog/image')->init($_product, 'image')->keepFrame(false)->resize('$_imgSize'); ?>"
+					 alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'image'), null, true) ?>" />
+			</a>
+			<?php // Product description ?>
+			<div class="product-shop">
+				<div class="f-fix">
+					<div class="product-primary">
+						<?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+						<h2 class="product-name"><a href="<?php echo $p_url; ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h2>
+						<?php if($_product->getRatingSummary()): ?>
+						<?php echo $this->getReviewsSummaryHtml($_product) ?>
+						<?php endif; ?>
+						<?php
+						// Provides extra blocks on which to hang some features for products in the list
+						// Features providing UI elements targeting this block will display directly below the product name
+						if ($this->getChild('name.after')) {
+							$_nameAfterChildren = $this->getChild('name.after')->getSortedChildren();
+							foreach ($_nameAfterChildren as $_nameAfterChildName) {
+								$_nameAfterChild = $this->getChild('name.after')->getChild($_nameAfterChildName);
+								$_nameAfterChild->setProduct($_product);
+								echo $_nameAfterChild->toHtml();
+							}
+						}
+						?>
+					</div>
+					<div class="product-secondary">
+						<?php echo $this->getPriceHtml($_product, true) ?>
+					</div>
+					<div class="product-secondary">
+						<?php if(!$_product->canConfigure() && $_product->isSaleable()): ?>
+							<p class="action"><button type="button" title="<?php echo $this->quoteEscape($this->__('Add to Cart')) ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+						<?php elseif($_product->getStockItem() && $_product->getStockItem()->getIsInStock()): ?>
+							<p class="action"><a title="<?php echo $this->quoteEscape($this->__('View Details')) ?>" class="button" href="<?php echo $p_url; ?>"><?php echo $this->__('View Details') ?></a></p>
+						<?php else: ?><?php 
+							if( !$cntrl_me_interesa ){
+								?><p class="action availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p><?php
+							}
+						?><?php endif; ?>
+						<ul class="add-to-links">
+							<?php if ($this->helper('wishlist')->isAllow()) : ?>
+								<li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+							<?php endif; ?>
+							<!--<?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+								<li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+							<?php endif; ?>-->
+						</ul>
+					</div>
+					<div class="desc std">
+						<?php echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+						<a href="<?php echo $p_url; ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+					</div>
+				</div>
+			</div>
+		</li>
+	<?php endforeach; ?>
+	</ol>
+	<script type="text/javascript">decorateList('products-list', 'none-recursive')</script>
+
+	<?php else: ?>
+
+	<?php // Grid Mode ?>
+
+	<?php $_collectionSize = $_productCollection->count() ?>
+	<?php $_columnCount = $this->getColumnCount(); ?>
+	<!-- product_list_b -->
+	<ul class="products-grid products-grid--max-<?php echo $_columnCount; ?>-col">
+		<?php 
+			$i=1; 
+			$_nproduct = count( $_productCollection );
+			$_f = 0;
+			foreach ($_productCollection as $_product): ?>
+				<?php   /* data para "ga" */
+
+					$p_sku = Mage::getModel('catalog/product')->load( $_product->getId() )->getSku();
+					$p_id  = $_product->getId();
+					$p_url = $_product->getProductUrl();
+
+					$llga = null;
+					$llga['sku'] = $p_sku;
+				?>
+				<li class="item <?php if($i==1){ echo 'first'; } if($i==$_nproduct){ echo 'last'; } ?>">
+					<span class="ribbon <?php echo $is_home; ?>" ></span ><span class="descuento <?php echo $is_home; ?>" ><?php
+
+				$pack = '1<br />pack';
+				if( isset( $_product->_data['sku_alterno_cantidad'] ) ){
+					$pack = $_product->_data['sku_alterno_cantidad'].'<br />pack';
+				}
+				echo $pack;
+
+				?></span >
+					<a class="link-invisible" 
+						href="<?php echo $p_url; ?>" 
+						onclick="lga_product('<?php echo $llga['sku'] ?>')"></a>
+					<div class="head_prod">
+						<!-- product_title -->
+						<h2 class="product-name"><a href="<?php echo $p_url; ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+						<!-- product_subtitle -->
+						<?php 
+
+						/*
+						 * version previa
+
+						 
+
+							<div class="short-description"><div class="std"><h3><?php 
+							if ($_product->getNombreSecundario()){
+								echo $_product->getNombreSecundario();
+							}else{ ?>&nbsp;<?php } ?></h3></div></div>
+
+						 */
+						?><div class="product-title">
+							<?php if ($_product->getNombreSecundario()):?>
+								<div class="short-description">
+									<div class="std"><h3><?php echo $_product->getNombreSecundario();  ?></h3></div>
+								</div>
+							<?php endif;?>
+								
+							<!--<?php //if ($_product->getShortDescription()):?>
+								<div class="short-description">
+									<div class="std"><h3><?php //echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></h3></div>
+								</div>
+							<?php //endif;?>-->
+							</div><?php
+
+						// Provides extra blocks on which to hang some features for products in the list
+						// Features providing UI elements targeting this block will display directly below the product name
+						if ($this->getChild('name.after')) {
+							$_nameAfterChildren = $this->getChild('name.after')->getSortedChildren();
+							foreach ($_nameAfterChildren as $_nameAfterChildName) {
+								$_nameAfterChild = $this->getChild('name.after')->getChild($_nameAfterChildName);
+								$_nameAfterChild->setProduct($_product);
+								echo $_nameAfterChild->toHtml();
+							}
+						}
+						?>
+
+					</div>
+					<a href="<?php echo $p_url; ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+						<?php $_imgSize = 210; ?>
+						<img id="product-collection-image-<?php echo $_product->getId(); ?>"
+							 src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize($_imgSize); ?>"
+							 alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+					</a>
+					<div class="product-info">
+						<?php
+							/*
+							<div class="cont_ratings">
+								<?php if($_product->getRatingSummary()): ?>
+									<?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+								<?php else: ?>
+									<div class="ratings ratings-space"></div>
+								<?php endif; ?>
+							</div>
+							*/
+						?><!-- struct="precio_modificado" -->
+						<?php 
+						if(!$_product->getIsProfessional()){
+							if( $_product->getTypeID()=='bundle' ){
+								if( $_product->_data['price_type']==1 ){
+									?><div class="price-box"><span class="regular-price"><span class="price"><?php
+											$_n = (int)$_product->getPrice();
+											echo number_format( $_n, 0, '', ',' );
+											?><sup><?php
+													$_f = (int)(($_product->getPrice()-$_n)*100);
+													echo sprintf( "%02d", $_f );
+											?></sup><?php
+									?></span></span></div><?php
+								}else{
+									echo $this->getPriceHtml($_product, false);
+								}
+							}else{
+								echo $this->getPriceHtml($_product, true);
+								$_f = (int)$_product->getPrice();
+							}
+						}
+						?>
+						<?php $stockItem = $_product->getStockItem(); ?>
+						<?php if (!$stockItem->getIsInStock()): ?>
+							<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+						<?php endif; ?>
+						<?php if(!$_product->getIsProfessional() && $_product->getStockItem()->getIsInStock()): ?>
+						<?php if(!$_product->isGrouped() ): ?>
+						<?php if( $_product->getTypeId() != 'bundle' ): ?>
+							<div class="qty-wrapper">
+								<span class="less"></span>
+								<?php $defaultQty = $this->getProductDefaultQty() * 1 ?>
+								<input 
+									type="number" 
+									pattern="\d*(\.\d+)?" 
+									name="qty" 
+									id="qty" 
+									maxlength="12" 
+									value="<?php echo 0; /*= $defaultQty ? $defaultQty : 1  */?>" 
+									title="<?php echo Mage::helper('core')->quoteEscape($this->__('Qty')) ?>" 
+									class="input-text qty catalog-qty-send" 
+									onkeydown="validateChars(event)" 
+									onchange="validateChange(this)"
+									data_qty="<?php echo $llga['sku']; ?>"
+									/>
+								<span class="more"></span>
+							</div>
+						<?php endif; ?>
+						<?php endif; ?>
+						<?php endif; ?>
+						<div class="actions">
+							<!-- Add tocart -->
+							<?php if(!$_product->canConfigure() && $_product->isSaleable() && !$_product->getIsProfessional()): ?>
+								<!-- button_data -->
+								<button 
+									type="button" 
+									title="<?php echo $this->quoteEscape($this->__('Add to Cart')) ?>" 
+									class="button btn-cart" 
+									onclick="lga_product_cart('<?php echo $llga['sku'] ?>');sendAdd2Cart(this,'<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+							<?php elseif($_product->getStockItem() && $_product->getStockItem()->getIsInStock()): ?>
+								<a 
+									title="<?php echo $this->quoteEscape($this->__('View Details')) ?>" 
+									class="button" 
+									href="<?php echo $p_url; ?>"><?php echo $this->__('View Details') ?></a>
+							<?php else: ?><?php
+								if( $cntrl_me_interesa ){
+									?><a  title="<?php echo $meinteresa; ?>" class="button" id="prod-<?php echo $p_sku; ?>" onclick="f_interesa(this)"><?php echo $meinteresa; ?></a><?php
+								}
+							?><?php endif; ?>
+							<ul class="add-to-links">
+								<?php if ($this->helper('wishlist')->isAllow()) : ?>
+									<li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+								<?php endif; ?><?php
+									/*
+									<?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+										<li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+									<?php endif; ?>
+									*/
+								?>
+							</ul>
+						</div>
+					</div><?php
+
+						$llga['product'] = trim( $_product->_data['name'].' '.$_product->_data['nombre_secundario'] );
+
+						/* id de todas las categorias a las que pertenece el producto */
+						$categoryId = $_product->getCategoryIds();
+
+						if(is_array($categoryId)){
+							$categoryId = array_pop($categoryId);
+						}
+
+						$category = Mage::getModel('catalog/category')->load($categoryId)->_data['name'];
+						$llga['categoria'] = $category;
+
+						$lmarca = Mage::getResourceModel('catalog/product')->
+							getAttribute('marca')->
+								getSource()->
+									getOptionText( $_product->_data['marca'] );
+
+						$llga['marca'] = trim( $lmarca );
+						$llga['list']  = trim( $lmarca.', '.$_product->_data['name'] );
+
+		
+						$lga[ $llga['sku'] ] = array(
+							'sku' =>   $llga['sku'],
+							'prodt' => $llga['product'],
+							'categ' => $llga['categoria'],
+							'marca' => $llga['marca'],
+							'list' =>  $llga['list'],
+							'posit' => $i,
+							'price' => $_f
+					   );
+				?></li><?php
+				$i++;
+			endforeach ?>
+	</ul>
+	<script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+	<!-- list_product_ga -->
+	<script type="text/javascript">
+		var ldp = <?php
+			$lpga = json_encode( $lga ); 
+			if( $lpga!=null ){ 
+				echo $lpga;
+			}else{ 
+				echo 'null'; 
+			} ?>;
+
+		document.observe("dom:loaded", function() {});
+
+		function ldp_ga( b ){}
+		function lga_product(sku){}
+		function lga_product_cart(sku){}
+	</script>
+	<?php endif; ?>
+
+	<div class="toolbar-bottom">
+		<?php echo $this->getToolbarHtml() ?>
+	</div>
+</div>
+
+<?php if( $cntrl_me_interesa ): ?>
+	<!-- me interesa -->
+	<div class="config_popup block" id="open_message" style="display: none">
+		<div class="message_popup" id="popup_message">
+			<div class="close" onclick="f_interesa_close()">X</div>
+			<div class="data"><?php
+				if( $is_login ){
+					?><div class="title"><?php echo $meinteresa_a; ?></div><div class="form">
+						<form id="me_interesa" class="fmeinteresa">
+						<input type="hidden" name="product" value="" id="datap">
+						<input type="hidden" name="usid" value="">
+						<div class="error" id="me_interesa_error"></div>
+					</form></div><?php
+				}else{
+					?><div class="title"><?php echo $meinteresa_b; ?></div><div class="form">
+						<form id="me_interesa" class="fmeinteresa">
+						<input type="hidden" name="product" value="" id="datap">
+						<input type="email" name="usemail" value="" id="usemail" required>
+						<input type="button" value="Guardar" class="submit" id="bmeinteresa">
+						<div class="error" id="me_interesa_error"></div>
+					</form></div><?php
+				}
+			?></div>
+		</div>
+	</div><?php
+endif; ?>
+
+<?php endif; ?>
+<?php
+// Provides a block where additional page components may be attached, primarily good for in-page JavaScript
+if ($this->getChild('after')) {
+	$_afterChildren = $this->getChild('after')->getSortedChildren();
+	foreach ($_afterChildren as $_afterChildName) {
+		$_afterChild = $this->getChild('after')->getChild($_afterChildName);
+		//set product collection on after blocks
+		$_afterChild->setProductCollection($_productCollection);
+		echo $_afterChild->toHtml();
+	}
+}
+?><?php if( $cntrl_me_interesa ){ ?><!-- me interesa -->
+<script type="text/javascript">
+	function f_interesa(e){
+		$('datap').value = e.attributes.id.value;
+		$('open_message').show();
+		<?php if( $is_login ): ?>f_interesa_save();<?php endif; ?>
+	}
+
+	<?php if( !$is_login ): ?>Event.observe( $('bmeinteresa'), 'click', f_interesa_save );<?php endif; ?>
+
+	function f_interesa_close(){
+		// console.log('cerrando');
+		$('open_message').hide();
+	}
+
+	function f_interesa_save(){
+	<?php if( !$is_login ): ?>
+		$('me_interesa_error').innerHTML = '';
+
+		var str_valid_email = 'Teclee un email válido';
+		var uemail = ($('usemail').value).trim();
+		var email_valid = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+		if( uemail == '' ){
+			$('me_interesa_error').innerHTML = str_valid_email;
+			return false;
+		}
+
+		if( !email_valid.test( uemail ) ){
+			$('me_interesa_error').innerHTML = str_valid_email;
+			return false;
+		}
+
+		$('me_interesa_error').innerHTML = '';
+
+		if( !submit_interesa( { "usid":0,"usemail":( ($('usemail').value).trim() ), "datap":($('datap').value) } ) ){
+			// console.log('error al enviar datos');
+		}
+
+		f_interesa_close();
+		return true;
+	<?php else: 
+
+		$customer_data=Mage::getSingleton('customer/session')->getCustomer();
+
+		?>if( !submit_interesa( { "usid":'<?php echo $customer_data->getEntityId(); ?>', "usemail":"", "datap":($('datap').value) } ) ){
+			// console.log('error al enviar datos');
+		}
+
+		//f_interesa_close();
+	<?php endif ?>}
+
+	function submit_interesa( d ){
+
+		d["mkd"] = "<?php echo $_SESSION['core']['visitor_data']['session_id']; ?>";
+
+		// console.log(d);
+
+		var url = "<?php echo Mage::getBaseUrl()."NESCA/ajx.code_interesa.php"; ?>";
+        // console.log(url);
+
+		new Ajax.Request( url, {
+			method: 'POST'
+			, parameters: d
+			, onFailure: function(transport) {
+				// console.log('error to send "me interesa"');
+			}
+			, onSuccess: function(transport) {
+				var res = transport.responseText.evalJSON();
+
+				// console.log( res );
+
+				if( res['status']=='ok' ){
+					return true;
+				}else{
+					// console.log( res );
+					return false;
+				}
+			}
+		} );
+
+		return false;
+	}
+</script><?php }
+?>
+
+<!-- popup message proxy --><?php 
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+    if( $message_proxy ): ?>
+    <div class="config_popup config_popup_show message_proxy" id="open_message_proxy" style="display: none">
+        <div class="message_popup" id="message_proxy">
+            <div class="close" onclick="f_message_proxy_close()">X</div>
+            <?php echo $popup_logo_html; ?>
+            <div class="popup_content">
+                <div id="popup_message">
+                    <!-- message_proxy_gral -->
+                    <div class="message_one" id="message_one_content">
+                        <p class="message"><?php echo $proxy_message.'<strong>'.$proxy_message_question.'</strong>'; ?></p>
+                        <p class="message center vlink" id="message_one"><?php echo $proxy_message_click; ?></p>
+                    </div>
+                    <div id="message_two" class="message_two" style="display: none">
+                        <div class="message_dos">
+                            <h2><?php echo $proxy_title; ?></h2>
+                        </div>
+                        <div class="message_dos scroll">
+                            <p class="message"><?php echo $proxy_message_a; ?></p>
+                            <p class="message"><?php echo $proxy_message_b; ?></p>
+                        </div>
+                    </div>
+                    <div class="no_check" id="no_notifycation">
+                        <div class="check"><input type="checkbox" name="no_rule_checkout" value="0" id="no_notifycationB"></div>
+                        <div class="check_message"><?php echo $enterado; ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var d_not = {}
+            d_not['process'] = '<?php echo 'checkout_onepage_notifycation_none'; ?>'; 
+            d_not['status'] = '<?php echo $_SESSION['nccurl']; ?>'; 
+            d_not['uemail'] = '<?php echo $customer->getEmail(); ?>';
+            d_not['uid'] = '<?php echo $customer->getId(); ?>';
+            d_not['sse'] = '<?php echo $session_id ; // get session id ?>';
+            d_not['sset'] = '<?php echo time(); // get session time ?>';
+
+        function f_message_proxy_close(){
+            $('message_one_content').show();
+            $('message_two').hide();
+            $('open_message_proxy').hide();
+            valid_no_notifycation();
+        }
+
+        document.observe("dom:loaded", function() {
+            if( d_not['status']==0 ){
+                no_notifycation_get();
+            }
+        });
+
+        $('message_one').observe("click", function() {
+            $('message_one_content').hide();
+            $('message_two').show();
+        });
+
+        function valid_no_notifycation(){
+            if( $('no_notifycationB').checked ){
+                d_not['status'] = 1;
+                no_notifycation_save();
+            }
+        }
+
+        function no_notifycation_save(email=0){
+            d_not['email_force'] = 0;
+            if(email==1){
+               d_not['email_force'] = 1; 
+            }
+
+            if( d_not['status'] != 1 ){ return; }
+
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>NESCA/ajx.notify_checkbox.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {
+                }
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+                }
+            } );
+        }
+
+        function no_notifycation_get(){
+            new Ajax.Request('<?php echo $this->getUrl(''); ?>NESCA/ajx.notify_checkbox_get.php',
+            {
+                method: 'POST'
+                , parameters: d_not
+                , onFailure: function(transport) {}
+                , onSuccess: function(transport) {
+                    var res = transport.responseText.evalJSON();
+                    if( res['status']==0 ){
+                        d_not['status'] = 0;
+                        $('open_message_proxy').show();
+                    }else{
+                        d_not['status'] = 1;
+                        if( d_not['uemail']!='' ){
+                            no_notifycation_save(1);
+                        }
+                    }
+                }
+            } );
+        }
+
+        </script><?php
+endif; ?>

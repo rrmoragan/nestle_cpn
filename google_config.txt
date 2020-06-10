@@ -1,0 +1,2 @@
+app/design/adminhtml/default/default/template/googleanalyticsuniversal/ga.phtml:            ga('create', '<?php echo $gapAccountId ?>', 'auto');
+app/code/core/Mage/GoogleAnalytics/Block/Ga.php:ga('create', '{$this->jsQuoteEscape($accountId)}', 'auto');

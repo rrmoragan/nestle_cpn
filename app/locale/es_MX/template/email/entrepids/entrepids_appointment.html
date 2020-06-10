@@ -1,0 +1,86 @@
+<!--@subject Me interesa su producto, {{var product_name}}! @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$customer.name":"Customer Name",
+"store url=\"customer/account/\"":"Customer Account Url"}
+@-->
+
+{{template config_path="design/email/header"}}
+<tr><td><!-- entrepids_appointment --></td></tr>
+<tr>
+    <td height="40" bgcolor="#ef2226" style="font-size:18px;text-align:center; color: #fff; text-transform: uppercase; ">
+        Agendar cita
+    </td>
+</tr>
+<tr>
+    <td>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="25">
+                <table width="800" border="0" align="left" cellpadding="0" cellspacing="0" class="title">
+                    <tr>
+                        <td width="20" style="background-color:#000;">&nbsp;</td>
+                        <td width="10" height="40">&nbsp;</td>
+                        <td width="636" height="70" style="padding-right: 33px;font-size:20px;font-weight:bold;text-align:center;color:#58595b;">
+                                Hola, {{var firstname}} {{var lastname}}<br />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td>
+        <table width="100%" bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0" style="border-top:#ccc solid 1px;">
+        <tr>
+            <td height="80">
+                <table width="500" border="0" align="center" cellpadding="2" cellspacing="2">
+                <tr>
+                    <td width="500" height="120" align="center" bgcolor="">
+                        <span>
+                            <span style="color: #ef2226;font-weight: bold;font-size: 20px">Tu solicitud está siendo atendida.</span> <br>
+                            En breve serás contactado por uno de nuestros especialistas, quien te indicará los pasos a seguir.
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table width="100%">
+                        <tr>
+                            <td>Producto:</td>
+                            <td>{{var product_name}} - {{var product_sku}}</td>
+                        </tr>
+                        <tr>
+                            <td>Nombre:</td>
+                            <td>{{var firstname}} {{var lastname}}</td>
+                        </tr>
+                        <tr>
+                            <td>Correo:</td>
+                            <td>{{var customer_email}}</td>
+                        </tr>
+                        <tr>
+                            <td>Teléfono:</td>
+                            <td>{{var telephone}}</td>
+                        </tr>
+                        <tr>
+                            <td>Código postal:</td>
+                            <td>{{var postal_code}}</td>
+                        </tr>
+                        <!--<tr>
+                            <td>Fecha:</td>
+                            <td>{{var fecha}}</td>
+                        </tr>-->
+                        </table>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+    </td>
+</tr>
+{{template config_path="design/email/footer"}}
